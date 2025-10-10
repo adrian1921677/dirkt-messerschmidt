@@ -16,6 +16,10 @@ export function Header() {
     { name: "Kontakt", href: "/kontakt" },
   ]
 
+  // Admin-Link (in Produktion würde hier eine Authentifizierung stattfinden)
+  const isAdmin = typeof window !== 'undefined' && 
+    (window.location.hostname === 'localhost' || window.location.hostname.includes('admin'))
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,17 +54,18 @@ export function Header() {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button asChild variant="outline" size="sm">
-              <Link href="/kontakt">
-                <Mail className="h-4 w-4 mr-2" />
-                Kontakt
-              </Link>
-            </Button>
             <Button asChild size="sm">
               <Link href="/terminanfrage">
                 Termin anfragen
               </Link>
             </Button>
+            {isAdmin && (
+              <Button asChild variant="outline" size="sm">
+                <Link href="/admin/login">
+                  Admin
+                </Link>
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -94,17 +99,18 @@ export function Header() {
                 </Link>
               ))}
               <div className="pt-4 space-y-2">
-                <Button asChild variant="outline" className="w-full">
-                  <Link href="/kontakt">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Kontakt
-                  </Link>
-                </Button>
                 <Button asChild className="w-full">
                   <Link href="/terminanfrage">
                     Termin anfragen
                   </Link>
                 </Button>
+                {isAdmin && (
+                  <Button asChild variant="outline" className="w-full">
+                    <Link href="/admin/login">
+                      Admin-Bereich
+                    </Link>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
