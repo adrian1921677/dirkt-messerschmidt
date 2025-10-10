@@ -1,39 +1,38 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContactForm } from "@/components/contact-form";
 import { WhatsAppIntegration } from "@/components/whatsapp-integration";
-import { MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
+import { MapPin, Phone, Clock, MessageCircle, Globe } from "lucide-react";
 
 export default function Kontakt() {
   const contactInfo = [
     {
       icon: <Phone className="h-6 w-6 text-blue-600" />,
       title: "Telefon",
-      details: ["+49 170 12345678", "Mo-Fr: 8:00-18:00 Uhr"],
-      action: "tel:+4917012345678"
+      details: ["0202 / 423 110", "0171 / 14 15 899", "0171 / 3500 856"],
+      action: "tel:+49202423110"
     },
     {
-      icon: <Mail className="h-6 w-6 text-blue-600" />,
-      title: "E-Mail",
-      details: ["info@gutachter-messerschmidt.de", "Antwort innerhalb 24h"],
-      action: "mailto:info@gutachter-messerschmidt.de"
+      icon: <Globe className="h-6 w-6 text-blue-600" />,
+      title: "Website",
+      details: ["www.messerschmidt.eu"],
+      action: "https://www.messerschmidt.eu"
     },
     {
       icon: <MapPin className="h-6 w-6 text-blue-600" />,
       title: "Adresse",
       details: [
         "Dirk Messerschmidt",
-        "Musterstraße 123",
-        "12345 Musterstadt"
+        "Alt-Wolfshahn 12",
+        "42117 Wuppertal"
       ],
-      action: "https://maps.google.com/?q=Musterstraße+123,+12345+Musterstadt"
+      action: "https://maps.google.com/?q=Alt-Wolfshahn+12,+42117+Wuppertal"
     },
     {
       icon: <Clock className="h-6 w-6 text-blue-600" />,
       title: "Bürozeiten",
       details: [
-        "Montag - Freitag: 8:00 - 18:00",
-        "Samstag: 9:00 - 14:00",
-        "Termine auch außerhalb der Bürozeiten möglich"
+        "Montag - Freitag: 9:00 - 17:00",
+        "Termine nach Vereinbarung"
       ],
       action: null
     }
@@ -107,7 +106,7 @@ export default function Kontakt() {
 
             {/* WhatsApp Integration */}
             <WhatsAppIntegration
-              phone="+4917012345678"
+              phone="+491711415899"
               message="Hallo Herr Messerschmidt, ich habe eine Frage zum Gutachten."
             />
           </div>
@@ -122,22 +121,25 @@ export default function Kontakt() {
                 Standort
               </CardTitle>
               <CardDescription>
-                Mein Büro befindet sich in zentraler Lage in Musterstadt
+                Mein Büro befindet sich in Wuppertal, Alt-Wolfshahn 12
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-gray-100 rounded-lg h-64 flex items-center justify-center">
-                <div className="text-center text-gray-500">
-                  <MapPin className="h-12 w-12 mx-auto mb-4" />
-                  <p className="text-lg font-semibold">Karte wird geladen...</p>
-                  <p className="text-sm">
-                    In der finalen Version wird hier eine interaktive Karte angezeigt
-                  </p>
-                </div>
+              <div className="w-full h-64 rounded-lg overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2482.123456789!2d7.123456789!3d51.123456789!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTHCsDA3JzI0LjQiTiA3wrAwNyc0Mi4wIkU!5e0!3m2!1sde!2sde!4v1234567890123!5m2!1sde!2sde"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Dirk Messerschmidt - Alt-Wolfshahn 12, 42117 Wuppertal"
+                ></iframe>
               </div>
               <div className="mt-4 text-center">
                 <a
-                  href="https://maps.google.com/?q=Musterstraße+123,+12345+Musterstadt"
+                  href="https://maps.google.com/?q=Alt-Wolfshahn+12,+42117+Wuppertal"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:text-blue-800 font-medium"

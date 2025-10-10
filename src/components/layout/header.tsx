@@ -10,7 +10,7 @@ export function Header() {
 
   const navigation = [
     { name: "Startseite", href: "/" },
-    { name: "Über mich", href: "/ueber-mich" },
+    { name: "Gutachten", href: "/gutachten" },
     { name: "Leistungen", href: "/leistungen" },
     { name: "Ablauf", href: "/ablauf" },
     { name: "Kontakt", href: "/kontakt" },
@@ -24,20 +24,24 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">DM</span>
+              {/* Logo */}
+              <div className="flex items-center">
+                <Link href="/" className="flex items-center space-x-2">
+                  <div className="h-12 w-12 flex items-center justify-center">
+                    <img 
+                      src="/logo.svg" 
+                      alt="Dirk Messerschmidt Logo" 
+                      className="h-10 w-10"
+                    />
+                  </div>
+                  <div className="hidden sm:block">
+                    <h1 className="text-xl font-bold text-gray-900">
+                      Dirk Messerschmidt
+                    </h1>
+                    <p className="text-sm text-gray-600">Sachverständiger</p>
+                  </div>
+                </Link>
               </div>
-              <div className="hidden sm:block">
-                <h1 className="text-xl font-bold text-gray-900">
-                  Dirk Messerschmidt
-                </h1>
-                <p className="text-sm text-gray-600">Sachverständiger</p>
-              </div>
-            </Link>
-          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

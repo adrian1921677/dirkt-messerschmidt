@@ -24,28 +24,6 @@ export default function Home() {
     }
   ];
 
-  const processSteps = [
-    {
-      step: "1",
-      title: "Anfrage",
-      description: "Kontaktieren Sie mich mit Ihrem Anliegen"
-    },
-    {
-      step: "2", 
-      title: "Prüfung",
-      description: "Ich prüfe Ihre Anfrage und erstelle ein Angebot"
-    },
-    {
-      step: "3",
-      title: "Termin",
-      description: "Vereinbaren Sie einen passenden Termin"
-    },
-    {
-      step: "4",
-      title: "Gutachten",
-      description: "Erstellung des professionellen Gutachtens"
-    }
-  ];
 
   return (
     <div className="min-h-screen">
@@ -64,10 +42,10 @@ export default function Home() {
               Professionelle Gutachten
               <span className="text-blue-600 block">mit höchster Qualität</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Über 15 Jahre Erfahrung in der Erstellung von technischen Gutachten, 
-              Schadensbewertungen und Qualitätsanalysen. Vertrauen Sie auf Expertise und Präzision.
-            </p>
+                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                  Über 30 Jahre Erfahrung in der Erstellung von technischen Gutachten, 
+                  Schadensbewertungen und Qualitätsanalysen. Vertrauen Sie auf Expertise und Präzision.
+                </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6">
                 <Link href="/termin-anfragen">
@@ -115,34 +93,60 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Process Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              So funktioniert&apos;s
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Ein einfacher und transparenter Prozess von der Anfrage bis zum fertigen Gutachten
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {processSteps.map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                  {step.step}
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-gray-600">
-                  {step.description}
+          {/* Location Section */}
+          <section className="py-20 bg-gray-50">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                  Unser Standort
+                </h2>
+                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                  Besuchen Sie uns in Wuppertal für eine persönliche Beratung
                 </p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                  <div className="h-96">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2482.123456789!2d7.123456789!3d51.123456789!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTHCsDA3JzI0LjQiTiA3wrAwNyc0Mi4wIkU!5e0!3m2!1sde!2sde!4v1234567890123!5m2!1sde!2sde"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Dirk Messerschmidt - Alt-Wolfshahn 12, 42117 Wuppertal"
+                    ></iframe>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      Dirk Messerschmidt
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      Alt-Wolfshahn 12<br />
+                      42117 Wuppertal
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <a
+                        href="tel:+49202423110"
+                        className="text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        📞 0202 / 423 110
+                      </a>
+                      <a
+                        href="https://www.messerschmidt.eu"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        🌐 www.messerschmidt.eu
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
       {/* Trust Section */}
       <section className="py-20 bg-white">
@@ -167,8 +171,8 @@ export default function Home() {
               <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Clock className="h-8 w-8" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">15+</h3>
-              <p className="text-gray-600">Jahre Erfahrung</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">30+</h3>
+                  <p className="text-gray-600">Jahre Erfahrung</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <style>
+      .ink { fill: #0B1E35; }
+      .stroke { stroke: #0B1E35; stroke-width: 20; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    </style>
+  </defs>
+  <!-- Outer ring (open at lower-right to accommodate magnifier handle) -->
+  <path class="stroke" d="M402,110a200,200 0 1 0 -52,322" />
+  <!-- Simplified car silhouette inside the ring -->
+  <path class="ink" d="M112 286c7-31 34-57 72-67l60-15c11-3 22-4 33-4h23c19 0 38 5 54 15l22 13c9 6 14 16 14 27v52c0 13-11 24-24 24H150c-23 0-42-19-42-45v0z"/>
+  <!-- Headlights cutouts -->
+  <path d="M168 305h50c7 0 12 5 12 12s-5 12-12 12h-44c-9 0-15-9-6-16l0-1z" fill="#fff" opacity="0.95"/>
+  <rect x="314" y="305" width="52" height="22" rx="10" ry="10" fill="#fff" opacity="0.95"/>
+  <!-- Magnifier lens overlapping the car (ring + inner knock-out) -->
+  <circle cx="352" cy="344" r="64" class="stroke"/>
+  <circle cx="352" cy="344" r="44" fill="none"/>
+  <!-- Handle -->
+  <path class="stroke" d="M402 394 L462 454"/>
+</svg>
