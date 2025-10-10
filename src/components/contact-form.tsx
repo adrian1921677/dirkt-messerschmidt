@@ -54,20 +54,19 @@ export function ContactForm() {
     setSubmitStatus('idle')
 
     try {
-      const formData = new FormData()
-      formData.append('name', data.name)
-      formData.append('email', data.email)
-      formData.append('phone', data.phone || '')
-      formData.append('message', data.message)
-      formData.append('consent', data.consent.toString())
-      
-      files.forEach((file, index) => {
-        formData.append(`file_${index}`, file)
-      })
-
       const response = await fetch('/api/contact', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone || '',
+          message: data.message,
+          consent: data.consent,
+          files: files.map(file => file.name) // For now, just send filenames
+        })
       })
 
       if (response.ok) {
