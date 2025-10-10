@@ -55,7 +55,7 @@ export function Header() {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <Button asChild size="sm">
-              <Link href="/terminanfrage">
+              <Link href="/termin-anfragen">
                 Termin anfragen
               </Link>
             </Button>
@@ -100,7 +100,7 @@ export function Header() {
               ))}
               <div className="pt-4 space-y-2">
                 <Button asChild className="w-full">
-                  <Link href="/terminanfrage">
+                  <Link href="/termin-anfragen">
                     Termin anfragen
                   </Link>
                 </Button>
