@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { signIn, getSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -22,6 +24,7 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const router = useRouter();
 
   const {
     register,
@@ -36,17 +39,25 @@ export default function AdminLoginPage() {
     setError('');
     
     try {
-      // Hier würde die Authentifizierung stattfinden
-      console.log('Admin login attempt:', data);
-      
-      // Simuliere Login
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Für Demo-Zwecke: Weiterleitung zum Dashboard
-      window.location.href = '/admin/dashboard';
-      
+      const result = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError('Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Daten.');
+      } else if (result?.ok) {
+        // Prüfe die Session um sicherzustellen, dass der User Admin ist
+        const session = await getSession();
+        if (session?.user && (session.user as { role?: string }).role === 'ADMIN') {
+          router.push('/admin/dashboard');
+        } else {
+          setError('Sie haben keine Admin-Berechtigung.');
+        }
+      }
     } catch (err) {
-      setError('Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Daten.');
+      setError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.');
     } finally {
       setIsLoading(false);
     }

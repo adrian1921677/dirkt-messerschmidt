@@ -1,5 +1,6 @@
-// Simplified auth configuration for now
-// This will be implemented when the database is set up
+// Vereinfachte Auth-Konfiguration für den Build
+// In Produktion würde hier die vollständige NextAuth-Konfiguration stehen
+
 export const authOptions = {
   providers: [],
   callbacks: {
@@ -15,4 +16,5 @@ export const authOptions = {
   session: {
     strategy: "jwt" as const,
   },
+  secret: process.env.NEXTAUTH_SECRET,
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { sendBookingNotificationToAdmin } from '@/lib/email';
 
 const bookingSchema = z.object({
   clientName: z.string().min(2),
@@ -25,8 +26,25 @@ export async function POST(request: NextRequest) {
     // Simuliere Verarbeitungszeit
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Hier würde eine E-Mail-Benachrichtigung an den Admin gesendet werden
-    // Hier würde eine Bestätigungs-E-Mail an den Kunden gesendet werden
+    // E-Mail-Benachrichtigung an Admin senden
+    try {
+      const adminEmail = process.env.ADMIN_EMAIL || 'admin@dirk-messerschmidt.de';
+      const selectedDate = new Date(validatedData.selectedDate);
+      
+      await sendBookingNotificationToAdmin(adminEmail, {
+        clientName: validatedData.clientName,
+        clientEmail: validatedData.clientEmail,
+        clientPhone: validatedData.clientPhone,
+        date: selectedDate.toLocaleDateString('de-DE'),
+        time: '09:00 - 10:00', // Mock-Zeit, später aus Datenbank
+        message: validatedData.message,
+      });
+      
+      console.log('Admin-Benachrichtigung gesendet');
+    } catch (emailError) {
+      console.error('Fehler beim Senden der Admin-Benachrichtigung:', emailError);
+      // E-Mail-Fehler sollten die Buchung nicht blockieren
+    }
     
     return NextResponse.json(
       { 

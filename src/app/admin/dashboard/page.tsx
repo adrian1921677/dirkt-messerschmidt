@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { format, addDays, subDays, startOfWeek, endOfWeek, isSameDay } from 'date-fns';
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { format, addDays, startOfWeek, endOfWeek } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { 
   Calendar, 
@@ -13,8 +15,6 @@ import {
   Plus,
   Settings,
   LogOut,
-  ChevronLeft,
-  ChevronRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -51,11 +51,26 @@ interface TimeSlot {
 }
 
 export default function AdminDashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [activeTab, setActiveTab] = useState<'calendar' | 'bookings' | 'slots'>('calendar');
+
+  // Prüfe Authentifizierung
+  useEffect(() => {
+    if (status === 'loading') return; // Warte auf Session-Loading
+    
+    if (!session || (session.user as { role?: string })?.role !== 'ADMIN') {
+      router.push('/admin/login');
+    }
+  }, [session, status, router]);
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/admin/login' });
+  };
 
   // Mock-Daten (später durch API ersetzen)
   useEffect(() => {
@@ -130,6 +145,18 @@ export default function AdminDashboard() {
     setTimeSlots(mockTimeSlots);
   }, []);
 
+  // Loading-Anzeige während Session-Check
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Wird geladen...</p>
+        </div>
+      </div>
+    );
+  }
+
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
   const weekEnd = endOfWeek(currentWeek, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
@@ -202,11 +229,14 @@ export default function AdminDashboard() {
             </div>
             
             <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">
+                Angemeldet als: {session?.user?.name || session?.user?.email}
+              </span>
               <Button variant="outline" size="sm">
                 <Settings className="h-4 w-4 mr-2" />
                 Einstellungen
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleLogout}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Abmelden
               </Button>
