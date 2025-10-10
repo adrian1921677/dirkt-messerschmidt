@@ -12,6 +12,7 @@ interface QRCodeAnimationProps {
 export function QRCodeAnimation({ qrCodePath, delay = 2000 }: QRCodeAnimationProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
+  const [isHiding, setIsHiding] = useState(false);
 
   useEffect(() => {
     // QR-Code erscheint nach der angegebenen Verzögerung
@@ -24,9 +25,20 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000 }: QRCodeAnimationPro
       setShowArrow(true);
     }, delay + 1000);
 
+    // Animation verschwindet nach 8 Sekunden
+    const hideTimer = setTimeout(() => {
+      setIsHiding(true);
+      // Nach der Hide-Animation komplett entfernen
+      setTimeout(() => {
+        setIsVisible(false);
+        setShowArrow(false);
+      }, 1000); // 1 Sekunde für die Hide-Animation
+    }, delay + 8000);
+
     return () => {
       clearTimeout(qrTimer);
       clearTimeout(arrowTimer);
+      clearTimeout(hideTimer);
     };
   }, [delay]);
 
@@ -35,9 +47,11 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000 }: QRCodeAnimationPro
       {/* QR-Code Container */}
       <div 
         className={`transition-all duration-1000 ease-out ${
-          isVisible 
-            ? 'translate-x-0 opacity-100' 
-            : '-translate-x-full opacity-0'
+          isHiding
+            ? '-translate-x-full opacity-0'
+            : isVisible 
+              ? 'translate-x-0 opacity-100' 
+              : '-translate-x-full opacity-0'
         }`}
       >
         <div className="relative bg-white rounded-2xl shadow-2xl p-4 border-2 border-blue-200">
@@ -62,9 +76,11 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000 }: QRCodeAnimationPro
       {/* Pfeil mit "Scan me" Text */}
       <div 
         className={`absolute left-40 top-1/2 transform -translate-y-1/2 transition-all duration-500 ${
-          showArrow 
-            ? 'translate-x-0 opacity-100' 
-            : 'translate-x-4 opacity-0'
+          isHiding
+            ? 'translate-x-4 opacity-0'
+            : showArrow 
+              ? 'translate-x-0 opacity-100' 
+              : 'translate-x-4 opacity-0'
         }`}
       >
         <div className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg">
