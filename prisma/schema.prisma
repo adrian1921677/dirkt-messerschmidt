@@ -12,3 +12,108 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      UserRole @default(CLIENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  bookings        Booking[]
+  auditLogs       AuditLog[]
+  managedSlots    TimeSlot[] @relation("SlotManager")
+
+  @@map("users")
+}
+
+model TimeSlot {
+  id          String      @id @default(cuid())
+  date        DateTime    @db.Date
+  startTime   String      @db.Time
+  endTime     String      @db.Time
+  status      SlotStatus  @default(HIDDEN)
+  isHoliday   Boolean     @default(false)
+  isWeekend   Boolean     @default(false)
+  maxBookings Int         @default(1)
+  currentBookings Int     @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  managerId String?
+  manager   User?    @relation("SlotManager", fields: [managerId], references: [id])
+  bookings  Booking[]
+
+  @@unique([date, startTime])
+  @@map("time_slots")
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  clientName  String
+  clientEmail String
+  clientPhone String?
+  message     String?
+  status      BookingStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  timeSlotId String
+  timeSlot  TimeSlot  @relation(fields: [timeSlotId], references: [id])
+
+  @@map("bookings")
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  fileName  String?
+  fileUrl   String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contact_messages")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  details   Json?
+  createdAt DateTime @default(now())
+
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  CLIENT
+}
+
+enum SlotStatus {
+  HIDDEN
+  PUBLISHED
+  BOOKED
+  CANCELLED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  DECLINED
+  CANCELLED
+}

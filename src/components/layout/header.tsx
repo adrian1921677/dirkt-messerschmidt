@@ -57,7 +57,7 @@ export function Header() {
               </Link>
             </Button>
             <Button asChild size="sm">
-              <Link href="/termin-anfragen">
+              <Link href="/terminanfrage">
                 Termin anfragen
               </Link>
             </Button>
@@ -101,7 +101,7 @@ export function Header() {
                   </Link>
                 </Button>
                 <Button asChild className="w-full">
-                  <Link href="/termin-anfragen">
+                  <Link href="/terminanfrage">
                     Termin anfragen
                   </Link>
                 </Button>
