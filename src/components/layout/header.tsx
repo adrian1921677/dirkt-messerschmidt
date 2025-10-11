@@ -1,12 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const navigation = [
     { name: "Startseite", href: "/" },
@@ -17,8 +18,12 @@ export function Header() {
   ]
 
   // Admin-Link (in Produktion würde hier eine Authentifizierung stattfinden)
-  const isAdmin = typeof window !== 'undefined' && 
-    (window.location.hostname === 'localhost' || window.location.hostname.includes('admin'))
+  useEffect(() => {
+    setIsAdmin(
+      typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname.includes('admin'))
+    )
+  }, [])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
