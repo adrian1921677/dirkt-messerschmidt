@@ -50,7 +50,6 @@ interface TimeSlot {
   startTime: string;
   endTime: string;
   status: 'HIDDEN' | 'PUBLISHED' | 'BOOKED' | 'CANCELLED';
-  isOpen: boolean;
   isHoliday: boolean;
   isWeekend: boolean;
   maxBookings: number;
@@ -349,7 +348,7 @@ export default function AdminDashboard() {
       if (response.ok) {
         const updatedSlots = timeSlots.map(slot => 
           slot.id === slotId 
-            ? { ...slot, isOpen: false }
+            ? { ...slot, status: 'HIDDEN' as const }
             : slot
         );
         setTimeSlots(updatedSlots);
@@ -893,9 +892,9 @@ export default function AdminDashboard() {
                             variant="outline"
                             onClick={() => handleHideSlot(slot.id)}
                             className="text-xs px-2 py-1 h-7 border-yellow-300 text-yellow-600 hover:bg-yellow-50"
-                            disabled={!slot.isOpen}
+                            disabled={slot.status === 'HIDDEN'}
                           >
-                            {slot.isOpen ? 'Verstecken' : 'Versteckt'}
+                            {slot.status === 'HIDDEN' ? 'Versteckt' : 'Verstecken'}
                           </Button>
                           <Button
                             size="sm"

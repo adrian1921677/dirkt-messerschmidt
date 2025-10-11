@@ -32,17 +32,16 @@ export async function PATCH(
       );
     }
 
-    // Soft-Delete: Slot verstecken (isOpen = false)
+    // Soft-Delete: Slot verstecken (status = HIDDEN)
     const updatedSlot = await prisma.timeSlot.update({
       where: { id: slotId },
-      data: { isOpen: false },
+      data: { status: 'HIDDEN' },
       select: {
         id: true,
         date: true,
         startTime: true,
         endTime: true,
         status: true,
-        isOpen: true,
         maxBookings: true,
         currentBookings: true
       }
