@@ -29,17 +29,21 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-blue-400" />
-                <span className="text-gray-400">+49 170 12345678</span>
+                <div className="text-gray-400">
+                  <div>0202 / 423 110</div>
+                  <div>0171 / 14 15 899</div>
+                  <div>0171 / 3500 856</div>
+                </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-blue-400" />
-                <span className="text-gray-400">info@gutachter-messerschmidt.de</span>
+                <span className="text-gray-400">www.messerschmidt.eu</span>
               </div>
               <div className="flex items-start space-x-3">
                 <MapPin className="h-5 w-5 text-blue-400 mt-0.5" />
                 <span className="text-gray-400">
-                  Musterstraße 123<br />
-                  12345 Musterstadt
+                  Alt-Wolfshahn 12<br />
+                  42117 Wuppertal
                 </span>
               </div>
             </div>
@@ -49,8 +53,11 @@ export function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Navigation</h4>
             <nav className="space-y-2">
-              <Link href="/ueber-mich" className="block text-gray-400 hover:text-white transition-colors">
-                Über mich
+              <Link href="/" className="block text-gray-400 hover:text-white transition-colors">
+                Startseite
+              </Link>
+              <Link href="/gutachten" className="block text-gray-400 hover:text-white transition-colors">
+                Gutachten
               </Link>
               <Link href="/leistungen" className="block text-gray-400 hover:text-white transition-colors">
                 Leistungen
