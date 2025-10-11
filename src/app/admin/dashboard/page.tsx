@@ -296,23 +296,35 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleSlotToggle = (slotId: string) => {
-    const updatedSlots = timeSlots.map(slot => 
-      slot.id === slotId 
-        ? { 
-            ...slot, 
-            status: (slot.status === 'PUBLISHED' ? 'HIDDEN' : 'PUBLISHED') as 'PUBLISHED' | 'HIDDEN' | 'BOOKED' | 'CANCELLED'
-          }
-        : slot
-    );
-    
-    setTimeSlots(updatedSlots);
-    
-    // Speichere aktualisierte Slots im localStorage
-    localStorage.setItem('adminTimeSlots', JSON.stringify(updatedSlots.map(slot => ({
-      ...slot,
-      date: slot.date.toISOString(),
-    }))));
+  const handleSlotToggle = async (slotId: string) => {
+    try {
+      const slot = timeSlots.find(s => s.id === slotId);
+      if (!slot) return;
+
+      const newStatus = slot.status === 'PUBLISHED' ? 'HIDDEN' : 'PUBLISHED';
+      
+      const response = await fetch(`/api/admin/slots/${slotId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (response.ok) {
+        const updatedSlots = timeSlots.map(s => 
+          s.id === slotId 
+            ? { ...s, status: newStatus as 'PUBLISHED' | 'HIDDEN' | 'BOOKED' | 'CANCELLED' }
+            : s
+        );
+        
+        setTimeSlots(updatedSlots);
+      } else {
+        const errorData = await response.json();
+        alert(`Fehler: ${errorData.error}`);
+      }
+    } catch (error) {
+      console.error('Fehler beim Umschalten des Slots:', error);
+      alert('Fehler beim Umschalten des Slots');
+    }
   };
 
   const handleEditSlot = (slot: TimeSlot) => {
@@ -323,10 +335,19 @@ export default function AdminDashboard() {
   const handleDeleteSlot = async (slotId: string) => {
     if (confirm('Möchten Sie diesen Slot wirklich löschen?')) {
       try {
-        // TODO: Implementiere Slot-Löschung über API
-        const updatedSlots = timeSlots.filter(slot => slot.id !== slotId);
-        setTimeSlots(updatedSlots);
-        alert('Slot erfolgreich gelöscht');
+        const response = await fetch(`/api/admin/slots/${slotId}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+          const updatedSlots = timeSlots.filter(slot => slot.id !== slotId);
+          setTimeSlots(updatedSlots);
+          alert('Slot erfolgreich gelöscht');
+        } else {
+          const errorData = await response.json();
+          alert(`Fehler: ${errorData.error}`);
+        }
       } catch (error) {
         console.error('Fehler beim Löschen des Slots:', error);
         alert('Fehler beim Löschen des Slots');
@@ -355,38 +376,96 @@ export default function AdminDashboard() {
   };
 
   // Alle Slots eines Tages umschalten
-  const handleToggleAllSlotsForDate = (date: string, slots: TimeSlot[]) => {
-    const allPublished = slots.every(slot => slot.status === 'PUBLISHED');
-    const newStatus = allPublished ? 'HIDDEN' : 'PUBLISHED';
-    
-    const updatedSlots = timeSlots.map(slot => {
-      const slotDate = format(slot.date, 'yyyy-MM-dd');
-      if (slotDate === date) {
-        return { ...slot, status: newStatus as 'PUBLISHED' | 'HIDDEN' | 'BOOKED' | 'CANCELLED' };
+  const handleToggleAllSlotsForDate = async (date: string, slots: TimeSlot[]) => {
+    try {
+      const allPublished = slots.every(slot => slot.status === 'PUBLISHED');
+      const newStatus = allPublished ? 'HIDDEN' : 'PUBLISHED';
+      
+      let successCount = 0;
+      let errorCount = 0;
+
+      // Aktualisiere jeden Slot einzeln über die API
+      for (const slot of slots) {
+        try {
+          const response = await fetch(`/api/admin/slots/${slot.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+          });
+
+          if (response.ok) {
+            successCount++;
+          } else {
+            errorCount++;
+          }
+        } catch (error) {
+          errorCount++;
+        }
       }
-      return slot;
-    });
-    
-    setTimeSlots(updatedSlots);
-    
-    // Speichere aktualisierte Slots im localStorage
-    localStorage.setItem('adminTimeSlots', JSON.stringify(updatedSlots.map(slot => ({
-      ...slot,
-      date: slot.date.toISOString(),
-    }))));
+
+      if (successCount > 0) {
+        // Aktualisiere lokalen State
+        const updatedSlots = timeSlots.map(slot => {
+          const slotDate = format(slot.date, 'yyyy-MM-dd');
+          if (slotDate === date) {
+            return { ...slot, status: newStatus as 'PUBLISHED' | 'HIDDEN' | 'BOOKED' | 'CANCELLED' };
+          }
+          return slot;
+        });
+        
+        setTimeSlots(updatedSlots);
+      }
+
+      if (errorCount > 0) {
+        alert(`${successCount} Slots aktualisiert, ${errorCount} Fehler aufgetreten`);
+      } else {
+        alert(`${successCount} Slots erfolgreich aktualisiert`);
+      }
+    } catch (error) {
+      console.error('Fehler beim Umschalten der Slots:', error);
+      alert('Fehler beim Umschalten der Slots');
+    }
   };
 
   // Alle Slots eines Tages löschen
   const handleDeleteAllSlotsForDate = async (date: string, slots: TimeSlot[]) => {
     if (confirm(`Möchten Sie alle ${slots.length} Slots für ${format(new Date(date), 'dd.MM.yyyy')} wirklich löschen?`)) {
       try {
-        // TODO: Implementiere Slot-Löschung über API
-        const updatedSlots = timeSlots.filter(slot => {
-          const slotDate = format(slot.date, 'yyyy-MM-dd');
-          return slotDate !== date;
-        });
-        setTimeSlots(updatedSlots);
-        alert(`${slots.length} Slots erfolgreich gelöscht`);
+        let deletedCount = 0;
+        let errorCount = 0;
+
+        // Lösche jeden Slot einzeln über die API
+        for (const slot of slots) {
+          try {
+            const response = await fetch(`/api/admin/slots/${slot.id}`, {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+              deletedCount++;
+            } else {
+              errorCount++;
+            }
+          } catch (error) {
+            errorCount++;
+          }
+        }
+
+        if (deletedCount > 0) {
+          // Aktualisiere lokalen State
+          const updatedSlots = timeSlots.filter(slot => {
+            const slotDate = format(slot.date, 'yyyy-MM-dd');
+            return slotDate !== date;
+          });
+          setTimeSlots(updatedSlots);
+        }
+
+        if (errorCount > 0) {
+          alert(`${deletedCount} Slots gelöscht, ${errorCount} Fehler aufgetreten`);
+        } else {
+          alert(`${deletedCount} Slots erfolgreich gelöscht`);
+        }
       } catch (error) {
         console.error('Fehler beim Löschen der Slots:', error);
         alert('Fehler beim Löschen der Slots');
