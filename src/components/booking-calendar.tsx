@@ -134,7 +134,7 @@ export function BookingCalendar({
       {/* Wochentage Header */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'].map((day) => (
-          <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
+          <div key={day} className="w-10 h-10 flex items-center justify-center text-sm font-medium text-gray-500">
             {day}
           </div>
         ))}
