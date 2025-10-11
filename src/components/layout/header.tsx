@@ -19,22 +19,22 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">
+        <div className="flex h-24 items-center justify-between">
               {/* Logo */}
               <div className="flex items-center">
-                <Link href="/" className="flex items-center space-x-3">
-                  <div className="h-16 w-16 flex items-center justify-center">
+                <Link href="/" className="flex items-center space-x-4">
+                  <div className="h-20 w-20 flex items-center justify-center">
                     <img 
                       src="/logo.svg" 
                       alt="Dirk Messerschmidt Logo" 
-                      className="h-14 w-14"
+                      className="h-18 w-18"
                     />
                   </div>
                   <div className="hidden sm:block">
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <h1 className="text-3xl font-bold text-gray-900">
                       Dirk Messerschmidt
                     </h1>
-                    <p className="text-base text-gray-600">Sachverständiger</p>
+                    <p className="text-lg text-gray-600">Sachverständiger</p>
                   </div>
                 </Link>
               </div>
