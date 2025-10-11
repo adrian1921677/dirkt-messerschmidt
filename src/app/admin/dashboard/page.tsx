@@ -346,6 +346,7 @@ export default function AdminDashboard() {
           alert('Slot erfolgreich gelöscht');
         } else {
           const errorData = await response.json();
+          console.error('API Fehler:', errorData);
           alert(`Fehler: ${errorData.error}`);
         }
       } catch (error) {
@@ -437,6 +438,7 @@ export default function AdminDashboard() {
         // Lösche jeden Slot einzeln über die API
         for (const slot of slots) {
           try {
+            console.log(`Lösche Slot ${slot.id}...`);
             const response = await fetch(`/api/admin/slots/${slot.id}`, {
               method: 'DELETE',
               headers: { 'Content-Type': 'application/json' }
@@ -444,10 +446,14 @@ export default function AdminDashboard() {
 
             if (response.ok) {
               deletedCount++;
+              console.log(`Slot ${slot.id} erfolgreich gelöscht`);
             } else {
+              const errorData = await response.json();
+              console.error(`Fehler beim Löschen von Slot ${slot.id}:`, errorData);
               errorCount++;
             }
           } catch (error) {
+            console.error(`Fehler beim Löschen von Slot ${slot.id}:`, error);
             errorCount++;
           }
         }

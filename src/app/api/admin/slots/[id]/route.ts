@@ -28,14 +28,18 @@ export async function DELETE(
     });
 
     if (!existingSlot) {
+      console.log(`Slot ${slotId} nicht gefunden`);
       return NextResponse.json(
         { error: 'Slot nicht gefunden' },
         { status: 404 }
       );
     }
 
+    console.log(`Slot ${slotId} gefunden, Status: ${existingSlot.status}, Buchungen: ${existingSlot.bookings.length}`);
+
     // Prüfe ob Slot bereits gebucht ist
     if (existingSlot.bookings.length > 0) {
+      console.log(`Slot ${slotId} hat ${existingSlot.bookings.length} Buchungen, kann nicht gelöscht werden`);
       return NextResponse.json(
         { error: 'Slot kann nicht gelöscht werden, da bereits Buchungen vorhanden sind' },
         { status: 400 }
