@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { AuthSessionProvider } from "@/components/providers/session-provider";
+import { QRCodeAnimation } from "@/components/qr-code-animation";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,6 +38,8 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          {/* Globaler QR-Code - sichtbar auf allen Seiten */}
+          <QRCodeAnimation qrCodePath="/qr-code.png" isGlobal={true} delay={3000} />
         </AuthSessionProvider>
       </body>
     </html>

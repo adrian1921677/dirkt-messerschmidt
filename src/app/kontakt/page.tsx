@@ -1,7 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContactForm } from "@/components/contact-form";
 import { WhatsAppIntegration } from "@/components/whatsapp-integration";
-import { QRCodeAnimation } from "@/components/qr-code-animation";
 import { MapPin, Phone, Clock, MessageCircle, Globe } from "lucide-react";
 
 export default function Kontakt() {
@@ -9,7 +8,7 @@ export default function Kontakt() {
     {
       icon: <Phone className="h-6 w-6 text-blue-600" />,
       title: "Telefon",
-          details: ["0202 / 423 110", "0171 / 14 15 899"],
+          details: ["0202 / 423 110"],
       action: "tel:+49202423110"
     },
     {
@@ -107,20 +106,25 @@ export default function Kontakt() {
 
             {/* WhatsApp Integration */}
             <WhatsAppIntegration
-              phone="+491711415899"
+              phone="+49202423110"
               message="Hallo Herr Messerschmidt, ich habe eine Frage zum Gutachten."
             />
 
-                {/* QR Code Animation */}
+                {/* QR Code */}
                 <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <MessageCircle className="h-6 w-6 mr-2 text-blue-600" />
-                      QR-Code
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <QRCodeAnimation qrCodePath="/qr-code.png" isFloatingAnimation={false} />
+                  <CardContent className="p-6">
+                    <div className="flex justify-center">
+                      <div className="relative w-48 h-48 bg-white p-4 rounded-lg shadow-lg border-2 border-blue-200">
+                        <img
+                          src="/qr-code.png"
+                          alt="WhatsApp QR-Code"
+                          className="w-full h-full object-contain"
+                        />
+                        <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-2 shadow-lg">
+                          <MessageCircle className="h-4 w-4 text-white" />
+                        </div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
           </div>

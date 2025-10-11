@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { QRCodeAnimation } from "@/components/qr-code-animation";
 import { CheckCircle, Award, Clock, Users, FileText, Shield } from "lucide-react";
 
 export default function Home() {
@@ -27,9 +26,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* QR-Code Animation */}
-      <QRCodeAnimation qrCodePath="/qr-code.png" delay={3000} />
-      
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-50 to-white py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

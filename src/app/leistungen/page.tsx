@@ -90,7 +90,7 @@ export default function Leistungen() {
         {/* Contact Banner */}
         <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-8 text-center text-white mb-16">
           <h2 className="text-2xl font-bold mb-4">
-            Service und Termine unter: 0171 14 15 899
+            Service und Termine unter: 0202 / 423 110
           </h2>
           <p className="text-lg mb-6">
             Gerne auch per SMS oder Whatsapp

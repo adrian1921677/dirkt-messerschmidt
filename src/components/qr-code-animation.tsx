@@ -7,16 +7,16 @@ import Image from 'next/image';
 interface QRCodeAnimationProps {
   qrCodePath: string;
   delay?: number;
-  isFloatingAnimation?: boolean;
+  isGlobal?: boolean;
 }
 
-export function QRCodeAnimation({ qrCodePath, delay = 2000, isFloatingAnimation = true }: QRCodeAnimationProps) {
+export function QRCodeAnimation({ qrCodePath, delay = 2000, isGlobal = false }: QRCodeAnimationProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {
-    if (isFloatingAnimation && !hasAnimated) {
+    if (isGlobal && !hasAnimated) {
       // QR-Code erscheint nach der angegebenen Verzögerung
       const qrTimer = setTimeout(() => {
         setIsVisible(true);
@@ -32,15 +32,15 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000, isFloatingAnimation 
         clearTimeout(qrTimer);
         clearTimeout(arrowTimer);
       };
-    } else if (!isFloatingAnimation) {
-      // If not floating animation, it's always visible
+    } else if (!isGlobal) {
+      // If not global, it's always visible
       setIsVisible(true);
       setShowArrow(true);
     }
-  }, [delay, isFloatingAnimation, hasAnimated]);
+  }, [delay, isGlobal, hasAnimated]);
 
-  const containerClasses = isFloatingAnimation 
-    ? "fixed left-0 top-1/2 transform -translate-y-1/2 z-50 pointer-events-none"
+  const containerClasses = isGlobal 
+    ? "fixed bottom-4 left-4 z-50 pointer-events-none"
     : "relative w-full h-auto aspect-square"; // For static display within content flow
 
   return (
@@ -72,8 +72,8 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000, isFloatingAnimation 
         </div>
       </div>
 
-      {/* Pfeil mit "Scan me" Text - nur für floating animation */}
-      {isFloatingAnimation && (
+      {/* Pfeil mit "Scan me" Text - nur für global animation */}
+      {isGlobal && (
         <div 
           className={`absolute left-40 top-1/2 transform -translate-y-1/2 transition-all duration-500 ${
             showArrow 
@@ -93,8 +93,8 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000, isFloatingAnimation 
         </div>
       )}
 
-      {/* Pulsierender Ring um den QR-Code - nur für floating animation */}
-      {isVisible && isFloatingAnimation && (
+      {/* Pulsierender Ring um den QR-Code - nur für global animation */}
+      {isVisible && isGlobal && (
         <div className="absolute inset-0 pointer-events-none">
           <div className="w-40 h-40 border-2 border-blue-400 rounded-2xl animate-ping opacity-20"></div>
         </div>
