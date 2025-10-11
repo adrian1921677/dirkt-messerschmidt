@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContactForm } from "@/components/contact-form";
 import { WhatsAppIntegration } from "@/components/whatsapp-integration";
+import { QRCodeAnimation } from "@/components/qr-code-animation";
 import { MapPin, Phone, Clock, MessageCircle, Globe } from "lucide-react";
 
 export default function Kontakt() {
@@ -109,6 +110,22 @@ export default function Kontakt() {
               phone="+491711415899"
               message="Hallo Herr Messerschmidt, ich habe eine Frage zum Gutachten."
             />
+
+            {/* QR Code Animation */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <MessageCircle className="h-6 w-6 mr-2 text-blue-600" />
+                  QR-Code
+                </CardTitle>
+                <CardDescription>
+                  Scannen Sie den QR-Code für schnellen Kontakt
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <QRCodeAnimation qrCodePath="/qr-code.png" />
+              </CardContent>
+            </Card>
           </div>
         </div>
 
