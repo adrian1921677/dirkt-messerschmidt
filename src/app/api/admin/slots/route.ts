@@ -50,11 +50,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // Authentifizierung prüfen
-    const session = await getServerSession(authOptions);
-    if (!session || (session.user as { role?: string })?.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Für öffentliche Slot-Abfrage keine Authentifizierung erforderlich
 
     const { searchParams } = new URL(request.url);
     const month = searchParams.get('month');

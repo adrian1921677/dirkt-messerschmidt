@@ -20,103 +20,100 @@ export default function TerminanfragePage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Lade verfügbare Slots aus der Datenbank
+  // Lade verfügbare Slots (Mock-Daten für Demo)
   useEffect(() => {
-    const loadAvailableSlots = async () => {
-      try {
-        // Lade Slots für den aktuellen Monat
-        const currentDate = new Date();
-        const response = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`);
-        const data = await response.json();
-        
-        if (data.success && data.slots) {
-          const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
-            ...slot,
-            date: new Date(slot.date),
-          }));
-          
-          // Nur PUBLISHED Slots für Kunden anzeigen
-          const publishedSlots = parsedSlots.filter((slot: TimeSlot) => 
-            slot.status === 'PUBLISHED'
-          );
-          
-          setAvailableSlots(publishedSlots);
-        } else {
-          // Fallback: Mock-Daten wenn keine Slots vorhanden
-          const mockSlots: TimeSlot[] = [
-            {
-              id: 'demo1',
-              date: new Date(2024, 11, 20),
-              startTime: '09:00',
-              endTime: '10:00',
-              status: 'PUBLISHED',
-              isHoliday: false,
-              isWeekend: false,
-              maxBookings: 1,
-              currentBookings: 0,
-            },
-          ];
-          setAvailableSlots(mockSlots);
-        }
-      } catch (error) {
-        console.error('Fehler beim Laden der Slots:', error);
-        // Fallback: Mock-Daten bei Fehler
-        const mockSlots: TimeSlot[] = [
-          {
-            id: 'demo1',
-            date: new Date(2024, 11, 20),
-            startTime: '09:00',
-            endTime: '10:00',
-            status: 'PUBLISHED',
-            isHoliday: false,
-            isWeekend: false,
-            maxBookings: 1,
-            currentBookings: 0,
-          },
-        ];
-        setAvailableSlots(mockSlots);
-      }
+    const loadAvailableSlots = () => {
+      // Mock-Daten für Demo-Zwecke
+      const mockSlots: TimeSlot[] = [
+        {
+          id: 'demo1',
+          date: new Date(2024, 11, 20), // 20. Dezember 2024
+          startTime: '09:00',
+          endTime: '10:00',
+          status: 'PUBLISHED',
+          isHoliday: false,
+          isWeekend: false,
+          maxBookings: 1,
+          currentBookings: 0,
+        },
+        {
+          id: 'demo2',
+          date: new Date(2024, 11, 21), // 21. Dezember 2024
+          startTime: '14:00',
+          endTime: '15:00',
+          status: 'PUBLISHED',
+          isHoliday: false,
+          isWeekend: false,
+          maxBookings: 1,
+          currentBookings: 0,
+        },
+        {
+          id: 'demo3',
+          date: new Date(2024, 11, 22), // 22. Dezember 2024
+          startTime: '10:00',
+          endTime: '11:00',
+          status: 'PUBLISHED',
+          isHoliday: false,
+          isWeekend: false,
+          maxBookings: 1,
+          currentBookings: 0,
+        },
+      ];
+      
+      setAvailableSlots(mockSlots);
+      setToastMessage(`${mockSlots.length} verfügbare Termine geladen`);
+      setTimeout(() => setToastMessage(null), 3000);
     };
 
     loadAvailableSlots();
-    
-    // Lade Slots alle 30 Sekunden neu
-    const interval = setInterval(loadAvailableSlots, 30000);
-    
-    return () => clearInterval(interval);
   }, []);
 
-  const refreshAvailableSlots = async () => {
+  const refreshAvailableSlots = () => {
     setIsRefreshing(true);
-    try {
-      // Lade Slots für den aktuellen Monat
-      const currentDate = new Date();
-      const response = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`);
-      const data = await response.json();
+    
+    // Simuliere Refresh
+    setTimeout(() => {
+      const mockSlots: TimeSlot[] = [
+        {
+          id: 'demo1',
+          date: new Date(2024, 11, 20),
+          startTime: '09:00',
+          endTime: '10:00',
+          status: 'PUBLISHED',
+          isHoliday: false,
+          isWeekend: false,
+          maxBookings: 1,
+          currentBookings: 0,
+        },
+        {
+          id: 'demo2',
+          date: new Date(2024, 11, 21),
+          startTime: '14:00',
+          endTime: '15:00',
+          status: 'PUBLISHED',
+          isHoliday: false,
+          isWeekend: false,
+          maxBookings: 1,
+          currentBookings: 0,
+        },
+        {
+          id: 'demo3',
+          date: new Date(2024, 11, 22),
+          startTime: '10:00',
+          endTime: '11:00',
+          status: 'PUBLISHED',
+          isHoliday: false,
+          isWeekend: false,
+          maxBookings: 1,
+          currentBookings: 0,
+        },
+      ];
       
-      if (data.success && data.slots) {
-        const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
-          ...slot,
-          date: new Date(slot.date),
-        }));
-        
-        // Nur PUBLISHED Slots für Kunden anzeigen
-        const publishedSlots = parsedSlots.filter((slot: TimeSlot) => 
-          slot.status === 'PUBLISHED'
-        );
-        
-        setAvailableSlots(publishedSlots);
-        setToastMessage(`${publishedSlots.length} verfügbare Termine geladen`);
-        setTimeout(() => setToastMessage(null), 3000);
-      } else {
-        // Keine Slots gefunden - stille Behandlung ohne Popup
-        console.log('Keine verfügbaren Slots gefunden');
-      }
-    } catch (error) {
-      console.error('Fehler beim Laden der Slots:', error);
-      // Fehler beim Laden - stille Behandlung ohne Popup
-    }
-    setIsRefreshing(false);
+      setAvailableSlots(mockSlots);
+      setToastMessage(`${mockSlots.length} verfügbare Termine aktualisiert`);
+      setTimeout(() => setToastMessage(null), 3000);
+      setIsRefreshing(false);
+    }, 1000);
   };
 
   const handleDateSelect = (date: Date) => {
@@ -152,7 +149,6 @@ export default function TerminanfragePage() {
         setBookingStep('success');
       } else {
         console.error('Booking failed:', result.message);
-        // Hier würde eine Fehlermeldung angezeigt werden
         alert('Fehler beim Senden der Terminanfrage: ' + result.message);
       }
     } catch (error) {
