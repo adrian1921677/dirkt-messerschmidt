@@ -37,17 +37,35 @@ export async function DELETE(
 
     console.log(`Slot ${slotId} gefunden, Status: ${existingSlot.status}, Buchungen: ${existingSlot.bookings.length}`);
 
-    // Wenn Slot Buchungen hat, storniere sie zuerst
+    // Prüfe ob Slot aktive Buchungen hat
+    const activeBookings = existingSlot.bookings.filter(booking => 
+      booking.status === 'PENDING' || booking.status === 'CONFIRMED'
+    );
+
+    if (activeBookings.length > 0) {
+      console.log(`Slot ${slotId} hat ${activeBookings.length} aktive Buchungen, kann nicht gelöscht werden`);
+      return NextResponse.json(
+        { 
+          error: 'Slot kann nicht gelöscht werden, da aktive Buchungen vorhanden sind',
+          details: `Aktive Buchungen: ${activeBookings.length}`
+        },
+        { status: 409 }
+      );
+    }
+
+    // Wenn Slot nur stornierte Buchungen hat, lösche sie zuerst
     if (existingSlot.bookings.length > 0) {
-      console.log(`Slot ${slotId} hat ${existingSlot.bookings.length} Buchungen, storniere sie zuerst...`);
+      console.log(`Slot ${slotId} hat ${existingSlot.bookings.length} stornierte Buchungen, lösche sie zuerst...`);
       
-      // Storniere alle Buchungen für diesen Slot
-      await prisma.booking.updateMany({
-        where: { timeSlotId: slotId },
-        data: { status: 'CANCELLED' }
+      // Lösche alle stornierten Buchungen für diesen Slot
+      await prisma.booking.deleteMany({
+        where: { 
+          timeSlotId: slotId,
+          status: 'CANCELLED'
+        }
       });
       
-      console.log(`${existingSlot.bookings.length} Buchungen für Slot ${slotId} storniert`);
+      console.log(`Stornierte Buchungen für Slot ${slotId} gelöscht`);
     }
 
     // Lösche den Slot
@@ -60,7 +78,7 @@ export async function DELETE(
     return NextResponse.json({
       success: true,
       message: existingSlot.bookings.length > 0 
-        ? `Slot erfolgreich gelöscht (${existingSlot.bookings.length} Buchungen storniert)`
+        ? `Slot erfolgreich gelöscht (${existingSlot.bookings.length} stornierte Buchungen entfernt)`
         : 'Slot erfolgreich gelöscht'
     });
 

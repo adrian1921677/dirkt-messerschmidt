@@ -347,7 +347,12 @@ export default function AdminDashboard() {
         } else {
           const errorData = await response.json();
           console.error('API Fehler:', errorData);
-          alert(`Fehler: ${errorData.error}`);
+          
+          if (response.status === 409) {
+            alert(`Slot kann nicht gelöscht werden: ${errorData.error}\n\nDetails: ${errorData.details}`);
+          } else {
+            alert(`Fehler: ${errorData.error}`);
+          }
         }
       } catch (error) {
         console.error('Fehler beim Löschen des Slots:', error);
