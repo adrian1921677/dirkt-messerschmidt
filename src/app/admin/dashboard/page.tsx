@@ -334,6 +334,66 @@ export default function AdminDashboard() {
     }
   };
 
+  // Hilfsfunktion: Slots nach Datum gruppieren
+  const groupSlotsByDate = (slots: TimeSlot[]) => {
+    const grouped: { [key: string]: TimeSlot[] } = {};
+    
+    slots.forEach(slot => {
+      const dateKey = format(slot.date, 'yyyy-MM-dd');
+      if (!grouped[dateKey]) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey].push(slot);
+    });
+    
+    // Sortiere Slots innerhalb eines Tages nach Startzeit
+    Object.keys(grouped).forEach(dateKey => {
+      grouped[dateKey].sort((a, b) => a.startTime.localeCompare(b.startTime));
+    });
+    
+    return grouped;
+  };
+
+  // Alle Slots eines Tages umschalten
+  const handleToggleAllSlotsForDate = (date: string, slots: TimeSlot[]) => {
+    const allPublished = slots.every(slot => slot.status === 'PUBLISHED');
+    const newStatus = allPublished ? 'HIDDEN' : 'PUBLISHED';
+    
+    const updatedSlots = timeSlots.map(slot => {
+      const slotDate = format(slot.date, 'yyyy-MM-dd');
+      if (slotDate === date) {
+        return { ...slot, status: newStatus as 'PUBLISHED' | 'HIDDEN' | 'BOOKED' | 'CANCELLED' };
+      }
+      return slot;
+    });
+    
+    setTimeSlots(updatedSlots);
+    
+    // Speichere aktualisierte Slots im localStorage
+    localStorage.setItem('adminTimeSlots', JSON.stringify(updatedSlots.map(slot => ({
+      ...slot,
+      date: slot.date.toISOString(),
+    }))));
+  };
+
+  // Alle Slots eines Tages löschen
+  const handleDeleteAllSlotsForDate = async (date: string, slots: TimeSlot[]) => {
+    if (confirm(`Möchten Sie alle ${slots.length} Slots für ${format(new Date(date), 'dd.MM.yyyy')} wirklich löschen?`)) {
+      try {
+        // TODO: Implementiere Slot-Löschung über API
+        const updatedSlots = timeSlots.filter(slot => {
+          const slotDate = format(slot.date, 'yyyy-MM-dd');
+          return slotDate !== date;
+        });
+        setTimeSlots(updatedSlots);
+        alert(`${slots.length} Slots erfolgreich gelöscht`);
+      } catch (error) {
+        console.error('Fehler beim Löschen der Slots:', error);
+        alert('Fehler beim Löschen der Slots');
+      }
+    }
+  };
+
   const refreshSlots = async () => {
     try {
       // Lade Slots für den aktuellen Monat (ohne Cache)
@@ -614,53 +674,84 @@ export default function AdminDashboard() {
               </Button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {timeSlots.map((slot) => (
-                <Card key={slot.id} className="p-4">
-                  <div className="flex items-center justify-between mb-3">
+            <div className="space-y-6">
+              {Object.entries(groupSlotsByDate(timeSlots)).map(([date, slots]) => (
+                <Card key={date} className="p-6">
+                  <div className="flex items-center justify-between mb-4">
                     <div>
-                      <p className="font-medium text-gray-900">
-                        {format(slot.date, 'dd.MM.yyyy', { locale: de })}
-                      </p>
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {format(new Date(date), 'EEEE, dd. MMMM yyyy', { locale: de })}
+                      </h3>
                       <p className="text-sm text-gray-600">
-                        {slot.startTime} - {slot.endTime}
+                        {slots.length} Termin{slots.length !== 1 ? 'e' : ''} verfügbar
                       </p>
                     </div>
-                    <Badge className={getStatusColor(slot.status)}>
-                      {slot.status}
-                    </Badge>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleToggleAllSlotsForDate(date, slots)}
+                        className="text-xs"
+                      >
+                        {slots.every(slot => slot.status === 'PUBLISHED') ? 'Alle verstecken' : 'Alle freigeben'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDeleteAllSlotsForDate(date, slots)}
+                        className="text-xs border-red-300 text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        Alle löschen
+                      </Button>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">
-                      {slot.currentBookings}/{slot.maxBookings} gebucht
-                    </span>
-                    <div className="flex gap-1">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleSlotToggle(slot.id)}
-                        className="text-xs px-2"
-                      >
-                        {slot.status === 'PUBLISHED' ? 'Verstecken' : 'Freigeben'}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleEditSlot(slot)}
-                        className="text-xs px-2 border-blue-300 text-blue-600 hover:bg-blue-50"
-                      >
-                        <Edit className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleDeleteSlot(slot.id)}
-                        className="text-xs px-2 border-red-300 text-red-600 hover:bg-red-50"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {slots.map((slot) => (
+                      <div key={slot.id} className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <p className="font-medium text-gray-900">
+                              {slot.startTime} - {slot.endTime}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {slot.currentBookings}/{slot.maxBookings} gebucht
+                            </p>
+                          </div>
+                          <Badge className={`text-xs ${getStatusColor(slot.status)}`}>
+                            {slot.status}
+                          </Badge>
+                        </div>
+                        
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleSlotToggle(slot.id)}
+                            className="text-xs px-2 py-1 h-7"
+                          >
+                            {slot.status === 'PUBLISHED' ? 'Verstecken' : 'Freigeben'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEditSlot(slot)}
+                            className="text-xs px-2 py-1 h-7 border-blue-300 text-blue-600 hover:bg-blue-50"
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteSlot(slot.id)}
+                            className="text-xs px-2 py-1 h-7 border-red-300 text-red-600 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </Card>
               ))}
