@@ -1,13 +1,12 @@
 "use client"
 
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isAdmin, setIsAdmin] = useState(false)
 
   const navigation = [
     { name: "Startseite", href: "/" },
@@ -16,14 +15,6 @@ export function Header() {
     { name: "Ablauf", href: "/ablauf" },
     { name: "Kontakt", href: "/kontakt" },
   ]
-
-  // Admin-Link (in Produktion würde hier eine Authentifizierung stattfinden)
-  useEffect(() => {
-    setIsAdmin(
-      typeof window !== 'undefined' && 
-      (window.location.hostname === 'localhost' || window.location.hostname.includes('admin'))
-    )
-  }, [])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
@@ -68,13 +59,6 @@ export function Header() {
                 Termin anfragen
               </Link>
             </Button>
-            {isAdmin && (
-              <Button asChild variant="outline" size="sm">
-                <Link href="/admin/login">
-                  Admin
-                </Link>
-              </Button>
-            )}
           </div>
 
           {/* Mobile menu button */}
@@ -113,13 +97,6 @@ export function Header() {
                     Termin anfragen
                   </Link>
                 </Button>
-                {isAdmin && (
-                  <Button asChild variant="outline" className="w-full">
-                    <Link href="/admin/login">
-                      Admin-Bereich
-                    </Link>
-                  </Button>
-                )}
               </div>
             </div>
           </div>
