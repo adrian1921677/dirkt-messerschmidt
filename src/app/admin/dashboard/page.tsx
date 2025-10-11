@@ -248,6 +248,52 @@ export default function AdminDashboard() {
     }
   };
 
+  const refreshBookings = async () => {
+    try {
+      // Lade Buchungen (ohne Cache)
+      const response = await fetch('/api/admin/bookings', { cache: 'no-store' });
+      const data = await response.json();
+      
+      if (data.bookings) {
+        const parsedBookings = data.bookings.map((booking: {
+          id: string;
+          clientName: string;
+          clientEmail: string;
+          clientPhone?: string;
+          message?: string;
+          status: string;
+          createdAt: string;
+          timeSlot: {
+            id: string;
+            date: string;
+            startTime: string;
+            endTime: string;
+          };
+        }) => ({
+          id: booking.id,
+          clientName: booking.clientName,
+          clientEmail: booking.clientEmail,
+          clientPhone: booking.clientPhone,
+          message: booking.message,
+          status: booking.status,
+          createdAt: new Date(booking.createdAt),
+          timeSlot: {
+            id: booking.timeSlot.id,
+            date: new Date(booking.timeSlot.date),
+            startTime: booking.timeSlot.startTime,
+            endTime: booking.timeSlot.endTime,
+          },
+        }));
+        setBookings(parsedBookings);
+        console.log(`${parsedBookings.length} Buchungen aus der Datenbank geladen!`);
+      } else {
+        console.log('Keine Buchungen in der Datenbank gefunden');
+      }
+    } catch (error) {
+      console.error('Fehler beim Laden der Buchungen:', error);
+    }
+  };
+
   const handleSlotToggle = (slotId: string) => {
     const updatedSlots = timeSlots.map(slot => 
       slot.id === slotId 
@@ -269,9 +315,9 @@ export default function AdminDashboard() {
 
   const refreshSlots = async () => {
     try {
-      // Lade Slots für den aktuellen Monat
+      // Lade Slots für den aktuellen Monat (ohne Cache)
       const currentDate = new Date();
-      const response = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`);
+      const response = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`, { cache: 'no-store' });
       const data = await response.json();
       
       if (data.success && data.slots) {
@@ -455,7 +501,13 @@ export default function AdminDashboard() {
 
         {activeTab === 'bookings' && (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">Buchungsanfragen</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900">Buchungsanfragen</h2>
+              <Button variant="outline" onClick={refreshBookings}>
+                <Clock className="h-4 w-4 mr-2" />
+                Aktualisieren
+              </Button>
+            </div>
             
             <div className="space-y-4">
               {bookings.map((booking) => (
@@ -533,7 +585,13 @@ export default function AdminDashboard() {
 
         {activeTab === 'slots' && (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">Zeitslots verwalten</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900">Zeitslots verwalten</h2>
+              <Button variant="outline" onClick={refreshSlots}>
+                <Clock className="h-4 w-4 mr-2" />
+                Aktualisieren
+              </Button>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {timeSlots.map((slot) => (
