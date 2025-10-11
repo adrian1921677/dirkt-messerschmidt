@@ -43,6 +43,7 @@ export function BookingForm({
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -159,8 +160,10 @@ export function BookingForm({
           <div className="flex items-start space-x-2">
             <Checkbox
               id="dataProtection"
-              {...register('dataProtection')}
               checked={dataProtectionChecked}
+              onCheckedChange={(checked) => {
+                setValue('dataProtection', checked as boolean);
+              }}
             />
             <Label 
               htmlFor="dataProtection" 
