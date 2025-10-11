@@ -3,6 +3,9 @@ import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { sendBookingNotificationToAdmin } from '@/lib/email';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const bookingSchema = z.object({
   clientName: z.string().min(2),
   clientEmail: z.string().email(),

@@ -4,6 +4,9 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const updateBookingSchema = z.object({
   bookingId: z.string(),
   action: z.enum(['confirm', 'decline', 'cancel']),
@@ -17,8 +20,11 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Lade alle Buchungen aus der Datenbank
+    // Lade nur offene Buchungsanfragen aus der Datenbank
     const bookings = await prisma.booking.findMany({
+      where: {
+        status: 'PENDING'
+      },
       include: {
         timeSlot: {
           select: {

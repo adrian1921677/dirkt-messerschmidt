@@ -81,8 +81,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Lade Buchungen
-        const bookingsResponse = await fetch('/api/admin/bookings');
+        // Lade Buchungen (ohne Cache)
+        const bookingsResponse = await fetch('/api/admin/bookings', { cache: 'no-store' });
         const bookingsData = await bookingsResponse.json();
         
         if (bookingsData.bookings) {
@@ -118,9 +118,9 @@ export default function AdminDashboard() {
           setBookings(parsedBookings);
         }
 
-        // Lade Slots für den aktuellen Monat
+        // Lade Slots für den aktuellen Monat (ohne Cache)
         const currentDate = new Date();
-        const slotsResponse = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`);
+        const slotsResponse = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`, { cache: 'no-store' });
         const slotsData = await slotsResponse.json();
         
         if (slotsData.success && slotsData.slots) {
