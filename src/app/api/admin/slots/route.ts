@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Slots in der Datenbank erstellen
     const createdSlots = await Promise.all(
-      slots.map(async (slot: any) => {
+      slots.map(async (slot: { date: string; startTime: string; endTime: string; maxBookings: number }) => {
         return await prisma.timeSlot.create({
           data: {
             date: new Date(slot.date),
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     const month = searchParams.get('month');
     const year = searchParams.get('year');
 
-    let whereClause: any = {};
+    const whereClause: { date?: { gte: Date; lte: Date } } = {};
     
     if (month && year) {
       const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);

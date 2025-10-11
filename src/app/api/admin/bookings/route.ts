@@ -6,14 +6,14 @@ const updateBookingSchema = z.object({
   action: z.enum(['confirm', 'decline', 'cancel']),
 });
 
-const createSlotSchema = z.object({
-  date: z.string(),
-  startTime: z.string(),
-  endTime: z.string(),
-  maxBookings: z.number().min(1).max(10),
-});
+// const createSlotSchema = z.object({
+//   date: z.string(),
+//   startTime: z.string(),
+//   endTime: z.string(),
+//   maxBookings: z.number().min(1).max(10),
+// });
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Hier würde die Datenbankabfrage stattfinden
     // Für jetzt simulieren wir die Daten

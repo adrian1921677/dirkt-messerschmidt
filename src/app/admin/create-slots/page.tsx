@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { format, addDays } from 'date-fns';
+import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { 
   Calendar, 
@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
+// import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
 
 interface TimeSlot {
@@ -46,7 +46,7 @@ export default function CreateSlotsPage() {
     setTimeSlots([...timeSlots, newSlot]);
   };
 
-  const updateTimeSlot = (id: string, field: keyof TimeSlot, value: any) => {
+  const updateTimeSlot = (id: string, field: keyof TimeSlot, value: string | number | boolean) => {
     setTimeSlots(prev => prev.map(slot => 
       slot.id === id ? { ...slot, [field]: value } : slot
     ));
@@ -93,7 +93,7 @@ export default function CreateSlotsPage() {
     const slots: TimeSlot[] = [];
     const startTime = 9; // 9:00 Uhr
     const endTime = 17; // 17:00 Uhr
-    const slotDuration = 60; // 60 Minuten
+    // const slotDuration = 60; // 60 Minuten
 
     for (let hour = startTime; hour < endTime; hour++) {
       const startHour = hour.toString().padStart(2, '0');
@@ -195,7 +195,7 @@ export default function CreateSlotsPage() {
                   </Card>
                 ) : (
                   <div className="space-y-3">
-                    {timeSlots.map((slot, index) => (
+                    {timeSlots.map((slot) => (
                       <Card key={slot.id} className="p-4">
                         <div className="flex items-center space-x-4">
                           <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">

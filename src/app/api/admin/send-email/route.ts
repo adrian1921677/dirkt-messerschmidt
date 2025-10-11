@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { emailTemplates, formatBookingData } from '@/lib/email-templates';
 
@@ -25,7 +25,8 @@ export async function POST(request: NextRequest) {
       clientEmail: 'max@beispiel.de',
       timeSlot: {
         date: new Date(),
-        startTime: '09:00'
+        startTime: '09:00',
+        endTime: '10:00'
       }
     };
 

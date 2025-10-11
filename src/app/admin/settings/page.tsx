@@ -2,15 +2,12 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { 
   Settings, 
   ArrowLeft,
   Save,
   Mail,
-  Phone,
-  MapPin,
-  Globe,
   User,
   Shield
 } from 'lucide-react';
@@ -18,13 +15,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+// import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import Link from 'next/link';
 
 export default function SettingsPage() {
   const { data: session } = useSession();
-  const router = useRouter();
+  // const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
 
   // Einstellungen State
@@ -81,7 +78,7 @@ export default function SettingsPage() {
     }
   };
 
-  const updateSetting = (key: string, value: any) => {
+  const updateSetting = (key: string, value: string | number | boolean) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 

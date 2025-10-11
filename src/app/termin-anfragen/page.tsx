@@ -24,7 +24,7 @@ export default function TerminanfragePage() {
     const loadAvailableSlots = () => {
       const savedSlots = localStorage.getItem('adminTimeSlots');
       if (savedSlots) {
-        const parsedSlots = JSON.parse(savedSlots).map((slot: any) => ({
+        const parsedSlots = JSON.parse(savedSlots).map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
           ...slot,
           date: new Date(slot.date),
         }));
@@ -66,7 +66,7 @@ export default function TerminanfragePage() {
     setIsRefreshing(true);
     const savedSlots = localStorage.getItem('adminTimeSlots');
     if (savedSlots) {
-      const parsedSlots = JSON.parse(savedSlots).map((slot: any) => ({
+      const parsedSlots = JSON.parse(savedSlots).map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
         ...slot,
         date: new Date(slot.date),
       }));

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { format, addDays, startOfWeek, endOfWeek } from 'date-fns';
+import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { 
   Calendar, 
@@ -15,9 +15,7 @@ import {
   Plus,
   Settings,
   LogOut,
-  Mail,
-  Eye,
-  EyeOff,
+  Mail
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -56,7 +54,7 @@ interface TimeSlot {
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [currentWeek, setCurrentWeek] = useState(new Date());
+  // const [currentWeek] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
@@ -117,7 +115,7 @@ export default function AdminDashboard() {
     // Lade Slots aus localStorage (für Demo-Zwecke)
     const savedSlots = localStorage.getItem('adminTimeSlots');
     if (savedSlots) {
-      const parsedSlots = JSON.parse(savedSlots).map((slot: any) => ({
+        const parsedSlots = JSON.parse(savedSlots).map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
         ...slot,
         date: new Date(slot.date),
       }));
@@ -137,9 +135,9 @@ export default function AdminDashboard() {
     );
   }
 
-  const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
-  const weekEnd = endOfWeek(currentWeek, { weekStartsOn: 1 });
-  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  // const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
+  // const weekEnd = endOfWeek(currentWeek, { weekStartsOn: 1 });
+  // const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -220,7 +218,7 @@ export default function AdminDashboard() {
       slot.id === slotId 
         ? { 
             ...slot, 
-            status: slot.status === 'PUBLISHED' ? 'HIDDEN' : 'PUBLISHED' 
+            status: (slot.status === 'PUBLISHED' ? 'HIDDEN' : 'PUBLISHED') as 'PUBLISHED' | 'HIDDEN' | 'BOOKED' | 'CANCELLED'
           }
         : slot
     );
@@ -237,7 +235,7 @@ export default function AdminDashboard() {
   const refreshSlots = () => {
     const savedSlots = localStorage.getItem('adminTimeSlots');
     if (savedSlots) {
-      const parsedSlots = JSON.parse(savedSlots).map((slot: any) => ({
+        const parsedSlots = JSON.parse(savedSlots).map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
         ...slot,
         date: new Date(slot.date),
       }));

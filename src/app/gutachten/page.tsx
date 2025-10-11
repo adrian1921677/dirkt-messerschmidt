@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Shield, Award, Clock, Users, CheckCircle, AlertTriangle, Euro, Gavel } from "lucide-react";
+import { FileText, Shield, Award, Clock, CheckCircle, AlertTriangle, Euro, Gavel } from "lucide-react";
 
 export default function GutachtenPage() {
   const coreQuestions = [

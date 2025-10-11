@@ -84,7 +84,7 @@ Weitere Informationen finden Sie unter ${data.privacyPolicyUrl}.
 `
 };
 
-export const formatBookingData = (booking: any): BookingData => {
+export const formatBookingData = (booking: { timeSlot: { date: Date; startTime: string; endTime: string }; clientName: string; clientEmail: string; message?: string }): BookingData => {
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('de-DE', {
       weekday: 'long',
