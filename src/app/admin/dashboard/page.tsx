@@ -15,7 +15,9 @@ import {
   Plus,
   Settings,
   LogOut,
-  Mail
+  Mail,
+  Edit,
+  Trash2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -311,6 +313,25 @@ export default function AdminDashboard() {
       ...slot,
       date: slot.date.toISOString(),
     }))));
+  };
+
+  const handleEditSlot = (slot: TimeSlot) => {
+    // TODO: Implementiere Slot-Bearbeitung
+    alert(`Slot bearbeiten: ${format(slot.date, 'dd.MM.yyyy')} ${slot.startTime}-${slot.endTime}`);
+  };
+
+  const handleDeleteSlot = async (slotId: string) => {
+    if (confirm('Möchten Sie diesen Slot wirklich löschen?')) {
+      try {
+        // TODO: Implementiere Slot-Löschung über API
+        const updatedSlots = timeSlots.filter(slot => slot.id !== slotId);
+        setTimeSlots(updatedSlots);
+        alert('Slot erfolgreich gelöscht');
+      } catch (error) {
+        console.error('Fehler beim Löschen des Slots:', error);
+        alert('Fehler beim Löschen des Slots');
+      }
+    }
   };
 
   const refreshSlots = async () => {
@@ -614,13 +635,32 @@ export default function AdminDashboard() {
                     <span className="text-sm text-gray-500">
                       {slot.currentBookings}/{slot.maxBookings} gebucht
                     </span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleSlotToggle(slot.id)}
-                    >
-                      {slot.status === 'PUBLISHED' ? 'Verstecken' : 'Freigeben'}
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleSlotToggle(slot.id)}
+                        className="text-xs px-2"
+                      >
+                        {slot.status === 'PUBLISHED' ? 'Verstecken' : 'Freigeben'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleEditSlot(slot)}
+                        className="text-xs px-2 border-blue-300 text-blue-600 hover:bg-blue-50"
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDeleteSlot(slot.id)}
+                        className="text-xs px-2 border-red-300 text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               ))}
