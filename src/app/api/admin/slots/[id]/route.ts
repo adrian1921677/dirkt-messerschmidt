@@ -37,13 +37,17 @@ export async function DELETE(
 
     console.log(`Slot ${slotId} gefunden, Status: ${existingSlot.status}, Buchungen: ${existingSlot.bookings.length}`);
 
-    // Prüfe ob Slot bereits gebucht ist
+    // Wenn Slot Buchungen hat, storniere sie zuerst
     if (existingSlot.bookings.length > 0) {
-      console.log(`Slot ${slotId} hat ${existingSlot.bookings.length} Buchungen, kann nicht gelöscht werden`);
-      return NextResponse.json(
-        { error: 'Slot kann nicht gelöscht werden, da bereits Buchungen vorhanden sind' },
-        { status: 400 }
-      );
+      console.log(`Slot ${slotId} hat ${existingSlot.bookings.length} Buchungen, storniere sie zuerst...`);
+      
+      // Storniere alle Buchungen für diesen Slot
+      await prisma.booking.updateMany({
+        where: { timeSlotId: slotId },
+        data: { status: 'CANCELLED' }
+      });
+      
+      console.log(`${existingSlot.bookings.length} Buchungen für Slot ${slotId} storniert`);
     }
 
     // Lösche den Slot
@@ -55,7 +59,9 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: 'Slot erfolgreich gelöscht'
+      message: existingSlot.bookings.length > 0 
+        ? `Slot erfolgreich gelöscht (${existingSlot.bookings.length} Buchungen storniert)`
+        : 'Slot erfolgreich gelöscht'
     });
 
   } catch (error) {
