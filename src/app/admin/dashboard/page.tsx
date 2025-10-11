@@ -77,50 +77,28 @@ export default function AdminDashboard() {
     await signOut({ callbackUrl: '/admin/login' });
   };
 
-  // Mock-Daten für Slots (später durch echte API ersetzen)
+  // Lade echte Daten aus der Datenbank
   useEffect(() => {
-    const mockBookings: Booking[] = [
-      {
-        id: '1',
-        clientName: 'Max Mustermann',
-        clientEmail: 'max@beispiel.de',
-        clientPhone: '+49 123 456789',
-        message: 'Gutachten für Immobilie benötigt',
-        status: 'PENDING',
-        createdAt: new Date(),
-        timeSlot: {
-          id: 'slot1',
-          date: new Date(2024, 11, 20),
-          startTime: '09:00',
-          endTime: '10:00',
-        },
-      },
-      {
-        id: '2',
-        clientName: 'Anna Schmidt',
-        clientEmail: 'anna@beispiel.de',
-        status: 'CONFIRMED',
-        createdAt: new Date(),
-        timeSlot: {
-          id: 'slot2',
-          date: new Date(2024, 11, 21),
-          startTime: '14:00',
-          endTime: '15:00',
-        },
-      },
-    ];
+    const loadData = async () => {
+      try {
+        // Lade Slots für den aktuellen Monat
+        const currentDate = new Date();
+        const response = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`);
+        const data = await response.json();
+        
+        if (data.success && data.slots) {
+          const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
+            ...slot,
+            date: new Date(slot.date),
+          }));
+          setTimeSlots(parsedSlots);
+        }
+      } catch (error) {
+        console.error('Fehler beim Laden der Slots:', error);
+      }
+    };
 
-    setBookings(mockBookings);
-    
-    // Lade Slots aus localStorage (für Demo-Zwecke)
-    const savedSlots = localStorage.getItem('adminTimeSlots');
-    if (savedSlots) {
-        const parsedSlots = JSON.parse(savedSlots).map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
-        ...slot,
-        date: new Date(slot.date),
-      }));
-      setTimeSlots(parsedSlots);
-    }
+    loadData();
   }, []);
 
   // Loading-Anzeige während Session-Check
@@ -232,17 +210,26 @@ export default function AdminDashboard() {
     }))));
   };
 
-  const refreshSlots = () => {
-    const savedSlots = localStorage.getItem('adminTimeSlots');
-    if (savedSlots) {
-        const parsedSlots = JSON.parse(savedSlots).map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
-        ...slot,
-        date: new Date(slot.date),
-      }));
-      setTimeSlots(parsedSlots);
-      alert(`${parsedSlots.length} Slots geladen!`);
-    } else {
-      alert('Keine gespeicherten Slots gefunden.');
+  const refreshSlots = async () => {
+    try {
+      // Lade Slots für den aktuellen Monat
+      const currentDate = new Date();
+      const response = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`);
+      const data = await response.json();
+      
+      if (data.success && data.slots) {
+        const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
+          ...slot,
+          date: new Date(slot.date),
+        }));
+        setTimeSlots(parsedSlots);
+        alert(`${parsedSlots.length} Slots aus der Datenbank geladen!`);
+      } else {
+        alert('Keine Slots in der Datenbank gefunden.');
+      }
+    } catch (error) {
+      console.error('Fehler beim Laden der Slots:', error);
+      alert('Fehler beim Laden der Slots aus der Datenbank.');
     }
   };
 

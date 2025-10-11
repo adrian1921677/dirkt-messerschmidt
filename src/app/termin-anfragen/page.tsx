@@ -19,24 +19,47 @@ export default function TerminanfragePage() {
   const [bookingStep, setBookingStep] = useState<'calendar' | 'timeslot' | 'form' | 'success'>('calendar');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Lade verfügbare Slots aus localStorage (von Admin erstellt)
+  // Lade verfügbare Slots aus der Datenbank
   useEffect(() => {
-    const loadAvailableSlots = () => {
-      const savedSlots = localStorage.getItem('adminTimeSlots');
-      if (savedSlots) {
-        const parsedSlots = JSON.parse(savedSlots).map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
-          ...slot,
-          date: new Date(slot.date),
-        }));
+    const loadAvailableSlots = async () => {
+      try {
+        // Lade Slots für den aktuellen Monat
+        const currentDate = new Date();
+        const response = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`);
+        const data = await response.json();
         
-        // Nur PUBLISHED Slots für Kunden anzeigen
-        const publishedSlots = parsedSlots.filter((slot: TimeSlot) => 
-          slot.status === 'PUBLISHED'
-        );
-        
-        setAvailableSlots(publishedSlots);
-      } else {
-        // Fallback: Mock-Daten wenn keine Slots vorhanden
+        if (data.success && data.slots) {
+          const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
+            ...slot,
+            date: new Date(slot.date),
+          }));
+          
+          // Nur PUBLISHED Slots für Kunden anzeigen
+          const publishedSlots = parsedSlots.filter((slot: TimeSlot) => 
+            slot.status === 'PUBLISHED'
+          );
+          
+          setAvailableSlots(publishedSlots);
+        } else {
+          // Fallback: Mock-Daten wenn keine Slots vorhanden
+          const mockSlots: TimeSlot[] = [
+            {
+              id: 'demo1',
+              date: new Date(2024, 11, 20),
+              startTime: '09:00',
+              endTime: '10:00',
+              status: 'PUBLISHED',
+              isHoliday: false,
+              isWeekend: false,
+              maxBookings: 1,
+              currentBookings: 0,
+            },
+          ];
+          setAvailableSlots(mockSlots);
+        }
+      } catch (error) {
+        console.error('Fehler beim Laden der Slots:', error);
+        // Fallback: Mock-Daten bei Fehler
         const mockSlots: TimeSlot[] = [
           {
             id: 'demo1',
@@ -56,29 +79,39 @@ export default function TerminanfragePage() {
 
     loadAvailableSlots();
     
-    // Lade Slots alle 30 Sekunden neu (für Demo-Zwecke)
+    // Lade Slots alle 30 Sekunden neu
     const interval = setInterval(loadAvailableSlots, 30000);
     
     return () => clearInterval(interval);
   }, []);
 
-  const refreshAvailableSlots = () => {
+  const refreshAvailableSlots = async () => {
     setIsRefreshing(true);
-    const savedSlots = localStorage.getItem('adminTimeSlots');
-    if (savedSlots) {
-      const parsedSlots = JSON.parse(savedSlots).map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
-        ...slot,
-        date: new Date(slot.date),
-      }));
+    try {
+      // Lade Slots für den aktuellen Monat
+      const currentDate = new Date();
+      const response = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`);
+      const data = await response.json();
       
-      const publishedSlots = parsedSlots.filter((slot: TimeSlot) => 
-        slot.status === 'PUBLISHED'
-      );
-      
-      setAvailableSlots(publishedSlots);
-      alert(`${publishedSlots.length} verfügbare Slots geladen!`);
-    } else {
-      alert('Keine verfügbaren Slots gefunden. Bitte wenden Sie sich an den Administrator.');
+      if (data.success && data.slots) {
+        const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
+          ...slot,
+          date: new Date(slot.date),
+        }));
+        
+        // Nur PUBLISHED Slots für Kunden anzeigen
+        const publishedSlots = parsedSlots.filter((slot: TimeSlot) => 
+          slot.status === 'PUBLISHED'
+        );
+        
+        setAvailableSlots(publishedSlots);
+        alert(`${publishedSlots.length} verfügbare Slots aus der Datenbank geladen!`);
+      } else {
+        alert('Keine verfügbaren Slots gefunden. Bitte wenden Sie sich an den Administrator.');
+      }
+    } catch (error) {
+      console.error('Fehler beim Laden der Slots:', error);
+      alert('Fehler beim Laden der Slots. Bitte versuchen Sie es später erneut.');
     }
     setIsRefreshing(false);
   };

@@ -60,27 +60,30 @@ export default function CreateSlotsPage() {
     setIsCreating(true);
     
     try {
-      // Speichere Slots im localStorage (für Demo-Zwecke)
-      const slotsToSave = timeSlots.map(slot => ({
-        id: slot.id,
-        date: slot.date.toISOString(),
-        startTime: slot.startTime,
-        endTime: slot.endTime,
-        status: 'PUBLISHED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: slot.maxBookings,
-        currentBookings: 0,
-      }));
+      // Speichere Slots in der echten Datenbank
+      const response = await fetch('/api/admin/slots', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          slots: timeSlots.map(slot => ({
+            date: slot.date.toISOString(),
+            startTime: slot.startTime,
+            endTime: slot.endTime,
+            maxBookings: slot.maxBookings,
+          }))
+        }),
+      });
 
-      // Lade bestehende Slots und füge neue hinzu
-      const existingSlots = localStorage.getItem('adminTimeSlots');
-      const allSlots = existingSlots ? [...JSON.parse(existingSlots), ...slotsToSave] : slotsToSave;
+      const result = await response.json();
       
-      localStorage.setItem('adminTimeSlots', JSON.stringify(allSlots));
-      
-      alert(`${timeSlots.length} Zeitslots erfolgreich erstellt!`);
-      router.push('/admin/dashboard');
+      if (result.success) {
+        alert(`${timeSlots.length} Zeitslots erfolgreich in der Datenbank gespeichert!`);
+        router.push('/admin/dashboard');
+      } else {
+        alert('Fehler beim Erstellen der Slots: ' + result.error);
+      }
     } catch (error) {
       console.error('Fehler beim Erstellen der Slots:', error);
       alert('Fehler beim Erstellen der Slots');
