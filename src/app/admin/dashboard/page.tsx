@@ -87,9 +87,16 @@ export default function AdminDashboard() {
         const data = await response.json();
         
         if (data.success && data.slots) {
-          const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
-            ...slot,
+          const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; createdAt: string; updatedAt: string }) => ({
+            id: slot.id,
             date: new Date(slot.date),
+            startTime: slot.startTime,
+            endTime: slot.endTime,
+            status: slot.status,
+            isHoliday: false,
+            isWeekend: false,
+            maxBookings: 1,
+            currentBookings: 0,
           }));
           setTimeSlots(parsedSlots);
         }
@@ -100,6 +107,7 @@ export default function AdminDashboard() {
 
     loadData();
   }, []);
+
 
   // Loading-Anzeige während Session-Check
   if (status === 'loading') {
@@ -218,14 +226,20 @@ export default function AdminDashboard() {
       const data = await response.json();
       
       if (data.success && data.slots) {
-        const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; isHoliday: boolean; isWeekend: boolean; maxBookings: number; currentBookings: number }) => ({
-          ...slot,
+        const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; createdAt: string; updatedAt: string }) => ({
+          id: slot.id,
           date: new Date(slot.date),
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          status: slot.status,
+          isHoliday: false,
+          isWeekend: false,
+          maxBookings: 1,
+          currentBookings: 0,
         }));
         setTimeSlots(parsedSlots);
-        // Slots wurden erfolgreich geladen - keine Popup-Nachricht
+        console.log(`${parsedSlots.length} Slots aus der Datenbank geladen!`);
       } else {
-        // Keine Slots gefunden - stille Behandlung ohne Popup
         console.log('Keine Slots in der Datenbank gefunden');
       }
     } catch (error) {

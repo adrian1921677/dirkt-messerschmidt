@@ -68,10 +68,10 @@ export default function CreateSlotsPage() {
         },
         body: JSON.stringify({
           slots: timeSlots.map(slot => ({
-            date: slot.date.toISOString(),
+            date: slot.date.toISOString().split('T')[0] + 'T00:00:00.000Z', // Tages-UTC
             startTime: slot.startTime,
             endTime: slot.endTime,
-            maxBookings: slot.maxBookings,
+            status: 'PUBLISHED',
           }))
         }),
       });
@@ -79,15 +79,13 @@ export default function CreateSlotsPage() {
       const result = await response.json();
       
       if (result.success) {
-        // Slots erfolgreich gespeichert - keine Popup-Nachricht
+        console.log(`${result.message}`);
         router.push('/admin/dashboard');
       } else {
         console.error('Fehler beim Erstellen der Slots:', result.error);
-        // Fehler beim Erstellen - stille Behandlung ohne Popup
       }
     } catch (error) {
       console.error('Fehler beim Erstellen der Slots:', error);
-      // Fehler beim Erstellen - stille Behandlung ohne Popup
     } finally {
       setIsCreating(false);
     }

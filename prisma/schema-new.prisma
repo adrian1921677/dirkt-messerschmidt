@@ -28,24 +28,22 @@ model User {
 }
 
 model TimeSlot {
-  id          String      @id @default(cuid())
-  date        DateTime    @db.Date
-  startTime   String
-  endTime     String
-  status      SlotStatus  @default(HIDDEN)
-  isHoliday   Boolean     @default(false)
-  isWeekend   Boolean     @default(false)
-  maxBookings Int         @default(1)
-  currentBookings Int     @default(0)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id           String   @id @default(cuid())
+  date         DateTime // UTC-Mitternacht
+  startMinutes Int      // Minuten seit Mitternacht (z.B. 540 = 09:00)
+  endMinutes   Int      // Minuten seit Mitternacht (z.B. 600 = 10:00)
+  isOpen       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
   managerId String?
   manager   User?    @relation("SlotManager", fields: [managerId], references: [id])
   bookings  Booking[]
 
-  @@unique([date, startTime])
+  @@unique([date, startMinutes, endMinutes], map: "uniq_slot")
+  @@index([date])
+  @@index([isOpen])
   @@map("time_slots")
 }
 
@@ -105,15 +103,8 @@ enum UserRole {
   CLIENT
 }
 
-enum SlotStatus {
-  HIDDEN
-  PUBLISHED
-  BOOKED
-  CANCELLED
-}
-
 enum BookingStatus {
-  PENDING
+  REQUESTED
   CONFIRMED
   DECLINED
   CANCELLED
