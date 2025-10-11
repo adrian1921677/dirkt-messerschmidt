@@ -205,34 +205,46 @@ export default function AdminDashboard() {
     if (!selectedBooking) return;
 
     try {
-      // E-Mail senden
-      const response = await fetch('/api/admin/send-email', {
-        method: 'POST',
+      // Buchung-Status in der Datenbank aktualisieren
+      const updateResponse = await fetch('/api/admin/bookings', {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           bookingId: selectedBooking.id,
-          action: emailAction,
-          reason: declineReason
+          action: emailAction
         })
       });
 
-      if (response.ok) {
-        // Buchung-Status aktualisieren
+      if (updateResponse.ok) {
+        // Lokalen State aktualisieren
         setBookings(prev => prev.map(booking => 
           booking.id === selectedBooking.id 
             ? { ...booking, status: emailAction === 'confirm' ? 'CONFIRMED' : 'DECLINED' }
             : booking
         ));
         
+        // E-Mail-Vorlage öffnen
+        const emailSubject = emailAction === 'confirm' 
+          ? 'Terminbestätigung - Dirk Messerschmidt'
+          : 'Terminabsage - Dirk Messerschmidt';
+        
+        const emailBody = emailAction === 'confirm'
+          ? `Sehr geehrte/r ${selectedBooking.clientName},\n\nvielen Dank für Ihre Terminanfrage. Ich bestätige Ihnen gerne folgenden Termin:\n\nDatum: ${new Date(selectedBooking.timeSlot.date).toLocaleDateString('de-DE')}\nUhrzeit: ${selectedBooking.timeSlot.startTime} - ${selectedBooking.timeSlot.endTime}\n\nBitte seien Sie pünktlich zum vereinbarten Termin.\n\nMit freundlichen Grüßen\nDirk Messerschmidt\nSachverständiger\n\nTel: 0202 / 423 110\nAdresse: Alt-Wolfshahn 12, 42117 Wuppertal`
+          : `Sehr geehrte/r ${selectedBooking.clientName},\n\nvielen Dank für Ihre Terminanfrage. Leider muss ich Ihnen mitteilen, dass der gewünschte Termin nicht verfügbar ist.\n\n${declineReason ? `Grund: ${declineReason}\n\n` : ''}Bitte kontaktieren Sie mich telefonisch unter 0202 / 423 110, um einen alternativen Termin zu vereinbaren.\n\nMit freundlichen Grüßen\nDirk Messerschmidt\nSachverständiger\n\nTel: 0202 / 423 110\nAdresse: Alt-Wolfshahn 12, 42117 Wuppertal`;
+        
+        // mailto: Link öffnen
+        const mailtoLink = `mailto:${selectedBooking.clientEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+        window.open(mailtoLink);
+        
         setShowEmailModal(false);
         setSelectedBooking(null);
         setDeclineReason('');
       } else {
-        alert('Fehler beim Senden der E-Mail');
+        alert('Fehler beim Aktualisieren der Buchung');
       }
     } catch (error) {
-      console.error('E-Mail-Fehler:', error);
-      alert('Fehler beim Senden der E-Mail');
+      console.error('Update-Fehler:', error);
+      alert('Fehler beim Aktualisieren der Buchung');
     }
   };
 
@@ -610,7 +622,7 @@ export default function AdminDashboard() {
                     className={emailAction === 'confirm' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}
                   >
                     <Mail className="h-4 w-4 mr-2" />
-                    {emailAction === 'confirm' ? 'Bestätigen & E-Mail senden' : 'Ablehnen & E-Mail senden'}
+                    {emailAction === 'confirm' ? 'Bestätigen & E-Mail öffnen' : 'Ablehnen & E-Mail öffnen'}
                   </Button>
                 </div>
               </div>
