@@ -66,8 +66,18 @@ export async function DELETE(
 
   } catch (error) {
     console.error('Fehler beim Löschen des Slots:', error);
+    
+    // Detaillierte Fehlerbehandlung
+    if (error instanceof Error) {
+      console.error('Error details:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    
     return NextResponse.json(
-      { error: 'Fehler beim Löschen des Slots' },
+      { 
+        error: 'Fehler beim Löschen des Slots',
+        details: error instanceof Error ? error.message : 'Unbekannter Fehler'
+      },
       { status: 500 }
     );
   }
