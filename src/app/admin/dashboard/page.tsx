@@ -242,6 +242,9 @@ export default function AdminDashboard() {
         date: new Date(slot.date),
       }));
       setTimeSlots(parsedSlots);
+      alert(`${parsedSlots.length} Slots geladen!`);
+    } else {
+      alert('Keine gespeicherten Slots gefunden.');
     }
   };
 

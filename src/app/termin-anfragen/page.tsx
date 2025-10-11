@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { Calendar, Clock, CheckCircle } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BookingCalendar } from '@/components/booking-calendar';
@@ -17,68 +17,71 @@ export default function TerminanfragePage() {
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [bookingStep, setBookingStep] = useState<'calendar' | 'timeslot' | 'form' | 'success'>('calendar');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Mock-Daten für verfügbare Slots (später durch API ersetzen)
+  // Lade verfügbare Slots aus localStorage (von Admin erstellt)
   useEffect(() => {
-    const mockSlots: TimeSlot[] = [
-      {
-        id: '1',
-        date: new Date(2024, 11, 20), // 20. Dezember 2024
-        startTime: '09:00',
-        endTime: '10:00',
-        status: 'PUBLISHED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 0,
-      },
-      {
-        id: '2',
-        date: new Date(2024, 11, 20),
-        startTime: '10:30',
-        endTime: '11:30',
-        status: 'PUBLISHED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 0,
-      },
-      {
-        id: '3',
-        date: new Date(2024, 11, 20),
-        startTime: '14:00',
-        endTime: '15:00',
-        status: 'PUBLISHED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 0,
-      },
-      {
-        id: '4',
-        date: new Date(2024, 11, 21),
-        startTime: '09:00',
-        endTime: '10:00',
-        status: 'PUBLISHED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 0,
-      },
-      {
-        id: '5',
-        date: new Date(2024, 11, 21),
-        startTime: '11:00',
-        endTime: '12:00',
-        status: 'BOOKED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 1,
-      },
-    ];
-    setAvailableSlots(mockSlots);
+    const loadAvailableSlots = () => {
+      const savedSlots = localStorage.getItem('adminTimeSlots');
+      if (savedSlots) {
+        const parsedSlots = JSON.parse(savedSlots).map((slot: any) => ({
+          ...slot,
+          date: new Date(slot.date),
+        }));
+        
+        // Nur PUBLISHED Slots für Kunden anzeigen
+        const publishedSlots = parsedSlots.filter((slot: TimeSlot) => 
+          slot.status === 'PUBLISHED'
+        );
+        
+        setAvailableSlots(publishedSlots);
+      } else {
+        // Fallback: Mock-Daten wenn keine Slots vorhanden
+        const mockSlots: TimeSlot[] = [
+          {
+            id: 'demo1',
+            date: new Date(2024, 11, 20),
+            startTime: '09:00',
+            endTime: '10:00',
+            status: 'PUBLISHED',
+            isHoliday: false,
+            isWeekend: false,
+            maxBookings: 1,
+            currentBookings: 0,
+          },
+        ];
+        setAvailableSlots(mockSlots);
+      }
+    };
+
+    loadAvailableSlots();
+    
+    // Lade Slots alle 30 Sekunden neu (für Demo-Zwecke)
+    const interval = setInterval(loadAvailableSlots, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
+
+  const refreshAvailableSlots = () => {
+    setIsRefreshing(true);
+    const savedSlots = localStorage.getItem('adminTimeSlots');
+    if (savedSlots) {
+      const parsedSlots = JSON.parse(savedSlots).map((slot: any) => ({
+        ...slot,
+        date: new Date(slot.date),
+      }));
+      
+      const publishedSlots = parsedSlots.filter((slot: TimeSlot) => 
+        slot.status === 'PUBLISHED'
+      );
+      
+      setAvailableSlots(publishedSlots);
+      alert(`${publishedSlots.length} verfügbare Slots geladen!`);
+    } else {
+      alert('Keine verfügbaren Slots gefunden. Bitte wenden Sie sich an den Administrator.');
+    }
+    setIsRefreshing(false);
+  };
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
@@ -144,10 +147,19 @@ export default function TerminanfragePage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
             Terminanfrage
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
             Buchen Sie Ihren Termin bei Dirk Messerschmidt. Wählen Sie einen 
             verfügbaren Tag und Zeit aus, um Ihre Anfrage zu stellen.
           </p>
+          <Button 
+            variant="outline" 
+            onClick={refreshAvailableSlots}
+            disabled={isRefreshing}
+            className="mb-4"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Verfügbare Termine aktualisieren
+          </Button>
         </div>
 
         {/* Progress Indicator */}
