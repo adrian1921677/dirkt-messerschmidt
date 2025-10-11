@@ -15,6 +15,9 @@ import {
   Plus,
   Settings,
   LogOut,
+  Mail,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -58,6 +61,10 @@ export default function AdminDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [activeTab, setActiveTab] = useState<'calendar' | 'bookings' | 'slots'>('calendar');
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [emailAction, setEmailAction] = useState<'confirm' | 'decline'>('confirm');
+  const [declineReason, setDeclineReason] = useState('');
 
   // Prüfe Authentifizierung
   useEffect(() => {
@@ -191,12 +198,48 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleBookingAction = (bookingId: string, action: 'confirm' | 'decline') => {
-    setBookings(prev => prev.map(booking => 
-      booking.id === bookingId 
-        ? { ...booking, status: action === 'confirm' ? 'CONFIRMED' : 'DECLINED' }
-        : booking
-    ));
+  const handleBookingAction = async (bookingId: string, action: 'confirm' | 'decline') => {
+    const booking = bookings.find(b => b.id === bookingId);
+    if (!booking) return;
+
+    setSelectedBooking(booking);
+    setEmailAction(action);
+    setShowEmailModal(true);
+  };
+
+  const sendEmailAndUpdateBooking = async () => {
+    if (!selectedBooking) return;
+
+    try {
+      // E-Mail senden
+      const response = await fetch('/api/admin/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bookingId: selectedBooking.id,
+          action: emailAction,
+          reason: declineReason
+        })
+      });
+
+      if (response.ok) {
+        // Buchung-Status aktualisieren
+        setBookings(prev => prev.map(booking => 
+          booking.id === selectedBooking.id 
+            ? { ...booking, status: emailAction === 'confirm' ? 'CONFIRMED' : 'DECLINED' }
+            : booking
+        ));
+        
+        setShowEmailModal(false);
+        setSelectedBooking(null);
+        setDeclineReason('');
+      } else {
+        alert('Fehler beim Senden der E-Mail');
+      }
+    } catch (error) {
+      console.error('E-Mail-Fehler:', error);
+      alert('Fehler beim Senden der E-Mail');
+    }
   };
 
   const handleSlotToggle = (slotId: string) => {
@@ -232,9 +275,11 @@ export default function AdminDashboard() {
               <span className="text-sm text-gray-600">
                 Angemeldet als: {session?.user?.name || session?.user?.email}
               </span>
-              <Button variant="outline" size="sm">
-                <Settings className="h-4 w-4 mr-2" />
-                Einstellungen
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/admin/settings">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Einstellungen
+                </Link>
               </Button>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 <LogOut className="h-4 w-4 mr-2" />
@@ -342,9 +387,11 @@ export default function AdminDashboard() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-gray-900">Kalender verwalten</h2>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Neue Slots erstellen
+              <Button asChild>
+                <Link href="/admin/create-slots">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Neue Slots erstellen
+                </Link>
               </Button>
             </div>
             
@@ -469,6 +516,66 @@ export default function AdminDashboard() {
                   </div>
                 </Card>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* E-Mail Modal */}
+        {showEmailModal && selectedBooking && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-semibold mb-4">
+                {emailAction === 'confirm' ? 'Termin bestätigen' : 'Termin ablehnen'}
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-600 mb-2">
+                    <strong>Kunde:</strong> {selectedBooking.clientName}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    <strong>E-Mail:</strong> {selectedBooking.clientEmail}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-4">
+                    <strong>Termin:</strong> {format(selectedBooking.timeSlot.date, 'dd.MM.yyyy', { locale: de })} um {selectedBooking.timeSlot.startTime}
+                  </p>
+                </div>
+
+                {emailAction === 'decline' && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Grund für die Absage:
+                    </label>
+                    <textarea
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                      rows={3}
+                      value={declineReason}
+                      onChange={(e) => setDeclineReason(e.target.value)}
+                      placeholder="z.B. betriebliche Gründe, Krankheit, Überschneidung im Terminplan"
+                    />
+                  </div>
+                )}
+
+                <div className="flex justify-end space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowEmailModal(false);
+                      setSelectedBooking(null);
+                      setDeclineReason('');
+                    }}
+                  >
+                    Abbrechen
+                  </Button>
+                  <Button
+                    onClick={sendEmailAndUpdateBooking}
+                    className={emailAction === 'confirm' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}
+                  >
+                    <Mail className="h-4 w-4 mr-2" />
+                    {emailAction === 'confirm' ? 'Bestätigen & E-Mail senden' : 'Ablehnen & E-Mail senden'}
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         )}
