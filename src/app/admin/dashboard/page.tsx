@@ -81,13 +81,50 @@ export default function AdminDashboard() {
   useEffect(() => {
     const loadData = async () => {
       try {
+        // Lade Buchungen
+        const bookingsResponse = await fetch('/api/admin/bookings');
+        const bookingsData = await bookingsResponse.json();
+        
+        if (bookingsData.bookings) {
+          const parsedBookings = bookingsData.bookings.map((booking: {
+            id: string;
+            clientName: string;
+            clientEmail: string;
+            clientPhone?: string;
+            message?: string;
+            status: string;
+            createdAt: string;
+            timeSlot: {
+              id: string;
+              date: string;
+              startTime: string;
+              endTime: string;
+            };
+          }) => ({
+            id: booking.id,
+            clientName: booking.clientName,
+            clientEmail: booking.clientEmail,
+            clientPhone: booking.clientPhone,
+            message: booking.message,
+            status: booking.status,
+            createdAt: new Date(booking.createdAt),
+            timeSlot: {
+              id: booking.timeSlot.id,
+              date: new Date(booking.timeSlot.date),
+              startTime: booking.timeSlot.startTime,
+              endTime: booking.timeSlot.endTime,
+            },
+          }));
+          setBookings(parsedBookings);
+        }
+
         // Lade Slots für den aktuellen Monat
         const currentDate = new Date();
-        const response = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`);
-        const data = await response.json();
+        const slotsResponse = await fetch(`/api/admin/slots?month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`);
+        const slotsData = await slotsResponse.json();
         
-        if (data.success && data.slots) {
-          const parsedSlots = data.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; createdAt: string; updatedAt: string }) => ({
+        if (slotsData.success && slotsData.slots) {
+          const parsedSlots = slotsData.slots.map((slot: { id: string; date: string; startTime: string; endTime: string; status: string; createdAt: string; updatedAt: string }) => ({
             id: slot.id,
             date: new Date(slot.date),
             startTime: slot.startTime,
@@ -101,7 +138,7 @@ export default function AdminDashboard() {
           setTimeSlots(parsedSlots);
         }
       } catch (error) {
-        console.error('Fehler beim Laden der Slots:', error);
+        console.error('Fehler beim Laden der Daten:', error);
       }
     };
 

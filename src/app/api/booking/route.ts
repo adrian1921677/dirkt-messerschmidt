@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { prisma } from '@/lib/prisma';
 import { sendBookingNotificationToAdmin } from '@/lib/email';
 
 const bookingSchema = z.object({
@@ -19,12 +20,52 @@ export async function POST(request: NextRequest) {
     // Validierung der Eingabedaten
     const validatedData = bookingSchema.parse(body);
     
-    // Hier würde die Datenbank-Integration stattfinden
-    // Für jetzt simulieren wir nur die Verarbeitung
     console.log('Neue Buchungsanfrage:', validatedData);
     
-    // Simuliere Verarbeitungszeit
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Hole den TimeSlot aus der Datenbank
+    const timeSlot = await prisma.timeSlot.findUnique({
+      where: { id: validatedData.selectedSlotId }
+    });
+    
+    if (!timeSlot) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Der gewählte Zeitslot wurde nicht gefunden' 
+        },
+        { status: 404 }
+      );
+    }
+    
+    // Hole oder erstelle einen Client-User
+    let clientUser = await prisma.user.findUnique({
+      where: { email: validatedData.clientEmail }
+    });
+    
+    if (!clientUser) {
+      clientUser = await prisma.user.create({
+        data: {
+          email: validatedData.clientEmail,
+          name: validatedData.clientName,
+          role: 'CLIENT'
+        }
+      });
+    }
+    
+    // Erstelle die Buchung in der Datenbank
+    const booking = await prisma.booking.create({
+      data: {
+        clientName: validatedData.clientName,
+        clientEmail: validatedData.clientEmail,
+        clientPhone: validatedData.clientPhone,
+        message: validatedData.message,
+        status: 'PENDING',
+        userId: clientUser.id,
+        timeSlotId: timeSlot.id,
+      }
+    });
+    
+    console.log('Buchung erfolgreich erstellt:', booking.id);
     
     // E-Mail-Benachrichtigung an Admin senden
     try {
@@ -36,7 +77,7 @@ export async function POST(request: NextRequest) {
         clientEmail: validatedData.clientEmail,
         clientPhone: validatedData.clientPhone,
         date: selectedDate.toLocaleDateString('de-DE'),
-        time: '09:00 - 10:00', // Mock-Zeit, später aus Datenbank
+        time: `${timeSlot.startTime} - ${timeSlot.endTime}`,
         message: validatedData.message,
       });
       
@@ -50,7 +91,7 @@ export async function POST(request: NextRequest) {
       { 
         success: true, 
         message: 'Terminanfrage erfolgreich gesendet',
-        bookingId: `booking_${Date.now()}` // Temporäre ID
+        bookingId: booking.id
       },
       { status: 201 }
     );

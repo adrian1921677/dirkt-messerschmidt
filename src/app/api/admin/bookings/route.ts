@@ -1,55 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 const updateBookingSchema = z.object({
   bookingId: z.string(),
   action: z.enum(['confirm', 'decline', 'cancel']),
 });
 
-// const createSlotSchema = z.object({
-//   date: z.string(),
-//   startTime: z.string(),
-//   endTime: z.string(),
-//   maxBookings: z.number().min(1).max(10),
-// });
-
 export async function GET() {
   try {
-    // Hier würde die Datenbankabfrage stattfinden
-    // Für jetzt simulieren wir die Daten
-    
-    const mockBookings = [
-      {
-        id: '1',
-        clientName: 'Max Mustermann',
-        clientEmail: 'max@beispiel.de',
-        clientPhone: '+49 123 456789',
-        message: 'Gutachten für Immobilie benötigt',
-        status: 'PENDING',
-        createdAt: new Date().toISOString(),
-        timeSlot: {
-          id: 'slot1',
-          date: new Date(2024, 11, 20).toISOString(),
-          startTime: '09:00',
-          endTime: '10:00',
-        },
-      },
-      {
-        id: '2',
-        clientName: 'Anna Schmidt',
-        clientEmail: 'anna@beispiel.de',
-        status: 'CONFIRMED',
-        createdAt: new Date().toISOString(),
-        timeSlot: {
-          id: 'slot2',
-          date: new Date(2024, 11, 21).toISOString(),
-          startTime: '14:00',
-          endTime: '15:00',
-        },
-      },
-    ];
+    // Authentifizierung prüfen
+    const session = await getServerSession(authOptions);
+    if (!session || (session.user as { role?: string })?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    return NextResponse.json({ bookings: mockBookings });
+    // Lade alle Buchungen aus der Datenbank
+    const bookings = await prisma.booking.findMany({
+      include: {
+        timeSlot: {
+          select: {
+            id: true,
+            date: true,
+            startTime: true,
+            endTime: true,
+          }
+        },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    // Konvertiere die Daten für das Frontend
+    const formattedBookings = bookings.map(booking => ({
+      id: booking.id,
+      clientName: booking.clientName,
+      clientEmail: booking.clientEmail,
+      clientPhone: booking.clientPhone,
+      message: booking.message,
+      status: booking.status,
+      createdAt: booking.createdAt.toISOString(),
+      timeSlot: {
+        id: booking.timeSlot.id,
+        date: booking.timeSlot.date.toISOString(),
+        startTime: booking.timeSlot.startTime,
+        endTime: booking.timeSlot.endTime,
+      },
+    }));
+
+    return NextResponse.json({ bookings: formattedBookings });
     
   } catch (error) {
     console.error('Error fetching bookings:', error);
@@ -62,18 +71,51 @@ export async function GET() {
 
 export async function PATCH(request: NextRequest) {
   try {
+    // Authentifizierung prüfen
+    const session = await getServerSession(authOptions);
+    if (!session || (session.user as { role?: string })?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { bookingId, action } = updateBookingSchema.parse(body);
     
-    // Hier würde die Datenbankaktualisierung stattfinden
-    console.log(`Updating booking ${bookingId} with action: ${action}`);
+    // Bestimme den neuen Status basierend auf der Aktion
+    let newStatus: 'CONFIRMED' | 'DECLINED' | 'CANCELLED';
+    switch (action) {
+      case 'confirm':
+        newStatus = 'CONFIRMED';
+        break;
+      case 'decline':
+        newStatus = 'DECLINED';
+        break;
+      case 'cancel':
+        newStatus = 'CANCELLED';
+        break;
+    }
     
-    // Simuliere Verarbeitung
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Aktualisiere die Buchung in der Datenbank
+    const updatedBooking = await prisma.booking.update({
+      where: { id: bookingId },
+      data: { status: newStatus },
+      include: {
+        timeSlot: {
+          select: {
+            id: true,
+            date: true,
+            startTime: true,
+            endTime: true,
+          }
+        }
+      }
+    });
+    
+    console.log(`Booking ${bookingId} updated to status: ${newStatus}`);
     
     return NextResponse.json({ 
       success: true, 
-      message: `Buchung ${action === 'confirm' ? 'bestätigt' : action === 'decline' ? 'abgelehnt' : 'storniert'}` 
+      message: `Buchung ${action === 'confirm' ? 'bestätigt' : action === 'decline' ? 'abgelehnt' : 'storniert'}`,
+      booking: updatedBooking
     });
     
   } catch (error) {
@@ -92,4 +134,3 @@ export async function PATCH(request: NextRequest) {
     );
   }
 }
-
