@@ -23,6 +23,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BookingCalendar } from '@/components/booking-calendar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 
 interface Booking {
@@ -47,6 +50,7 @@ interface TimeSlot {
   startTime: string;
   endTime: string;
   status: 'HIDDEN' | 'PUBLISHED' | 'BOOKED' | 'CANCELLED';
+  isOpen: boolean;
   isHoliday: boolean;
   isWeekend: boolean;
   maxBookings: number;
@@ -65,6 +69,9 @@ export default function AdminDashboard() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [emailAction, setEmailAction] = useState<'confirm' | 'decline'>('confirm');
   const [declineReason, setDeclineReason] = useState('');
+  const [showForceDeleteModal, setShowForceDeleteModal] = useState(false);
+  const [slotToForceDelete, setSlotToForceDelete] = useState<TimeSlot | null>(null);
+  const [activeBookingsCount, setActiveBookingsCount] = useState(0);
 
   // Prüfe Authentifizierung
   useEffect(() => {
@@ -332,32 +339,90 @@ export default function AdminDashboard() {
     alert(`Slot bearbeiten: ${format(slot.date, 'dd.MM.yyyy')} ${slot.startTime}-${slot.endTime}`);
   };
 
-  const handleDeleteSlot = async (slotId: string) => {
-    if (confirm('Möchten Sie diesen Slot wirklich löschen?')) {
-      try {
-        const response = await fetch(`/api/admin/slots/${slotId}`, {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' }
-        });
+  const handleHideSlot = async (slotId: string) => {
+    try {
+      const response = await fetch(`/api/admin/slots/${slotId}/hide`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' }
+      });
 
-        if (response.ok) {
-          const updatedSlots = timeSlots.filter(slot => slot.id !== slotId);
-          setTimeSlots(updatedSlots);
-          alert('Slot erfolgreich gelöscht');
-        } else {
-          const errorData = await response.json();
-          console.error('API Fehler:', errorData);
-          
-          if (response.status === 409) {
-            alert(`Slot kann nicht gelöscht werden: ${errorData.error}\n\nDetails: ${errorData.details}`);
-          } else {
-            alert(`Fehler: ${errorData.error}`);
-          }
-        }
-      } catch (error) {
-        console.error('Fehler beim Löschen des Slots:', error);
-        alert('Fehler beim Löschen des Slots');
+      if (response.ok) {
+        const updatedSlots = timeSlots.map(slot => 
+          slot.id === slotId 
+            ? { ...slot, isOpen: false }
+            : slot
+        );
+        setTimeSlots(updatedSlots);
+        alert('Slot erfolgreich versteckt');
+      } else {
+        const errorData = await response.json();
+        console.error('API Fehler:', errorData);
+        alert(`Fehler: ${errorData.error}`);
       }
+    } catch (error) {
+      console.error('Fehler beim Verstecken des Slots:', error);
+      alert('Fehler beim Verstecken des Slots');
+    }
+  };
+
+  const handleDeleteSlot = async (slotId: string) => {
+    try {
+      const response = await fetch(`/api/admin/slots/${slotId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        const updatedSlots = timeSlots.filter(slot => slot.id !== slotId);
+        setTimeSlots(updatedSlots);
+        alert('Slot erfolgreich gelöscht');
+      } else {
+        const errorData = await response.json();
+        console.error('API Fehler:', errorData);
+        
+        if (response.status === 409 && errorData.canForce) {
+          // Zeige Force-Delete Dialog
+          const slot = timeSlots.find(s => s.id === slotId);
+          if (slot) {
+            setSlotToForceDelete(slot);
+            setActiveBookingsCount(errorData.details.active);
+            setShowForceDeleteModal(true);
+          }
+        } else {
+          alert(`Fehler: ${errorData.error}`);
+        }
+      }
+    } catch (error) {
+      console.error('Fehler beim Löschen des Slots:', error);
+      alert('Fehler beim Löschen des Slots');
+    }
+  };
+
+  const handleForceDeleteSlot = async () => {
+    if (!slotToForceDelete) return;
+
+    try {
+      const response = await fetch(`/api/admin/slots/${slotToForceDelete.id}?force=true`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        const updatedSlots = timeSlots.filter(slot => slot.id !== slotToForceDelete.id);
+        setTimeSlots(updatedSlots);
+        alert(`Slot erfolgreich gelöscht (${activeBookingsCount} Buchungen storniert)`);
+      } else {
+        const errorData = await response.json();
+        console.error('API Fehler:', errorData);
+        alert(`Fehler: ${errorData.error}`);
+      }
+    } catch (error) {
+      console.error('Fehler beim Force-Löschen des Slots:', error);
+      alert('Fehler beim Force-Löschen des Slots');
+    } finally {
+      setShowForceDeleteModal(false);
+      setSlotToForceDelete(null);
+      setActiveBookingsCount(0);
     }
   };
 
@@ -826,6 +891,15 @@ export default function AdminDashboard() {
                           <Button
                             size="sm"
                             variant="outline"
+                            onClick={() => handleHideSlot(slot.id)}
+                            className="text-xs px-2 py-1 h-7 border-yellow-300 text-yellow-600 hover:bg-yellow-50"
+                            disabled={!slot.isOpen}
+                          >
+                            {slot.isOpen ? 'Verstecken' : 'Versteckt'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
                             onClick={() => handleEditSlot(slot)}
                             className="text-xs px-2 py-1 h-7 border-blue-300 text-blue-600 hover:bg-blue-50"
                           >
@@ -848,6 +922,50 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+
+        {/* Force-Delete Modal */}
+        <Dialog open={showForceDeleteModal} onOpenChange={setShowForceDeleteModal}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Slot erzwingend löschen</DialogTitle>
+              <DialogDescription>
+                Dieser Slot hat {activeBookingsCount} aktive Buchung{activeBookingsCount !== 1 ? 'en' : ''}. 
+                Beim erzwingenden Löschen werden alle aktiven Buchungen storniert und der Slot gelöscht.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              {slotToForceDelete && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">
+                    Slot: {format(slotToForceDelete.date, 'dd.MM.yyyy', { locale: de })} um {slotToForceDelete.startTime} - {slotToForceDelete.endTime}
+                  </p>
+                  <p className="text-sm text-red-600">
+                    ⚠️ {activeBookingsCount} Buchung{activeBookingsCount !== 1 ? 'en' : ''} wird{activeBookingsCount !== 1 ? 'en' : ''} storniert
+                  </p>
+                </div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowForceDeleteModal(false);
+                  setSlotToForceDelete(null);
+                  setActiveBookingsCount(0);
+                }}
+              >
+                Abbrechen
+              </Button>
+              <Button
+                onClick={handleForceDeleteSlot}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Erzwingen & Löschen
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* E-Mail Modal */}
         {showEmailModal && selectedBooking && (

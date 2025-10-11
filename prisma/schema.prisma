@@ -33,6 +33,7 @@ model TimeSlot {
   startTime   String
   endTime     String
   status      SlotStatus  @default(HIDDEN)
+  isOpen      Boolean     @default(true)
   isHoliday   Boolean     @default(false)
   isWeekend   Boolean     @default(false)
   maxBookings Int         @default(1)

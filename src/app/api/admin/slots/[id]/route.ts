@@ -18,6 +18,8 @@ export async function DELETE(
     }
 
     const { id: slotId } = await params;
+    const url = new URL(request.url);
+    const force = url.searchParams.get('force') === 'true';
 
     // Prüfe ob Slot existiert
     const existingSlot = await prisma.timeSlot.findUnique({
@@ -35,25 +37,63 @@ export async function DELETE(
       );
     }
 
-    console.log(`Slot ${slotId} gefunden, Status: ${existingSlot.status}, Buchungen: ${existingSlot.bookings.length}`);
+    console.log(`Slot ${slotId} gefunden, Status: ${existingSlot.status}, Buchungen: ${existingSlot.bookings.length}, Force: ${force}`);
 
-    // Prüfe ob Slot aktive Buchungen hat
+    // Prüfe aktive Buchungen
     const activeBookings = existingSlot.bookings.filter(booking => 
       booking.status === 'PENDING' || booking.status === 'CONFIRMED'
     );
 
-    if (activeBookings.length > 0) {
+    if (activeBookings.length > 0 && !force) {
       console.log(`Slot ${slotId} hat ${activeBookings.length} aktive Buchungen, kann nicht gelöscht werden`);
       return NextResponse.json(
         { 
           error: 'Slot kann nicht gelöscht werden, da aktive Buchungen vorhanden sind',
-          details: `Aktive Buchungen: ${activeBookings.length}`
+          details: { active: activeBookings.length },
+          canForce: true
         },
         { status: 409 }
       );
     }
 
-    // Wenn Slot nur stornierte Buchungen hat, lösche sie zuerst
+    if (force && activeBookings.length > 0) {
+      console.log(`Force-Delete: Storniere ${activeBookings.length} aktive Buchungen für Slot ${slotId}`);
+      
+      // Force-Delete: Storniere alle aktiven Buchungen in einer Transaktion
+      await prisma.$transaction(async (tx) => {
+        // Storniere alle aktiven Buchungen
+        await tx.booking.updateMany({
+          where: { 
+            timeSlotId: slotId,
+            status: { in: ['PENDING', 'CONFIRMED'] }
+          },
+          data: { status: 'CANCELLED' }
+        });
+
+        // Lösche alle stornierten Buchungen
+        await tx.booking.deleteMany({
+          where: { 
+            timeSlotId: slotId,
+            status: 'CANCELLED'
+          }
+        });
+
+        // Lösche den Slot
+        await tx.timeSlot.delete({
+          where: { id: slotId }
+        });
+      });
+
+      console.log(`Slot ${slotId} erfolgreich force-gelöscht (${activeBookings.length} Buchungen storniert)`);
+
+      return NextResponse.json({
+        success: true,
+        message: `Slot erfolgreich gelöscht (${activeBookings.length} Buchungen storniert)`,
+        forced: true
+      });
+    }
+
+    // Normal-Delete: Nur stornierte Buchungen löschen
     if (existingSlot.bookings.length > 0) {
       console.log(`Slot ${slotId} hat ${existingSlot.bookings.length} stornierte Buchungen, lösche sie zuerst...`);
       
@@ -84,6 +124,17 @@ export async function DELETE(
 
   } catch (error) {
     console.error('Fehler beim Löschen des Slots:', error);
+    
+    // Prisma Foreign Key Constraint Error
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2003') {
+      return NextResponse.json(
+        { 
+          error: 'FK-Constraint: Buchungen referenzieren Slot',
+          details: 'Slot kann nicht gelöscht werden, da noch Buchungen vorhanden sind'
+        },
+        { status: 409 }
+      );
+    }
     
     // Detaillierte Fehlerbehandlung
     if (error instanceof Error) {
