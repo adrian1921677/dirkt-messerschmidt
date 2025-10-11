@@ -51,3 +51,4 @@ VALUES ('admin-1', 'admin@demo.de', 'Admin User', 'ADMIN', NOW(), NOW());
 2. Erstellen Sie einen API-Schlüssel
 3. Fügen Sie den Schlüssel zu den Umgebungsvariablen hinzu
 4. Verifizieren Sie Ihre Domain für E-Mail-Versand
+
