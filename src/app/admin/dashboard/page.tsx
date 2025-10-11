@@ -79,7 +79,7 @@ export default function AdminDashboard() {
     await signOut({ callbackUrl: '/admin/login' });
   };
 
-  // Mock-Daten (später durch API ersetzen)
+  // Mock-Daten für Slots (später durch echte API ersetzen)
   useEffect(() => {
     const mockBookings: Booking[] = [
       {
@@ -112,44 +112,17 @@ export default function AdminDashboard() {
       },
     ];
 
-    const mockTimeSlots: TimeSlot[] = [
-      {
-        id: '1',
-        date: new Date(2024, 11, 20),
-        startTime: '09:00',
-        endTime: '10:00',
-        status: 'PUBLISHED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 0,
-      },
-      {
-        id: '2',
-        date: new Date(2024, 11, 20),
-        startTime: '10:30',
-        endTime: '11:30',
-        status: 'PUBLISHED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 0,
-      },
-      {
-        id: '3',
-        date: new Date(2024, 11, 21),
-        startTime: '09:00',
-        endTime: '10:00',
-        status: 'BOOKED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 1,
-      },
-    ];
-
     setBookings(mockBookings);
-    setTimeSlots(mockTimeSlots);
+    
+    // Lade Slots aus localStorage (für Demo-Zwecke)
+    const savedSlots = localStorage.getItem('adminTimeSlots');
+    if (savedSlots) {
+      const parsedSlots = JSON.parse(savedSlots).map((slot: any) => ({
+        ...slot,
+        date: new Date(slot.date),
+      }));
+      setTimeSlots(parsedSlots);
+    }
   }, []);
 
   // Loading-Anzeige während Session-Check
@@ -243,14 +216,33 @@ export default function AdminDashboard() {
   };
 
   const handleSlotToggle = (slotId: string) => {
-    setTimeSlots(prev => prev.map(slot => 
+    const updatedSlots = timeSlots.map(slot => 
       slot.id === slotId 
         ? { 
             ...slot, 
             status: slot.status === 'PUBLISHED' ? 'HIDDEN' : 'PUBLISHED' 
           }
         : slot
-    ));
+    );
+    
+    setTimeSlots(updatedSlots);
+    
+    // Speichere aktualisierte Slots im localStorage
+    localStorage.setItem('adminTimeSlots', JSON.stringify(updatedSlots.map(slot => ({
+      ...slot,
+      date: slot.date.toISOString(),
+    }))));
+  };
+
+  const refreshSlots = () => {
+    const savedSlots = localStorage.getItem('adminTimeSlots');
+    if (savedSlots) {
+      const parsedSlots = JSON.parse(savedSlots).map((slot: any) => ({
+        ...slot,
+        date: new Date(slot.date),
+      }));
+      setTimeSlots(parsedSlots);
+    }
   };
 
   const pendingBookings = bookings.filter(b => b.status === 'PENDING');
@@ -387,12 +379,18 @@ export default function AdminDashboard() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-gray-900">Kalender verwalten</h2>
-              <Button asChild>
-                <Link href="/admin/create-slots">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Neue Slots erstellen
-                </Link>
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={refreshSlots}>
+                  <Clock className="h-4 w-4 mr-2" />
+                  Aktualisieren
+                </Button>
+                <Button asChild>
+                  <Link href="/admin/create-slots">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Neue Slots erstellen
+                  </Link>
+                </Button>
+              </div>
             </div>
             
             <BookingCalendar

@@ -1,146 +1,88 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-
-const createSlotSchema = z.object({
-  date: z.string(),
-  startTime: z.string(),
-  endTime: z.string(),
-  maxBookings: z.number().min(1).max(10).default(1),
-});
-
-const updateSlotSchema = z.object({
-  slotId: z.string(),
-  status: z.enum(['HIDDEN', 'PUBLISHED', 'CANCELLED']),
-});
-
-export async function GET(request: NextRequest) {
-  try {
-    // Hier würde die Datenbankabfrage stattfinden
-    // Für jetzt simulieren wir die Daten
-    
-    const mockSlots = [
-      {
-        id: '1',
-        date: new Date(2024, 11, 20).toISOString(),
-        startTime: '09:00',
-        endTime: '10:00',
-        status: 'PUBLISHED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 0,
-      },
-      {
-        id: '2',
-        date: new Date(2024, 11, 20).toISOString(),
-        startTime: '10:30',
-        endTime: '11:30',
-        status: 'PUBLISHED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 0,
-      },
-      {
-        id: '3',
-        date: new Date(2024, 11, 21).toISOString(),
-        startTime: '09:00',
-        endTime: '10:00',
-        status: 'BOOKED',
-        isHoliday: false,
-        isWeekend: false,
-        maxBookings: 1,
-        currentBookings: 1,
-      },
-    ];
-
-    return NextResponse.json({ slots: mockSlots });
-    
-  } catch (error) {
-    console.error('Error fetching slots:', error);
-    return NextResponse.json(
-      { error: 'Fehler beim Laden der Zeitslots' },
-      { status: 500 }
-    );
-  }
-}
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { date, startTime, endTime, maxBookings } = createSlotSchema.parse(body);
-    
-    // Hier würde die Datenbankerstellung stattfinden
-    console.log('Creating new slot:', { date, startTime, endTime, maxBookings });
-    
-    // Simuliere Verarbeitung
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const newSlot = {
-      id: `slot_${Date.now()}`,
-      date,
-      startTime,
-      endTime,
-      status: 'PUBLISHED',
-      isHoliday: false,
-      isWeekend: false,
-      maxBookings,
-      currentBookings: 0,
-    };
-    
+    // Authentifizierung prüfen
+    const session = await getServerSession(authOptions);
+    if (!session || (session.user as { role?: string })?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { slots } = await request.json();
+
+    if (!slots || !Array.isArray(slots)) {
+      return NextResponse.json({ error: 'Invalid slots data' }, { status: 400 });
+    }
+
+    // Slots in der Datenbank erstellen
+    const createdSlots = await Promise.all(
+      slots.map(async (slot: any) => {
+        return await prisma.timeSlot.create({
+          data: {
+            date: new Date(slot.date),
+            startTime: slot.startTime,
+            endTime: slot.endTime,
+            status: 'PUBLISHED',
+            maxBookings: slot.maxBookings || 1,
+            currentBookings: 0,
+            isHoliday: false,
+            isWeekend: false,
+            managerId: session.user.id,
+          },
+        });
+      })
+    );
+
     return NextResponse.json({ 
       success: true, 
-      message: 'Zeitslot erfolgreich erstellt',
-      slot: newSlot
+      message: `${createdSlots.length} Slots erfolgreich erstellt`,
+      slots: createdSlots
     });
-    
+
   } catch (error) {
-    console.error('Error creating slot:', error);
-    
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Ungültige Eingabedaten', details: error.issues },
-        { status: 400 }
-      );
-    }
-    
-    return NextResponse.json(
-      { error: 'Fehler beim Erstellen des Zeitslots' },
-      { status: 500 }
-    );
+    console.error('Slot creation error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-export async function PATCH(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { slotId, status } = updateSlotSchema.parse(body);
-    
-    // Hier würde die Datenbankaktualisierung stattfinden
-    console.log(`Updating slot ${slotId} to status: ${status}`);
-    
-    // Simuliere Verarbeitung
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: `Zeitslot ${status === 'PUBLISHED' ? 'freigegeben' : status === 'HIDDEN' ? 'versteckt' : 'storniert'}` 
-    });
-    
-  } catch (error) {
-    console.error('Error updating slot:', error);
-    
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Ungültige Eingabedaten', details: error.issues },
-        { status: 400 }
-      );
+    // Authentifizierung prüfen
+    const session = await getServerSession(authOptions);
+    if (!session || (session.user as { role?: string })?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { searchParams } = new URL(request.url);
+    const month = searchParams.get('month');
+    const year = searchParams.get('year');
+
+    let whereClause: any = {};
     
-    return NextResponse.json(
-      { error: 'Fehler beim Aktualisieren des Zeitslots' },
-      { status: 500 }
-    );
+    if (month && year) {
+      const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+      const endDate = new Date(parseInt(year), parseInt(month), 0);
+      whereClause.date = {
+        gte: startDate,
+        lte: endDate,
+      };
+    }
+
+    const slots = await prisma.timeSlot.findMany({
+      where: whereClause,
+      orderBy: [
+        { date: 'asc' },
+        { startTime: 'asc' }
+      ],
+    });
+
+    return NextResponse.json({ slots });
+
+  } catch (error) {
+    console.error('Slots fetch error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-

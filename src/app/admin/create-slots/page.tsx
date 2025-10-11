@@ -60,11 +60,24 @@ export default function CreateSlotsPage() {
     setIsCreating(true);
     
     try {
-      // Hier würde normalerweise die API aufgerufen werden
-      console.log('Erstelle Slots:', timeSlots);
+      // Speichere Slots im localStorage (für Demo-Zwecke)
+      const slotsToSave = timeSlots.map(slot => ({
+        id: slot.id,
+        date: slot.date.toISOString(),
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        status: 'PUBLISHED',
+        isHoliday: false,
+        isWeekend: false,
+        maxBookings: slot.maxBookings,
+        currentBookings: 0,
+      }));
+
+      // Lade bestehende Slots und füge neue hinzu
+      const existingSlots = localStorage.getItem('adminTimeSlots');
+      const allSlots = existingSlots ? [...JSON.parse(existingSlots), ...slotsToSave] : slotsToSave;
       
-      // Simuliere API-Aufruf
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      localStorage.setItem('adminTimeSlots', JSON.stringify(allSlots));
       
       alert(`${timeSlots.length} Zeitslots erfolgreich erstellt!`);
       router.push('/admin/dashboard');
