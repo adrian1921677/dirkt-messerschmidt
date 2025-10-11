@@ -14,6 +14,7 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000, isGlobal = false }: 
   const [isVisible, setIsVisible] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [showPulse, setShowPulse] = useState(false);
 
   useEffect(() => {
     if (isGlobal && !hasAnimated) {
@@ -38,6 +39,35 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000, isGlobal = false }: 
       setShowArrow(true);
     }
   }, [delay, isGlobal, hasAnimated]);
+
+  // Pulsierende Animation mit Intervallen
+  useEffect(() => {
+    if (isGlobal && isVisible) {
+      let pulseInterval: ReturnType<typeof setTimeout>;
+      
+      const startPulseCycle = () => {
+        // Pulsieren für 5 Sekunden
+        setShowPulse(true);
+        
+        // Nach 5 Sekunden stoppen
+        setTimeout(() => {
+          setShowPulse(false);
+          
+          // Nach 2 Minuten wieder starten
+          pulseInterval = setTimeout(startPulseCycle, 2 * 60 * 1000); // 2 Minuten
+        }, 5000); // 5 Sekunden
+      };
+      
+      // Ersten Zyklus starten
+      startPulseCycle();
+      
+      return () => {
+        if (pulseInterval) {
+          clearTimeout(pulseInterval);
+        }
+      };
+    }
+  }, [isGlobal, isVisible]);
 
   const containerClasses = isGlobal 
     ? "fixed bottom-4 left-4 z-50 pointer-events-none"
@@ -93,8 +123,8 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000, isGlobal = false }: 
         </div>
       )}
 
-      {/* Pulsierender Ring um den QR-Code - nur für global animation */}
-      {isVisible && isGlobal && (
+      {/* Pulsierender Ring um den QR-Code - nur für global animation mit Intervallen */}
+      {isVisible && isGlobal && showPulse && (
         <div className="absolute inset-0 pointer-events-none">
           <div className="w-40 h-40 border-2 border-blue-400 rounded-2xl animate-ping opacity-20"></div>
         </div>
