@@ -18,6 +18,7 @@ export default function TerminanfragePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [bookingStep, setBookingStep] = useState<'calendar' | 'timeslot' | 'form' | 'success'>('calendar');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Lade verfügbare Slots aus der Datenbank
   useEffect(() => {
@@ -105,13 +106,15 @@ export default function TerminanfragePage() {
         );
         
         setAvailableSlots(publishedSlots);
-        alert(`${publishedSlots.length} verfügbare Slots aus der Datenbank geladen!`);
+        setToastMessage(`${publishedSlots.length} verfügbare Termine geladen`);
+        setTimeout(() => setToastMessage(null), 3000);
       } else {
-        alert('Keine verfügbaren Slots gefunden. Bitte wenden Sie sich an den Administrator.');
+        // Keine Slots gefunden - stille Behandlung ohne Popup
+        console.log('Keine verfügbaren Slots gefunden');
       }
     } catch (error) {
       console.error('Fehler beim Laden der Slots:', error);
-      alert('Fehler beim Laden der Slots. Bitte versuchen Sie es später erneut.');
+      // Fehler beim Laden - stille Behandlung ohne Popup
     }
     setIsRefreshing(false);
   };
@@ -332,6 +335,13 @@ export default function TerminanfragePage() {
           )}
         </div>
       </div>
+
+      {/* Toast-Benachrichtigung */}
+      {toastMessage && (
+        <div className="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 }

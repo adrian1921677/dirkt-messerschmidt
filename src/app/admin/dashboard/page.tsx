@@ -223,13 +223,14 @@ export default function AdminDashboard() {
           date: new Date(slot.date),
         }));
         setTimeSlots(parsedSlots);
-        alert(`${parsedSlots.length} Slots aus der Datenbank geladen!`);
+        // Slots wurden erfolgreich geladen - keine Popup-Nachricht
       } else {
-        alert('Keine Slots in der Datenbank gefunden.');
+        // Keine Slots gefunden - stille Behandlung ohne Popup
+        console.log('Keine Slots in der Datenbank gefunden');
       }
     } catch (error) {
       console.error('Fehler beim Laden der Slots:', error);
-      alert('Fehler beim Laden der Slots aus der Datenbank.');
+      // Fehler beim Laden - stille Behandlung ohne Popup
     }
   };
 

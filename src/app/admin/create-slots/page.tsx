@@ -79,14 +79,15 @@ export default function CreateSlotsPage() {
       const result = await response.json();
       
       if (result.success) {
-        alert(`${timeSlots.length} Zeitslots erfolgreich in der Datenbank gespeichert!`);
+        // Slots erfolgreich gespeichert - keine Popup-Nachricht
         router.push('/admin/dashboard');
       } else {
-        alert('Fehler beim Erstellen der Slots: ' + result.error);
+        console.error('Fehler beim Erstellen der Slots:', result.error);
+        // Fehler beim Erstellen - stille Behandlung ohne Popup
       }
     } catch (error) {
       console.error('Fehler beim Erstellen der Slots:', error);
-      alert('Fehler beim Erstellen der Slots');
+      // Fehler beim Erstellen - stille Behandlung ohne Popup
     } finally {
       setIsCreating(false);
     }
