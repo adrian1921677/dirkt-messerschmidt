@@ -7,51 +7,50 @@ import Image from 'next/image';
 interface QRCodeAnimationProps {
   qrCodePath: string;
   delay?: number;
+  isFloatingAnimation?: boolean;
 }
 
-export function QRCodeAnimation({ qrCodePath, delay = 2000 }: QRCodeAnimationProps) {
+export function QRCodeAnimation({ qrCodePath, delay = 2000, isFloatingAnimation = true }: QRCodeAnimationProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
-  const [isHiding, setIsHiding] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {
-    // QR-Code erscheint nach der angegebenen Verzögerung
-    const qrTimer = setTimeout(() => {
+    if (isFloatingAnimation && !hasAnimated) {
+      // QR-Code erscheint nach der angegebenen Verzögerung
+      const qrTimer = setTimeout(() => {
+        setIsVisible(true);
+      }, delay);
+
+      // Pfeil erscheint 1 Sekunde nach dem QR-Code
+      const arrowTimer = setTimeout(() => {
+        setShowArrow(true);
+        setHasAnimated(true); // Mark as animated, so it stays visible
+      }, delay + 1000);
+
+      return () => {
+        clearTimeout(qrTimer);
+        clearTimeout(arrowTimer);
+      };
+    } else if (!isFloatingAnimation) {
+      // If not floating animation, it's always visible
       setIsVisible(true);
-    }, delay);
-
-    // Pfeil erscheint 1 Sekunde nach dem QR-Code
-    const arrowTimer = setTimeout(() => {
       setShowArrow(true);
-    }, delay + 1000);
+    }
+  }, [delay, isFloatingAnimation, hasAnimated]);
 
-    // Animation verschwindet nach 8 Sekunden
-    const hideTimer = setTimeout(() => {
-      setIsHiding(true);
-      // Nach der Hide-Animation komplett entfernen
-      setTimeout(() => {
-        setIsVisible(false);
-        setShowArrow(false);
-      }, 1000); // 1 Sekunde für die Hide-Animation
-    }, delay + 8000);
-
-    return () => {
-      clearTimeout(qrTimer);
-      clearTimeout(arrowTimer);
-      clearTimeout(hideTimer);
-    };
-  }, [delay]);
+  const containerClasses = isFloatingAnimation 
+    ? "fixed left-0 top-1/2 transform -translate-y-1/2 z-50 pointer-events-none"
+    : "relative w-full h-auto aspect-square"; // For static display within content flow
 
   return (
-    <div className="fixed left-0 top-1/2 transform -translate-y-1/2 z-50 pointer-events-none">
+    <div className={containerClasses}>
       {/* QR-Code Container */}
       <div 
         className={`transition-all duration-1000 ease-out ${
-          isHiding
-            ? '-translate-x-full opacity-0'
-            : isVisible 
-              ? 'translate-x-0 opacity-100' 
-              : '-translate-x-full opacity-0'
+          isVisible 
+            ? 'translate-x-0 opacity-100' 
+            : '-translate-x-full opacity-0'
         }`}
       >
         <div className="relative bg-white rounded-2xl shadow-2xl p-4 border-2 border-blue-200">
@@ -73,29 +72,29 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000 }: QRCodeAnimationPro
         </div>
       </div>
 
-      {/* Pfeil mit "Scan me" Text */}
-      <div 
-        className={`absolute left-40 top-1/2 transform -translate-y-1/2 transition-all duration-500 ${
-          isHiding
-            ? 'translate-x-4 opacity-0'
-            : showArrow 
+      {/* Pfeil mit "Scan me" Text - nur für floating animation */}
+      {isFloatingAnimation && (
+        <div 
+          className={`absolute left-40 top-1/2 transform -translate-y-1/2 transition-all duration-500 ${
+            showArrow 
               ? 'translate-x-0 opacity-100' 
               : 'translate-x-4 opacity-0'
-        }`}
-      >
-        <div className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg">
-          <span className="text-sm font-medium">Scan me</span>
-          <ArrowRight className="h-4 w-4 animate-pulse" />
+          }`}
+        >
+          <div className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg">
+            <span className="text-sm font-medium">Scan me</span>
+            <ArrowRight className="h-4 w-4 animate-pulse" />
+          </div>
+          
+          {/* Pfeil-Spitze */}
+          <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1">
+            <div className="w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent border-r-blue-600"></div>
+          </div>
         </div>
-        
-        {/* Pfeil-Spitze */}
-        <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1">
-          <div className="w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent border-r-blue-600"></div>
-        </div>
-      </div>
+      )}
 
-      {/* Pulsierender Ring um den QR-Code */}
-      {isVisible && (
+      {/* Pulsierender Ring um den QR-Code - nur für floating animation */}
+      {isVisible && isFloatingAnimation && (
         <div className="absolute inset-0 pointer-events-none">
           <div className="w-40 h-40 border-2 border-blue-400 rounded-2xl animate-ping opacity-20"></div>
         </div>

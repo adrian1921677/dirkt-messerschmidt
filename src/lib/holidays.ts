@@ -81,7 +81,7 @@ export function isWeekend(date: Date): boolean {
   return day === 0 || day === 6; // Sonntag oder Samstag
 }
 
-export function getDateStatus(date: Date, availableSlots: Array<{ date: Date; status: string }> = []): {
+export function getDateStatus(date: Date, availableSlots: Array<{ date: Date; status: string; currentBookings?: number; maxBookings?: number }> = []): {
   status: 'available' | 'unavailable' | 'holiday' | 'weekend' | 'past';
   color: 'green' | 'red' | 'yellow' | 'gray';
   label?: string;
@@ -109,10 +109,24 @@ export function getDateStatus(date: Date, availableSlots: Array<{ date: Date; st
     return { status: 'weekend', color: 'red' };
   }
   
-  // Verfügbare Slots prüfen
-  const slot = availableSlots.find(s => isSameDay(s.date, date));
-  if (slot && slot.status === 'PUBLISHED') {
+  // Verfügbare Slots prüfen - alle Slots an diesem Tag
+  const slotsOnDate = availableSlots.filter(s => isSameDay(s.date, date));
+  const publishedSlots = slotsOnDate.filter(s => s.status === 'PUBLISHED');
+  
+  // Wenn es veröffentlichte Slots gibt, die noch nicht voll sind
+  const availableSlotsOnDate = publishedSlots.filter(slot => {
+    const currentBookings = slot.currentBookings || 0;
+    const maxBookings = slot.maxBookings || 1;
+    return currentBookings < maxBookings;
+  });
+  
+  if (availableSlotsOnDate.length > 0) {
     return { status: 'available', color: 'green' };
+  }
+  
+  // Wenn es veröffentlichte Slots gibt, aber alle voll sind
+  if (publishedSlots.length > 0) {
+    return { status: 'unavailable', color: 'red' };
   }
   
   return { status: 'unavailable', color: 'red' };

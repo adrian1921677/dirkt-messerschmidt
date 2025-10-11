@@ -55,7 +55,7 @@ model Booking {
   clientEmail  String
   clientPhone  String?
   message      String?
-  status       BookingStatus @default(REQUESTED)
+  status       BookingStatus @default(PENDING)
   date         DateTime      // UTC-Mitternacht
   startMinutes Int           // Minuten seit Mitternacht
   endMinutes   Int           // Minuten seit Mitternacht

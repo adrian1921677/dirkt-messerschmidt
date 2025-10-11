@@ -157,17 +157,19 @@ export function BookingForm({
 
         {/* Datenschutz */}
         <div className="space-y-2">
-          <div className="flex items-start space-x-2">
-            <Checkbox
-              id="dataProtection"
-              checked={dataProtectionChecked}
-              onCheckedChange={(checked) => {
-                setValue('dataProtection', checked as boolean);
-              }}
-            />
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0 mt-1">
+              <Checkbox
+                id="dataProtection"
+                checked={dataProtectionChecked}
+                onCheckedChange={(checked) => {
+                  setValue('dataProtection', checked as boolean);
+                }}
+              />
+            </div>
             <Label 
               htmlFor="dataProtection" 
-              className="text-sm leading-relaxed cursor-pointer"
+              className="text-sm leading-relaxed cursor-pointer flex-1"
             >
               Ich stimme der{' '}
               <a 

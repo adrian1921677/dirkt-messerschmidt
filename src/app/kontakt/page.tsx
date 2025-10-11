@@ -9,7 +9,7 @@ export default function Kontakt() {
     {
       icon: <Phone className="h-6 w-6 text-blue-600" />,
       title: "Telefon",
-      details: ["0202 / 423 110", "0171 / 14 15 899", "0171 / 3500 856"],
+          details: ["0202 / 423 110", "0171 / 14 15 899"],
       action: "tel:+49202423110"
     },
     {
@@ -111,21 +111,18 @@ export default function Kontakt() {
               message="Hallo Herr Messerschmidt, ich habe eine Frage zum Gutachten."
             />
 
-            {/* QR Code Animation */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <MessageCircle className="h-6 w-6 mr-2 text-blue-600" />
-                  QR-Code
-                </CardTitle>
-                <CardDescription>
-                  Scannen Sie den QR-Code für schnellen Kontakt
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <QRCodeAnimation qrCodePath="/qr-code.png" />
-              </CardContent>
-            </Card>
+                {/* QR Code Animation */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <MessageCircle className="h-6 w-6 mr-2 text-blue-600" />
+                      QR-Code
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <QRCodeAnimation qrCodePath="/qr-code.png" isFloatingAnimation={false} />
+                  </CardContent>
+                </Card>
           </div>
         </div>
 

@@ -32,7 +32,6 @@ export function Footer() {
                 <div className="text-gray-400">
                   <div>0202 / 423 110</div>
                   <div>0171 / 14 15 899</div>
-                  <div>0171 / 3500 856</div>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
