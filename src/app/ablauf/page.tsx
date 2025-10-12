@@ -92,44 +92,6 @@ export default function Ablauf() {
     }
   ];
 
-  const timeline = [
-    {
-      phase: "Vorbereitung",
-      duration: "1-2 Tage",
-      tasks: [
-        "Erstberatung und Angebotserstellung",
-        "Terminvereinbarung",
-        "Vorbereitung der Begutachtung"
-      ]
-    },
-    {
-      phase: "Begutachtung",
-      duration: "1-4 Stunden",
-      tasks: [
-        "Vor-Ort-Termin",
-        "Detaillierte Dokumentation",
-        "Erste Einschätzung"
-      ]
-    },
-    {
-      phase: "Auswertung",
-      duration: "3-10 Tage",
-      tasks: [
-        "Analyse der gesammelten Daten",
-        "Erstellung des Gutachtens",
-        "Qualitätskontrolle"
-      ]
-    },
-    {
-      phase: "Übergabe",
-      duration: "1-2 Stunden",
-      tasks: [
-        "Präsentation der Ergebnisse",
-        "Mündliche Erläuterung",
-        "Nachbetreuung"
-      ]
-    }
-  ];
 
   const requirements = [
     {
@@ -216,40 +178,6 @@ export default function Ablauf() {
           </div>
         </section>
 
-        {/* Timeline */}
-        <section className="mb-20 bg-gray-50 py-16 rounded-2xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Zeitplan
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Übersichtliche Darstellung der verschiedenen Phasen und deren Dauer
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {timeline.map((phase, index) => (
-              <Card key={index} className="text-center">
-                <CardHeader>
-                  <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                    {index + 1}
-                  </div>
-                  <CardTitle className="text-xl">{phase.phase}</CardTitle>
-                  <Badge variant="outline">{phase.duration}</Badge>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    {phase.tasks.map((task, taskIndex) => (
-                      <li key={taskIndex} className="flex items-start space-x-2">
-                        <CheckCircle className="h-3 w-3 text-green-600 flex-shrink-0 mt-1" />
-                        <span className="text-gray-600">{task}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
 
         {/* Requirements */}
         <section className="mb-20">

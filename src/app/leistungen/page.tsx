@@ -223,83 +223,45 @@ export default function Leistungen() {
           </div>
         </section>
 
-        {/* Call to Action - Cool Design */}
-        <div className="relative overflow-hidden">
-          {/* Animated Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 animate-pulse"></div>
-          
-          {/* Floating Elements */}
-          <div className="absolute top-0 left-0 w-40 h-40 bg-white/10 rounded-full -translate-x-20 -translate-y-20 animate-bounce delay-1000"></div>
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-16 -translate-y-16 animate-pulse delay-500"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -translate-x-12 translate-y-12 animate-bounce delay-2000"></div>
-          <div className="absolute bottom-0 right-0 w-36 h-36 bg-white/10 rounded-full translate-x-20 translate-y-20 animate-pulse delay-1500"></div>
+        {/* Call to Action - Minimal Design */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-200">
+          {/* Subtle Background Animation */}
+          <div className="absolute inset-0 bg-gradient-to-r from-green-100/30 to-emerald-100/30"></div>
           
           {/* Main Content */}
-          <div className="relative z-10 text-center py-16 px-8">
+          <div className="relative z-10 text-center py-12 px-8">
             {/* Icon */}
             <div className="flex justify-center mb-6">
-              <div className="relative">
-                <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl group hover:scale-110 transition-transform duration-300">
-                  <Car className="h-10 w-10 text-white group-hover:animate-bounce" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-ping"></div>
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full"></div>
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center shadow-lg">
+                <Car className="h-8 w-8 text-green-600" />
               </div>
             </div>
             
             {/* Main Headline */}
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 italic drop-shadow-lg group">
-              <span className="inline-block group-hover:animate-pulse">Bei Unfallschaden</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 italic">
+              Bei Unfallschaden
               <br />
-              <span className="inline-block group-hover:animate-bounce delay-100">zu Messerschmidt fahren!</span>
+              zu Messerschmidt fahren!
             </h2>
             
             {/* Subtitle */}
-            <p className="text-xl md:text-2xl text-white/90 mb-8 font-medium">
+            <p className="text-lg text-gray-700 mb-8">
               Wir kommen auch zu Ihnen vorbei
-              <span className="block text-lg text-white/80 mt-2">
+              <span className="block text-gray-600 mt-1">
                 Termine nach Vereinbarung
               </span>
             </p>
             
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* Action Button */}
+            <div className="flex justify-center">
               <Button 
                 size="lg" 
-                className="bg-white text-green-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/btn"
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <div className="flex items-center space-x-3">
-                  <Car className="h-6 w-6 group-hover/btn:animate-bounce" />
-                  <span>Termin vereinbaren</span>
-                  <div className="w-2 h-2 bg-green-500 rounded-full group-hover/btn:animate-ping"></div>
-                </div>
+                <Car className="h-5 w-5 mr-2" />
+                Termin vereinbaren
               </Button>
-              
-              <a
-                href="https://wa.me/491711415899?text=Hallo%20Herr%20Messerschmidt,%20ich%20möchte%20einen%20Termin%20vereinbaren."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-green-500 hover:bg-green-400 text-white font-bold py-4 px-8 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/whatsapp"
-              >
-                <div className="flex items-center space-x-3">
-                  <MessageCircle className="h-6 w-6 group-hover/whatsapp:animate-bounce" />
-                  <span>WhatsApp</span>
-                  <div className="w-2 h-2 bg-white rounded-full group-hover/whatsapp:animate-ping"></div>
-                </div>
-              </a>
             </div>
-            
-            {/* Decorative Elements */}
-            <div className="mt-12 flex justify-center space-x-8 text-white/30">
-              <div className="text-4xl animate-bounce delay-1000">🚗</div>
-              <div className="text-4xl animate-pulse delay-1500">⚡</div>
-              <div className="text-4xl animate-bounce delay-2000">🛠️</div>
-              <div className="text-4xl animate-pulse delay-500">📋</div>
-            </div>
-            
-            {/* Bottom Accent */}
-            <div className="mt-8 w-32 h-1 bg-white/50 rounded-full mx-auto"></div>
           </div>
         </div>
       </div>
