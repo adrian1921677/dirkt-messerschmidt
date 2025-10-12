@@ -217,7 +217,7 @@ export default function Ablauf() {
             Ich berate Sie gerne persönlich und erkläre Ihnen den gesamten Prozess im Detail.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6">
+            <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6 bg-white text-blue-600 hover:bg-gray-100">
               <Link href="/kontakt">
                 <Mail className="h-5 w-5 mr-2" />
                 Kontakt aufnehmen

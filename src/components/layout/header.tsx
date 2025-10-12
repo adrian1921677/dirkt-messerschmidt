@@ -25,7 +25,7 @@ export function Header() {
                 <Link href="/" className="flex items-center space-x-4">
                   <div className="h-20 w-20 flex items-center justify-center">
                     <img 
-                      src="/logo.svg" 
+                      src="/logo.png" 
                       alt="Dirk Messerschmidt Logo" 
                       className="h-18 w-18"
                     />
