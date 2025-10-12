@@ -637,6 +637,32 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleCancelBooking = (booking: Booking) => {
+    const subject = 'Terminabsage - Dirk Messerschmidt';
+    const body = `Sehr geehrte/r ${booking.clientName},
+
+leider muss ich Ihnen mitteilen, dass Ihr gebuchter Termin storniert werden muss.
+
+Stornierter Termin:
+- Datum: ${format(booking.timeSlot.date, 'dd.MM.yyyy', { locale: de })}
+- Uhrzeit: ${booking.timeSlot.startTime} - ${booking.timeSlot.endTime}
+- Grund: Termin wurde vom Administrator storniert
+
+Bitte kontaktieren Sie mich telefonisch unter 0202 / 423 110, um einen neuen Termin zu vereinbaren.
+
+Ich entschuldige mich für die Unannehmlichkeiten.
+
+Mit freundlichen Grüßen
+Dirk Messerschmidt
+Sachverständiger
+
+Tel: 0202 / 423 110
+Adresse: Alt-Wolfshahn 12, 42117 Wuppertal`;
+
+    const mailtoLink = `mailto:${booking.clientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoLink);
+  };
+
   const pendingBookings = bookings.filter(b => b.status === 'PENDING');
   const confirmedBookings = bookings.filter(b => b.status === 'CONFIRMED');
 
@@ -773,7 +799,7 @@ export default function AdminDashboard() {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Transparente Termine ({transparentBookings.length})
+                Termine ({transparentBookings.length})
               </button>
             </nav>
           </div>
@@ -1101,7 +1127,7 @@ export default function AdminDashboard() {
         {activeTab === 'transparent' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">Transparente Termine (Alle Buchungen)</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Termine (Alle Buchungen)</h2>
               <Button variant="outline" onClick={refreshTransparentBookings}>
                 <Clock className="h-4 w-4 mr-2" />
                 Aktualisieren
@@ -1137,6 +1163,17 @@ export default function AdminDashboard() {
                       <Badge variant="outline" className="text-xs">
                         Slot: {booking.timeSlot.id.slice(-8)}
                       </Badge>
+                      {booking.status === 'PENDING' || booking.status === 'CONFIRMED' ? (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleCancelBooking(booking)}
+                          className="text-xs px-2 py-1 h-7 border-red-300 text-red-600 hover:bg-red-50"
+                        >
+                          <XCircle className="h-3 w-3 mr-1" />
+                          Stornieren
+                        </Button>
+                      ) : null}
                     </div>
                   </div>
                 </Card>
