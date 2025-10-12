@@ -646,7 +646,7 @@ export default function AdminDashboard() {
     setShowCancelModal(true);
   };
 
-  const confirmCancelBooking = () => {
+  const confirmCancelBooking = async () => {
     if (!bookingToCancel) return;
 
     const subject = 'Terminabsage - Dirk Messerschmidt';
@@ -672,6 +672,28 @@ Adresse: Alt-Wolfshahn 12, 42117 Wuppertal`;
 
     const mailtoLink = `mailto:${bookingToCancel.clientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.open(mailtoLink);
+    
+    // Lösche die Buchung aus der Datenbank
+    try {
+      const response = await fetch(`/api/admin/bookings/${bookingToCancel.id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        // Aktualisiere die lokalen Listen
+        setTransparentBookings(prev => prev.filter(booking => booking.id !== bookingToCancel.id));
+        setBookings(prev => prev.filter(booking => booking.id !== bookingToCancel.id));
+        console.log(`Buchung ${bookingToCancel.id} erfolgreich gelöscht`);
+      } else {
+        const errorData = await response.json();
+        console.error('Fehler beim Löschen der Buchung:', errorData);
+        alert('E-Mail geöffnet, aber Fehler beim Löschen der Buchung aus der Datenbank');
+      }
+    } catch (error) {
+      console.error('Fehler beim Löschen der Buchung:', error);
+      alert('E-Mail geöffnet, aber Fehler beim Löschen der Buchung aus der Datenbank');
+    }
     
     setShowCancelModal(false);
     setBookingToCancel(null);
