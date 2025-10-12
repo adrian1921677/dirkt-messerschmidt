@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Award, Clock, Users, FileText, Shield } from "lucide-react";
+import { CheckCircle, Award, Clock, Users, FileText, Shield, Calendar, MessageCircle } from "lucide-react";
 
 export default function Home() {
   const services = [
@@ -181,27 +181,73 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-600">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Bereit für Ihr Gutachten?
+      {/* CTA Section - Special Design */}
+      <section className="relative py-24 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-indigo-500/20 to-purple-500/20 animate-pulse"></div>
+        <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-36 -translate-y-36 animate-bounce delay-1000"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full translate-x-32 -translate-y-32 animate-pulse delay-500"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full -translate-x-40 translate-y-40 animate-bounce delay-2000"></div>
+        <div className="absolute bottom-0 right-0 w-56 h-56 bg-white/5 rounded-full translate-x-28 translate-y-28 animate-pulse delay-1500"></div>
+        
+        {/* Main Content */}
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Icon */}
+          <div className="flex justify-center mb-8">
+            <div className="relative">
+              <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl group hover:scale-110 transition-transform duration-300">
+                <FileText className="h-12 w-12 text-white group-hover:animate-bounce" />
+              </div>
+              <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full animate-ping"></div>
+              <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full"></div>
+            </div>
+          </div>
+          
+          {/* Headline */}
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg group">
+            <span className="inline-block group-hover:animate-pulse">Bereit für Ihr</span>
+            <br />
+            <span className="inline-block group-hover:animate-bounce delay-100">Gutachten?</span>
           </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto font-medium">
             Kontaktieren Sie mich noch heute für eine unverbindliche Beratung und ein individuelles Angebot.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6">
+          
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/btn text-xl">
               <Link href="/termin-anfragen">
-                Termin anfragen
+                <div className="flex items-center space-x-3">
+                  <Calendar className="h-6 w-6 group-hover/btn:animate-bounce" />
+                  <span>Termin anfragen</span>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full group-hover/btn:animate-ping"></div>
+                </div>
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-blue-600">
+            
+            <Button asChild size="lg" className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/whatsapp text-xl">
               <Link href="/kontakt">
-                Kontakt aufnehmen
+                <div className="flex items-center space-x-3">
+                  <MessageCircle className="h-6 w-6 group-hover/whatsapp:animate-bounce" />
+                  <span>Kontakt aufnehmen</span>
+                  <div className="w-2 h-2 bg-white rounded-full group-hover/whatsapp:animate-ping"></div>
+                </div>
               </Link>
             </Button>
           </div>
+          
+          {/* Decorative Elements */}
+          <div className="mt-16 flex justify-center space-x-12 text-white/30">
+            <div className="text-5xl animate-bounce delay-1000">📋</div>
+            <div className="text-5xl animate-pulse delay-1500">⚡</div>
+            <div className="text-5xl animate-bounce delay-2000">🛠️</div>
+            <div className="text-5xl animate-pulse delay-500">📊</div>
+          </div>
+          
+          {/* Bottom Accent */}
+          <div className="mt-12 w-40 h-1 bg-white/50 rounded-full mx-auto"></div>
         </div>
       </section>
     </div>
