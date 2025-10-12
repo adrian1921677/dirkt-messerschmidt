@@ -72,6 +72,9 @@ export default function AdminDashboard() {
   const [showForceDeleteModal, setShowForceDeleteModal] = useState(false);
   const [slotToForceDelete, setSlotToForceDelete] = useState<TimeSlot | null>(null);
   const [activeBookingsCount, setActiveBookingsCount] = useState(0);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null);
+  const [cancelReason, setCancelReason] = useState('');
 
   // Prüfe Authentifizierung
   useEffect(() => {
@@ -638,15 +641,23 @@ export default function AdminDashboard() {
   };
 
   const handleCancelBooking = (booking: Booking) => {
+    setBookingToCancel(booking);
+    setCancelReason('');
+    setShowCancelModal(true);
+  };
+
+  const confirmCancelBooking = () => {
+    if (!bookingToCancel) return;
+
     const subject = 'Terminabsage - Dirk Messerschmidt';
-    const body = `Sehr geehrte/r ${booking.clientName},
+    const body = `Sehr geehrte/r ${bookingToCancel.clientName},
 
 leider muss ich Ihnen mitteilen, dass Ihr gebuchter Termin storniert werden muss.
 
 Stornierter Termin:
-- Datum: ${format(booking.timeSlot.date, 'dd.MM.yyyy', { locale: de })}
-- Uhrzeit: ${booking.timeSlot.startTime} - ${booking.timeSlot.endTime}
-- Grund: Termin wurde vom Administrator storniert
+- Datum: ${format(bookingToCancel.timeSlot.date, 'dd.MM.yyyy', { locale: de })}
+- Uhrzeit: ${bookingToCancel.timeSlot.startTime} - ${bookingToCancel.timeSlot.endTime}
+- Grund: ${cancelReason || 'Termin wurde vom Administrator storniert'}
 
 Bitte kontaktieren Sie mich telefonisch unter 0202 / 423 110, um einen neuen Termin zu vereinbaren.
 
@@ -659,8 +670,12 @@ Sachverständiger
 Tel: 0202 / 423 110
 Adresse: Alt-Wolfshahn 12, 42117 Wuppertal`;
 
-    const mailtoLink = `mailto:${booking.clientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailtoLink = `mailto:${bookingToCancel.clientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.open(mailtoLink);
+    
+    setShowCancelModal(false);
+    setBookingToCancel(null);
+    setCancelReason('');
   };
 
   const pendingBookings = bookings.filter(b => b.status === 'PENDING');
@@ -1188,6 +1203,59 @@ Adresse: Alt-Wolfshahn 12, 42117 Wuppertal`;
             </div>
           </div>
         )}
+
+        {/* Stornierungs-Modal */}
+        <Dialog open={showCancelModal} onOpenChange={setShowCancelModal}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Termin stornieren</DialogTitle>
+              <DialogDescription>
+                Geben Sie einen Grund für die Stornierung ein. Dieser wird in der E-Mail an den Kunden verwendet.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              {bookingToCancel && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Kunde: {bookingToCancel.clientName}</p>
+                  <p className="text-sm text-gray-600">E-Mail: {bookingToCancel.clientEmail}</p>
+                  <p className="text-sm text-gray-600">
+                    Termin: {format(bookingToCancel.timeSlot.date, 'dd.MM.yyyy', { locale: de })} um {bookingToCancel.timeSlot.startTime} - {bookingToCancel.timeSlot.endTime}
+                  </p>
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="cancelReason">Grund für die Stornierung</Label>
+                <Textarea
+                  id="cancelReason"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  rows={3}
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  placeholder="z.B. Krankheit, betriebliche Gründe, Überschneidung im Terminplan, technische Probleme..."
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowCancelModal(false);
+                  setBookingToCancel(null);
+                  setCancelReason('');
+                }}
+              >
+                Abbrechen
+              </Button>
+              <Button
+                onClick={confirmCancelBooking}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                <XCircle className="h-4 w-4 mr-2" />
+                Stornieren & E-Mail öffnen
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
