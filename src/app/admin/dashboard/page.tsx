@@ -63,7 +63,8 @@ export default function AdminDashboard() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-  const [activeTab, setActiveTab] = useState<'calendar' | 'bookings' | 'slots'>('calendar');
+  const [transparentBookings, setTransparentBookings] = useState<Booking[]>([]);
+  const [activeTab, setActiveTab] = useState<'calendar' | 'bookings' | 'slots' | 'transparent'>('calendar');
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [emailAction, setEmailAction] = useState<'confirm' | 'decline'>('confirm');
@@ -407,8 +408,19 @@ export default function AdminDashboard() {
       });
 
       if (response.ok) {
+        const data = await response.json();
         const updatedSlots = timeSlots.filter(slot => slot.id !== slotToForceDelete.id);
         setTimeSlots(updatedSlots);
+        
+        // Öffne mailto: Links für Stornierungs-E-Mails
+        if (data.mailtoLinks && data.mailtoLinks.length > 0) {
+          for (const link of data.mailtoLinks) {
+            window.open(link.mailtoLink);
+            // Kleine Verzögerung zwischen den E-Mails
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+        }
+        
         alert(`Slot erfolgreich gelöscht (${activeBookingsCount} Buchungen storniert)`);
       } else {
         const errorData = await response.json();
@@ -578,6 +590,53 @@ export default function AdminDashboard() {
     }
   };
 
+  const refreshTransparentBookings = async () => {
+    try {
+      // Lade alle Buchungen (ohne Cache)
+      const response = await fetch('/api/admin/all-bookings', { cache: 'no-store' });
+      const data = await response.json();
+      
+      if (data.bookings) {
+        const parsedBookings = data.bookings.map((booking: {
+          id: string;
+          clientName: string;
+          clientEmail: string;
+          clientPhone?: string;
+          message?: string;
+          status: string;
+          createdAt: string;
+          timeSlot: {
+            id: string;
+            date: string;
+            startTime: string;
+            endTime: string;
+            status: string;
+          };
+        }) => ({
+          id: booking.id,
+          clientName: booking.clientName,
+          clientEmail: booking.clientEmail,
+          clientPhone: booking.clientPhone,
+          message: booking.message,
+          status: booking.status,
+          createdAt: new Date(booking.createdAt),
+          timeSlot: {
+            id: booking.timeSlot.id,
+            date: new Date(booking.timeSlot.date),
+            startTime: booking.timeSlot.startTime,
+            endTime: booking.timeSlot.endTime,
+          },
+        }));
+        setTransparentBookings(parsedBookings);
+        console.log(`${parsedBookings.length} transparente Buchungen aus der Datenbank geladen!`);
+      } else {
+        console.log('Keine transparenten Buchungen in der Datenbank gefunden');
+      }
+    } catch (error) {
+      console.error('Fehler beim Laden der transparenten Buchungen:', error);
+    }
+  };
+
   const pendingBookings = bookings.filter(b => b.status === 'PENDING');
   const confirmedBookings = bookings.filter(b => b.status === 'CONFIRMED');
 
@@ -702,6 +761,19 @@ export default function AdminDashboard() {
                 }`}
               >
                 Zeitslots verwalten
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('transparent');
+                  refreshTransparentBookings();
+                }}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'transparent'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Transparente Termine ({transparentBookings.length})
               </button>
             </nav>
           </div>
@@ -1022,6 +1094,60 @@ export default function AdminDashboard() {
                   </Button>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'transparent' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900">Transparente Termine (Alle Buchungen)</h2>
+              <Button variant="outline" onClick={refreshTransparentBookings}>
+                <Clock className="h-4 w-4 mr-2" />
+                Aktualisieren
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              {transparentBookings.map((booking) => (
+                <Card key={booking.id} className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="font-semibold text-gray-900">{booking.clientName}</p>
+                      <p className="text-sm text-gray-600">{booking.clientEmail}</p>
+                      {booking.clientPhone && (
+                        <p className="text-sm text-gray-600">{booking.clientPhone}</p>
+                      )}
+                      <p className="text-sm text-gray-600 mt-2">
+                        Termin: {format(booking.timeSlot.date, 'dd.MM.yyyy', { locale: de })} um {booking.timeSlot.startTime} - {booking.timeSlot.endTime}
+                      </p>
+                      {booking.message && (
+                        <p className="text-sm text-gray-700 mt-2">
+                          Nachricht: {booking.message}
+                        </p>
+                      )}
+                      <p className="text-xs text-gray-500 mt-2">
+                        Anfrage vom: {format(booking.createdAt, 'dd.MM.yyyy HH:mm', { locale: de })}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end space-y-2">
+                      <Badge className={getStatusColor(booking.status)}>
+                        {booking.status}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        Slot: {booking.timeSlot.id.slice(-8)}
+                      </Badge>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+              
+              {transparentBookings.length === 0 && (
+                <Card className="p-8 text-center">
+                  <Calendar className="h-12 w-12 mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-500">Keine Buchungen vorhanden</p>
+                </Card>
+              )}
             </div>
           </div>
         )}

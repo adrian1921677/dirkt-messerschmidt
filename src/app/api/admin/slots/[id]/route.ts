@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { sendCancellationEmailToClient } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -94,31 +93,45 @@ export async function DELETE(
         });
       });
 
-      // Sende Stornierungs-E-Mails an alle betroffenen Kunden
-      try {
-        for (const booking of bookingData) {
-          await sendCancellationEmailToClient(
-            booking.clientEmail,
-            booking.clientName,
-            {
-              date: booking.date,
-              time: booking.time,
-              reason: 'Slot wurde vom Administrator entfernt'
-            }
-          );
-          console.log(`Stornierungs-E-Mail gesendet an: ${booking.clientEmail}`);
-        }
-      } catch (emailError) {
-        console.error('Fehler beim Senden der Stornierungs-E-Mails:', emailError);
-        // E-Mail-Fehler sollten die Slot-Löschung nicht blockieren
-      }
+      // Generiere mailto: Links für Stornierungs-E-Mails
+      const mailtoLinks = bookingData.map(booking => {
+        const subject = 'Terminabsage - Dirk Messerschmidt';
+        const body = `Sehr geehrte/r ${booking.clientName},
+
+leider muss ich Ihnen mitteilen, dass Ihr gebuchter Termin storniert werden muss.
+
+Stornierter Termin:
+- Datum: ${booking.date}
+- Uhrzeit: ${booking.time}
+- Grund: Slot wurde vom Administrator entfernt
+
+Bitte kontaktieren Sie mich telefonisch unter 0202 / 423 110, um einen neuen Termin zu vereinbaren.
+
+Ich entschuldige mich für die Unannehmlichkeiten.
+
+Mit freundlichen Grüßen
+Dirk Messerschmidt
+Sachverständiger
+
+Tel: 0202 / 423 110
+Adresse: Alt-Wolfshahn 12, 42117 Wuppertal`;
+
+        return {
+          email: booking.clientEmail,
+          name: booking.clientName,
+          mailtoLink: `mailto:${booking.clientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+        };
+      });
+
+      console.log(`Force-Delete: ${mailtoLinks.length} mailto: Links generiert`);
 
       console.log(`Slot ${slotId} erfolgreich force-gelöscht (${activeBookings.length} Buchungen storniert)`);
 
       return NextResponse.json({
         success: true,
         message: `Slot erfolgreich gelöscht (${activeBookings.length} Buchungen storniert)`,
-        forced: true
+        forced: true,
+        mailtoLinks: mailtoLinks
       });
     }
 
