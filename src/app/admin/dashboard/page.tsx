@@ -684,6 +684,10 @@ Adresse: Alt-Wolfshahn 12, 42117 Wuppertal`;
         // Aktualisiere die lokalen Listen
         setTransparentBookings(prev => prev.filter(booking => booking.id !== bookingToCancel.id));
         setBookings(prev => prev.filter(booking => booking.id !== bookingToCancel.id));
+        
+        // Aktualisiere auch die Slots (da Buchungsanzahl angezeigt wird)
+        refreshSlots();
+        
         console.log(`Buchung ${bookingToCancel.id} erfolgreich gelöscht`);
       } else {
         const errorData = await response.json();
