@@ -32,15 +32,15 @@ export default function RootLayout({
   return (
     <html lang="de" className={inter.variable}>
       <body className="font-sans antialiased min-h-screen flex flex-col">
-        <AuthSessionProvider>
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          {/* Globaler QR-Code - sichtbar auf allen Seiten */}
-          <QRCodeAnimation qrCodePath="/qr-code.png" isGlobal={true} delay={3000} />
-        </AuthSessionProvider>
+            <AuthSessionProvider>
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+              {/* Globaler QR-Code - sichtbar auf allen Seiten außer Admin */}
+              <QRCodeAnimation qrCodePath="/qr-code.png" isGlobal={true} delay={3000} />
+            </AuthSessionProvider>
       </body>
     </html>
   );

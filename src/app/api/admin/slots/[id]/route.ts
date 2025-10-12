@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { sendCancellationEmailToClient } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -59,6 +60,15 @@ export async function DELETE(
     if (force && activeBookings.length > 0) {
       console.log(`Force-Delete: Storniere ${activeBookings.length} aktive Buchungen für Slot ${slotId}`);
       
+      // Sammle Buchungsdaten für E-Mails
+      const bookingData = activeBookings.map(booking => ({
+        id: booking.id,
+        clientName: booking.clientName,
+        clientEmail: booking.clientEmail,
+        date: existingSlot.date.toLocaleDateString('de-DE'),
+        time: `${existingSlot.startTime} - ${existingSlot.endTime}`
+      }));
+      
       // Force-Delete: Storniere alle aktiven Buchungen in einer Transaktion
       await prisma.$transaction(async (tx) => {
         // Storniere alle aktiven Buchungen
@@ -83,6 +93,25 @@ export async function DELETE(
           where: { id: slotId }
         });
       });
+
+      // Sende Stornierungs-E-Mails an alle betroffenen Kunden
+      try {
+        for (const booking of bookingData) {
+          await sendCancellationEmailToClient(
+            booking.clientEmail,
+            booking.clientName,
+            {
+              date: booking.date,
+              time: booking.time,
+              reason: 'Slot wurde vom Administrator entfernt'
+            }
+          );
+          console.log(`Stornierungs-E-Mail gesendet an: ${booking.clientEmail}`);
+        }
+      } catch (emailError) {
+        console.error('Fehler beim Senden der Stornierungs-E-Mails:', emailError);
+        // E-Mail-Fehler sollten die Slot-Löschung nicht blockieren
+      }
 
       console.log(`Slot ${slotId} erfolgreich force-gelöscht (${activeBookings.length} Buchungen storniert)`);
 

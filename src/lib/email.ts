@@ -197,3 +197,92 @@ ${process.env.NEXTAUTH_URL}/admin/dashboard
 
   return sendEmail({ to: adminEmail, subject, html, text });
 }
+
+export async function sendCancellationEmailToClient(
+  clientEmail: string,
+  clientName: string,
+  cancellationDetails: {
+    date: string;
+    time: string;
+    reason?: string;
+  }
+) {
+  const subject = 'Terminabsage - Dirk Messerschmidt';
+  
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Terminabsage</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">Terminabsage</h1>
+        <p style="color: white; margin: 10px 0 0 0; font-size: 16px;">Dirk Messerschmidt - Sachverständiger</p>
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e9ecef;">
+        <h2 style="color: #2c3e50; margin-top: 0;">Hallo ${clientName},</h2>
+        
+        <p>leider muss ich Ihnen mitteilen, dass Ihr gebuchter Termin storniert werden muss.</p>
+        
+        <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #dc3545;">
+          <h3 style="margin-top: 0; color: #2c3e50;">Stornierter Termin</h3>
+          <p style="margin: 5px 0;"><strong>Datum:</strong> ${cancellationDetails.date}</p>
+          <p style="margin: 5px 0;"><strong>Uhrzeit:</strong> ${cancellationDetails.time}</p>
+          ${cancellationDetails.reason ? `<p style="margin: 5px 0;"><strong>Grund:</strong> ${cancellationDetails.reason}</p>` : ''}
+        </div>
+        
+        <p>Bitte kontaktieren Sie mich telefonisch unter <strong>0202 / 423 110</strong>, um einen neuen Termin zu vereinbaren.</p>
+        
+        <p>Ich entschuldige mich für die Unannehmlichkeiten.</p>
+        
+        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <h4 style="margin-top: 0; color: #1976d2;">Kontaktinformationen</h4>
+          <p style="margin: 5px 0;"><strong>Dirk Messerschmidt</strong></p>
+          <p style="margin: 5px 0;">Sachverständiger</p>
+          <p style="margin: 5px 0;">Telefon: 0202 / 423 110</p>
+          <p style="margin: 5px 0;">Adresse: Alt-Wolfshahn 12, 42117 Wuppertal</p>
+        </div>
+        
+        <p>Mit freundlichen Grüßen,<br>
+        <strong>Dirk Messerschmidt</strong></p>
+      </div>
+      
+      <div style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
+        <p>Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht direkt auf diese E-Mail.</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+Terminabsage - Dirk Messerschmidt
+
+Hallo ${clientName},
+
+leider muss ich Ihnen mitteilen, dass Ihr gebuchter Termin storniert werden muss.
+
+Stornierter Termin:
+- Datum: ${cancellationDetails.date}
+- Uhrzeit: ${cancellationDetails.time}
+${cancellationDetails.reason ? `- Grund: ${cancellationDetails.reason}` : ''}
+
+Bitte kontaktieren Sie mich telefonisch unter 0202 / 423 110, um einen neuen Termin zu vereinbaren.
+
+Ich entschuldige mich für die Unannehmlichkeiten.
+
+Kontaktinformationen:
+Dirk Messerschmidt
+Sachverständiger
+Telefon: 0202 / 423 110
+Adresse: Alt-Wolfshahn 12, 42117 Wuppertal
+
+Mit freundlichen Grüßen,
+Dirk Messerschmidt
+  `;
+
+  return sendEmail({ to: clientEmail, subject, html, text });
+}

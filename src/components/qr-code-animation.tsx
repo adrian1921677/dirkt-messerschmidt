@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { ArrowRight, Smartphone } from 'lucide-react';
 import Image from 'next/image';
 
@@ -11,11 +12,16 @@ interface QRCodeAnimationProps {
 }
 
 export function QRCodeAnimation({ qrCodePath, delay = 2000, isGlobal = false }: QRCodeAnimationProps) {
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [showPulse, setShowPulse] = useState(false);
-
+  
+  // Verstecke QR-Code auf Admin-Seiten und auf mobilen Geräten
+  const isAdminPage = pathname?.startsWith('/admin');
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  
   useEffect(() => {
     if (isGlobal && !hasAnimated) {
       // QR-Code erscheint nach der angegebenen Verzögerung
@@ -68,6 +74,11 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000, isGlobal = false }: 
       };
     }
   }, [isGlobal, isVisible]);
+
+  // Verstecke QR-Code auf Admin-Seiten und auf mobilen Geräten
+  if (isAdminPage || isMobile) {
+    return null;
+  }
 
   const containerClasses = isGlobal 
     ? "fixed bottom-4 left-4 z-50 pointer-events-none"
