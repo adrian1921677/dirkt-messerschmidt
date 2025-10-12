@@ -185,10 +185,10 @@ export default function Home() {
       <section className="relative py-24 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 overflow-hidden">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-indigo-500/20 to-purple-500/20 animate-pulse"></div>
-        <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-36 -translate-y-36 animate-bounce delay-1000"></div>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full translate-x-32 -translate-y-32 animate-pulse delay-500"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full -translate-x-40 translate-y-40 animate-bounce delay-2000"></div>
-        <div className="absolute bottom-0 right-0 w-56 h-56 bg-white/5 rounded-full translate-x-28 translate-y-28 animate-pulse delay-1500"></div>
+        <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-36 -translate-y-36"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full translate-x-32 -translate-y-32"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full -translate-x-40 translate-y-40"></div>
+        <div className="absolute bottom-0 right-0 w-56 h-56 bg-white/5 rounded-full translate-x-28 translate-y-28"></div>
         
         {/* Main Content */}
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -196,7 +196,7 @@ export default function Home() {
           <div className="flex justify-center mb-8">
             <div className="relative">
               <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl group hover:scale-110 transition-transform duration-300">
-                <FileText className="h-12 w-12 text-white group-hover:animate-bounce" />
+                <FileText className="h-12 w-12 text-white" />
               </div>
               <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full animate-ping"></div>
               <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full"></div>
@@ -204,10 +204,8 @@ export default function Home() {
           </div>
           
           {/* Headline */}
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg group">
-            <span className="inline-block group-hover:animate-pulse">Bereit für Ihr</span>
-            <br />
-            <span className="inline-block group-hover:animate-bounce delay-100">Gutachten?</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
+            Bereit für Ihr Gutachten?
           </h2>
           
           {/* Subtitle */}
@@ -220,7 +218,7 @@ export default function Home() {
             <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/btn text-xl">
               <Link href="/termin-anfragen">
                 <div className="flex items-center space-x-3">
-                  <Calendar className="h-6 w-6 group-hover/btn:animate-bounce" />
+                  <Calendar className="h-6 w-6" />
                   <span>Termin anfragen</span>
                   <div className="w-2 h-2 bg-blue-500 rounded-full group-hover/btn:animate-ping"></div>
                 </div>
@@ -230,7 +228,7 @@ export default function Home() {
             <Button asChild size="lg" className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/whatsapp text-xl">
               <Link href="/kontakt">
                 <div className="flex items-center space-x-3">
-                  <MessageCircle className="h-6 w-6 group-hover/whatsapp:animate-bounce" />
+                  <MessageCircle className="h-6 w-6" />
                   <span>Kontakt aufnehmen</span>
                   <div className="w-2 h-2 bg-white rounded-full group-hover/whatsapp:animate-ping"></div>
                 </div>
@@ -240,10 +238,10 @@ export default function Home() {
           
           {/* Decorative Elements */}
           <div className="mt-16 flex justify-center space-x-12 text-white/30">
-            <div className="text-5xl animate-bounce delay-1000">📋</div>
-            <div className="text-5xl animate-pulse delay-1500">⚡</div>
-            <div className="text-5xl animate-bounce delay-2000">🛠️</div>
-            <div className="text-5xl animate-pulse delay-500">📊</div>
+            <div className="text-5xl">📋</div>
+            <div className="text-5xl">⚡</div>
+            <div className="text-5xl">🛠️</div>
+            <div className="text-5xl">📊</div>
           </div>
           
           {/* Bottom Accent */}

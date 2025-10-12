@@ -22,19 +22,13 @@ export function Header() {
         <div className="flex h-32 items-center justify-between">
               {/* Logo */}
               <div className="flex items-center">
-                <Link href="/" className="flex items-center space-x-6">
+                <Link href="/" className="flex items-center">
                   <div className="h-32 w-32 flex items-center justify-center">
                     <img 
                       src="/logo.png" 
                       alt="Dirk Messerschmidt Logo" 
                       className="h-28 w-28"
                     />
-                  </div>
-                  <div className="hidden sm:block">
-                    <h1 className="text-4xl font-bold text-gray-900">
-                      Dirk Messerschmidt
-                    </h1>
-                    <p className="text-xl text-gray-600">Sachverständiger</p>
                   </div>
                 </Link>
               </div>

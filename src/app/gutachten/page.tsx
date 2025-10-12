@@ -193,10 +193,10 @@ export default function GutachtenPage() {
       <section className="relative py-24 bg-gradient-to-br from-green-600 via-emerald-700 to-teal-800 overflow-hidden">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 animate-pulse"></div>
-        <div className="absolute top-0 left-0 w-80 h-80 bg-white/5 rounded-full -translate-x-40 -translate-y-40 animate-bounce delay-1000"></div>
-        <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full translate-x-36 -translate-y-36 animate-pulse delay-500"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full -translate-x-32 translate-y-32 animate-bounce delay-2000"></div>
-        <div className="absolute bottom-0 right-0 w-88 h-88 bg-white/5 rounded-full translate-x-44 translate-y-44 animate-pulse delay-1500"></div>
+        <div className="absolute top-0 left-0 w-80 h-80 bg-white/5 rounded-full -translate-x-40 -translate-y-40"></div>
+        <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full translate-x-36 -translate-y-36"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full -translate-x-32 translate-y-32"></div>
+        <div className="absolute bottom-0 right-0 w-88 h-88 bg-white/5 rounded-full translate-x-44 translate-y-44"></div>
         
         {/* Main Content */}
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -204,7 +204,7 @@ export default function GutachtenPage() {
           <div className="flex justify-center mb-8">
             <div className="relative">
               <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl group hover:scale-110 transition-transform duration-300">
-                <Shield className="h-12 w-12 text-white group-hover:animate-bounce" />
+                <Shield className="h-12 w-12 text-white" />
               </div>
               <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full animate-ping"></div>
               <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full"></div>
@@ -212,10 +212,8 @@ export default function GutachtenPage() {
           </div>
           
           {/* Headline */}
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg group">
-            <span className="inline-block group-hover:animate-pulse">Benötigen Sie ein</span>
-            <br />
-            <span className="inline-block group-hover:animate-bounce delay-100">Gutachten?</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
+            Benötigen Sie ein Gutachten?
           </h2>
           
           {/* Subtitle */}
@@ -228,7 +226,7 @@ export default function GutachtenPage() {
             <Button asChild size="lg" className="bg-white text-green-600 hover:bg-gray-100 font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/btn text-xl">
               <Link href="/termin-anfragen">
                 <div className="flex items-center space-x-3">
-                  <Calendar className="h-6 w-6 group-hover/btn:animate-bounce" />
+                  <Calendar className="h-6 w-6" />
                   <span>Termin anfragen</span>
                   <div className="w-2 h-2 bg-green-500 rounded-full group-hover/btn:animate-ping"></div>
                 </div>
@@ -238,7 +236,7 @@ export default function GutachtenPage() {
             <Button asChild size="lg" className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/contact text-xl">
               <Link href="/kontakt">
                 <div className="flex items-center space-x-3">
-                  <MessageCircle className="h-6 w-6 group-hover/contact:animate-bounce" />
+                  <MessageCircle className="h-6 w-6" />
                   <span>Kontakt aufnehmen</span>
                   <div className="w-2 h-2 bg-white rounded-full group-hover/contact:animate-ping"></div>
                 </div>
@@ -248,10 +246,10 @@ export default function GutachtenPage() {
           
           {/* Decorative Elements */}
           <div className="mt-16 flex justify-center space-x-12 text-white/30">
-            <div className="text-5xl animate-bounce delay-1000">🛡️</div>
-            <div className="text-5xl animate-pulse delay-1500">⚖️</div>
-            <div className="text-5xl animate-bounce delay-2000">📋</div>
-            <div className="text-5xl animate-pulse delay-500">🔍</div>
+            <div className="text-5xl">🛡️</div>
+            <div className="text-5xl">⚖️</div>
+            <div className="text-5xl">📋</div>
+            <div className="text-5xl">🔍</div>
           </div>
           
           {/* Bottom Accent */}

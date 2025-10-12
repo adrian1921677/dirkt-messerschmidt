@@ -208,27 +208,71 @@ export default function Ablauf() {
           </div>
         </section>
 
-        {/* Contact CTA */}
-        <section className="bg-blue-600 py-16 rounded-2xl text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Haben Sie Fragen zum Ablauf?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Ich berate Sie gerne persönlich und erkläre Ihnen den gesamten Prozess im Detail.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6 bg-white text-blue-600 hover:bg-gray-100">
-              <Link href="/kontakt">
-                <Mail className="h-5 w-5 mr-2" />
-                Kontakt aufnehmen
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-blue-600">
-              <Link href="/termin-anfragen">
-                <Calendar className="h-5 w-5 mr-2" />
-                Termin anfragen
-              </Link>
-            </Button>
+        {/* Contact CTA - Special Design */}
+        <section className="relative py-24 bg-gradient-to-br from-purple-600 via-indigo-700 to-blue-800 overflow-hidden rounded-2xl">
+          {/* Animated Background Elements */}
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-blue-500/20 animate-pulse"></div>
+          <div className="absolute top-0 left-0 w-76 h-76 bg-white/5 rounded-full -translate-x-38 -translate-y-38"></div>
+          <div className="absolute top-0 right-0 w-68 h-68 bg-white/5 rounded-full translate-x-34 -translate-y-34"></div>
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-36 translate-y-36"></div>
+          <div className="absolute bottom-0 right-0 w-60 h-60 bg-white/5 rounded-full translate-x-30 translate-y-30"></div>
+          
+          {/* Main Content */}
+          <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            {/* Icon */}
+            <div className="flex justify-center mb-8">
+              <div className="relative">
+                <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl group hover:scale-110 transition-transform duration-300">
+                  <MessageSquare className="h-12 w-12 text-white" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full animate-ping"></div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full"></div>
+              </div>
+            </div>
+            
+            {/* Headline */}
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
+              Haben Sie Fragen zum Ablauf?
+            </h2>
+            
+            {/* Subtitle */}
+            <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto font-medium">
+              Ich berate Sie gerne persönlich und erkläre Ihnen den gesamten Prozess im Detail.
+            </p>
+            
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <Button asChild size="lg" className="bg-white text-purple-600 hover:bg-gray-100 font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/btn text-xl">
+                <Link href="/kontakt">
+                  <div className="flex items-center space-x-3">
+                    <Mail className="h-6 w-6" />
+                    <span>Kontakt aufnehmen</span>
+                    <div className="w-2 h-2 bg-purple-500 rounded-full group-hover/btn:animate-ping"></div>
+                  </div>
+                </Link>
+              </Button>
+              
+              <Button asChild size="lg" className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/calendar text-xl">
+                <Link href="/termin-anfragen">
+                  <div className="flex items-center space-x-3">
+                    <Calendar className="h-6 w-6" />
+                    <span>Termin anfragen</span>
+                    <div className="w-2 h-2 bg-white rounded-full group-hover/calendar:animate-ping"></div>
+                  </div>
+                </Link>
+              </Button>
+            </div>
+            
+            {/* Decorative Elements */}
+            <div className="mt-16 flex justify-center space-x-12 text-white/30">
+              <div className="text-5xl">❓</div>
+              <div className="text-5xl">💬</div>
+              <div className="text-5xl">📋</div>
+              <div className="text-5xl">⚡</div>
+            </div>
+            
+            {/* Bottom Accent */}
+            <div className="mt-12 w-40 h-1 bg-white/50 rounded-full mx-auto"></div>
           </div>
         </section>
       </div>
