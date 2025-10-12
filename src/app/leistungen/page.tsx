@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Shield, Clock, Euro, Car, Wrench, Phone, MessageCircle } from "lucide-react";
+import { CheckCircle, Shield, Clock, Euro, Car, Wrench, MessageCircle, Send, Zap } from "lucide-react";
 
 export default function Leistungen() {
   const services = [
@@ -87,33 +87,95 @@ export default function Leistungen() {
           ))}
         </div>
 
-        {/* Contact Banner */}
-        <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-8 text-center text-white mb-16">
-          <h2 className="text-2xl font-bold mb-4">
-            Service und Termine unter: 0202 / 423 110
-          </h2>
-          <p className="text-lg mb-6">
-            Gerne auch per SMS oder Whatsapp
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              variant="secondary" 
-              size="lg"
-              className="bg-white text-green-600 hover:bg-gray-100"
-            >
-              <Phone className="h-5 w-5 mr-2" />
-              Jetzt anrufen
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="border-white text-white hover:bg-white hover:text-green-600"
-            >
-              <MessageCircle className="h-5 w-5 mr-2" />
-              WhatsApp
-            </Button>
-          </div>
-        </div>
+        {/* Fancy WhatsApp Bereich */}
+        <Card className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 border-green-200 group hover:shadow-2xl transition-all duration-500 mb-16">
+          {/* Animated Background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 via-emerald-400/20 to-teal-400/20 animate-pulse"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-green-300/30 rounded-full -translate-y-16 translate-x-16 animate-bounce"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-300/30 rounded-full translate-y-12 -translate-x-12 animate-pulse delay-1000"></div>
+          
+          <CardHeader className="relative text-center pb-4">
+            <div className="flex justify-center mb-2">
+              <div className="relative">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <MessageCircle className="h-8 w-8 text-white" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full animate-ping"></div>
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full"></div>
+              </div>
+            </div>
+            <CardTitle className="text-green-700 text-xl group-hover:text-green-800 transition-colors">
+              WhatsApp Chat
+            </CardTitle>
+            <CardDescription className="text-green-600">
+              Direkt & schnell erreichbar
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="relative text-center space-y-6">
+            {/* Floating Action Buttons */}
+            <div className="flex justify-center space-x-4">
+              <a
+                href="https://wa.me/491711415899?text=Hallo%20Herr%20Messerschmidt,%20ich%20habe%20eine%20Frage%20zu%20Ihren%20Leistungen."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/btn relative bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
+                <div className="relative flex items-center space-x-3">
+                  <Send className="h-5 w-5 group-hover/btn:animate-bounce" />
+                  <span>Chat starten</span>
+                  <Zap className="h-4 w-4 group-hover/btn:animate-pulse" />
+                </div>
+              </a>
+            </div>
+
+            {/* Animated Status */}
+            <div className="flex items-center justify-center space-x-2 text-green-600">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium">Online & verfügbar</span>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-3 gap-3">
+              <a
+                href="https://wa.me/491711415899?text=Termin%20vereinbaren"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-lg p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-md"
+              >
+                <div className="text-2xl mb-1 group-hover/quick:animate-bounce">📅</div>
+                <div className="text-xs font-medium text-gray-700">Termin</div>
+              </a>
+              <a
+                href="https://wa.me/491711415899?text=Gutachten%20anfragen"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-lg p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-md"
+              >
+                <div className="text-2xl mb-1 group-hover/quick:animate-bounce">📋</div>
+                <div className="text-xs font-medium text-gray-700">Gutachten</div>
+              </a>
+              <a
+                href="https://wa.me/491711415899?text=Beratung%20anfragen"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-lg p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-md"
+              >
+                <div className="text-2xl mb-1 group-hover/quick:animate-bounce">💬</div>
+                <div className="text-xs font-medium text-gray-700">Beratung</div>
+              </a>
+            </div>
+
+            {/* Floating Elements */}
+            <div className="absolute top-4 right-4 text-green-400/30 group-hover:text-green-400/50 transition-colors">
+              <div className="text-4xl animate-bounce delay-500">💚</div>
+            </div>
+            <div className="absolute bottom-4 left-4 text-emerald-400/30 group-hover:text-emerald-400/50 transition-colors">
+              <div className="text-3xl animate-pulse delay-1000">✨</div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Why Choose Us */}
         <section className="mb-16">
