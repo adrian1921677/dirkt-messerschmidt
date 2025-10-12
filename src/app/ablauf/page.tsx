@@ -1,51 +1,51 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Phone, FileText, CheckCircle, Calendar, Mail, MessageSquare, Award } from "lucide-react";
+import { Clock, FileText, CheckCircle, Calendar, Mail, MessageSquare, Award } from "lucide-react";
 import Link from "next/link";
 
 export default function Ablauf() {
   const steps = [
     {
       number: "1",
-      title: "Erstkontakt",
-      description: "Kontaktieren Sie mich telefonisch oder per E-Mail",
+      title: "Terminanfrage",
+      description: "Stellen Sie Ihre Terminanfrage über unser Online-Formular",
       details: [
-        "Kostenlose Erstberatung",
-        "Klärung Ihres Anliegens",
-        "Einschätzung der Machbarkeit",
-        "Grobe Kostenschätzung"
+        "Einfaches Online-Formular ausfüllen",
+        "Gewünschtes Datum und Uhrzeit angeben",
+        "Kurze Beschreibung Ihres Anliegens",
+        "Kontaktdaten hinterlassen"
       ],
-      icon: <Phone className="h-8 w-8 text-blue-600" />,
-      duration: "15-30 Min",
+      icon: <Calendar className="h-8 w-8 text-blue-600" />,
+      duration: "5 Min",
       cost: "Kostenlos"
     },
     {
       number: "2",
-      title: "Angebotserstellung",
-      description: "Detailliertes Angebot mit Kosten und Zeitrahmen",
+      title: "Terminbestätigung",
+      description: "Bestätigung Ihres Termins per E-Mail",
       details: [
-        "Schriftliches Angebot",
-        "Detaillierte Kostenaufstellung",
-        "Zeitplan für die Bearbeitung",
-        "Leistungsumfang-Definition"
+        "Schnelle Bestätigung per E-Mail",
+        "Termindetails und Uhrzeit",
+        "Treffpunkt und Kontaktdaten",
+        "Vorbereitungshinweise"
       ],
-      icon: <FileText className="h-8 w-8 text-blue-600" />,
-      duration: "1-2 Tage",
+      icon: <CheckCircle className="h-8 w-8 text-blue-600" />,
+      duration: "Sofort",
       cost: "Kostenlos"
     },
     {
       number: "3",
-      title: "Terminvereinbarung",
-      description: "Flexible Terminvereinbarung für die Begutachtung",
+      title: "Vorbereitung",
+      description: "Vorbereitung der Begutachtung",
       details: [
-        "Online-Kalender verfügbar",
-        "Flexible Zeiten",
-        "Vor-Ort-Termin oder Remote",
-        "Terminbestätigung per E-Mail"
+        "Relevante Unterlagen sammeln",
+        "Zugang zum Objekt sicherstellen",
+        "Spezifische Fragen notieren",
+        "Terminbestätigung nochmals prüfen"
       ],
-      icon: <Calendar className="h-8 w-8 text-blue-600" />,
-      duration: "Sofort",
+      icon: <FileText className="h-8 w-8 text-blue-600" />,
+      duration: "1-2 Tage",
       cost: "Kostenlos"
     },
     {
