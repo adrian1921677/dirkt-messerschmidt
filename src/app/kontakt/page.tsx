@@ -1,6 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContactForm } from "@/components/contact-form";
-import { WhatsAppIntegration } from "@/components/whatsapp-integration";
 import { MapPin, Phone, Clock, MessageCircle, Globe } from "lucide-react";
 
 export default function Kontakt() {
@@ -104,11 +103,6 @@ export default function Kontakt() {
               </CardContent>
             </Card>
 
-            {/* WhatsApp Integration */}
-            <WhatsAppIntegration
-              phone="+49202423110"
-              message="Hallo Herr Messerschmidt, ich habe eine Frage zum Gutachten."
-            />
           </div>
         </div>
 
