@@ -109,24 +109,6 @@ export default function Kontakt() {
               phone="+49202423110"
               message="Hallo Herr Messerschmidt, ich habe eine Frage zum Gutachten."
             />
-
-                {/* QR Code */}
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex justify-center">
-                      <div className="relative w-48 h-48 bg-white p-4 rounded-lg shadow-lg border-2 border-blue-200">
-                        <img
-                          src="/qr-code.png"
-                          alt="WhatsApp QR-Code"
-                          className="w-full h-full object-contain"
-                        />
-                        <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-2 shadow-lg">
-                          <MessageCircle className="h-4 w-4 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
           </div>
         </div>
 
