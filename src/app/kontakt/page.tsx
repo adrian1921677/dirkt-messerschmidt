@@ -132,7 +132,7 @@ export default function Kontakt() {
                 {/* Floating Action Buttons */}
                 <div className="flex justify-center space-x-4">
                   <a
-                    href="https://wa.me/49202423110?text=Hallo%20Herr%20Messerschmidt,%20ich%20habe%20eine%20Frage%20zum%20Gutachten."
+                    href="https://wa.me/491711415899?text=Hallo%20Herr%20Messerschmidt,%20ich%20habe%20eine%20Frage%20zum%20Gutachten."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group/btn relative bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 overflow-hidden"
@@ -155,7 +155,7 @@ export default function Kontakt() {
                 {/* Quick Actions */}
                 <div className="grid grid-cols-3 gap-3">
                   <a
-                    href="https://wa.me/49202423110?text=Termin%20vereinbaren"
+                    href="https://wa.me/491711415899?text=Termin%20vereinbaren"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-lg p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-md"
@@ -164,7 +164,7 @@ export default function Kontakt() {
                     <div className="text-xs font-medium text-gray-700">Termin</div>
                   </a>
                   <a
-                    href="https://wa.me/49202423110?text=Gutachten%20anfragen"
+                    href="https://wa.me/491711415899?text=Gutachten%20anfragen"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-lg p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-md"
@@ -173,7 +173,7 @@ export default function Kontakt() {
                     <div className="text-xs font-medium text-gray-700">Gutachten</div>
                   </a>
                   <a
-                    href="https://wa.me/49202423110?text=Beratung%20anfragen"
+                    href="https://wa.me/491711415899?text=Beratung%20anfragen"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-lg p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-md"
