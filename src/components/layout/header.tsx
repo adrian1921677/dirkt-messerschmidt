@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
@@ -24,9 +25,11 @@ export function Header() {
               <div className="flex items-center">
                 <Link href="/" className="flex items-center">
                   <div className="h-32 w-32 flex items-center justify-center">
-                    <img 
+                    <Image 
                       src="/logo.png" 
                       alt="Dirk Messerschmidt Logo" 
+                      width={112}
+                      height={112}
                       className="h-28 w-28"
                     />
                   </div>

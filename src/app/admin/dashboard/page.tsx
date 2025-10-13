@@ -483,7 +483,7 @@ export default function AdminDashboard() {
           } else {
             errorCount++;
           }
-        } catch (error) {
+        } catch {
           errorCount++;
         }
       }

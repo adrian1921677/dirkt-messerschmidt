@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const month = searchParams.get('month');
-    const year = searchParams.get('year');
+    // const month = searchParams.get('month');
+    // const year = searchParams.get('year');
 
     // Mock-Daten für Demo-Zwecke
     const mockSlots = [

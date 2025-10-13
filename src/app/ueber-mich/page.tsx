@@ -196,10 +196,10 @@ export default function UeberMich() {
             </CardHeader>
             <CardContent className="text-center space-y-6">
               <p className="text-lg text-gray-700 leading-relaxed">
-                "Mein Ziel ist es, meinen Kunden durch unabhängige, objektive und 
+                &ldquo;Mein Ziel ist es, meinen Kunden durch unabhängige, objektive und 
                 professionelle Gutachten zu helfen, ihre berechtigten Ansprüche 
                 durchzusetzen. Jedes Gutachten wird mit höchster Sorgfalt erstellt 
-                und basiert auf fundiertem technischen Wissen."
+                und basiert auf fundiertem technischen Wissen.&rdquo;
               </p>
               <div className="flex justify-center">
                 <div className="text-right">
