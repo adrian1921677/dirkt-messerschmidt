@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Award, Clock, Users, FileText, Shield, Calendar, MessageCircle } from "lucide-react";
 import MagicBento from "@/components/MagicBento";
+import RotatingText from "@/components/RotatingText";
 
 export default function Home() {
   const services = [
@@ -37,7 +38,21 @@ export default function Home() {
             </Badge>
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
               Professionelle Gutachten
-              <span className="text-blue-600 block">mit höchster Qualität</span>
+              <span className="text-blue-600 block">
+                mit{' '}
+                <RotatingText
+                  texts={['höchster Qualität', 'Zuverlässigkeit', 'Präzision', 'Objektivität', 'Erfahrung']}
+                  mainClassName="px-2 sm:px-2 md:px-3 bg-cyan-300 text-black overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg"
+                  staggerFrom={"last"}
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "-120%" }}
+                  staggerDuration={0.025}
+                  splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+                  transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                  rotationInterval={2000}
+                />
+              </span>
             </h1>
                 <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
                   Über 30 Jahre Erfahrung in der Erstellung von technischen Gutachten, 
@@ -234,7 +249,20 @@ export default function Home() {
           
           {/* Headline */}
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
-            Bereit für Ihr Gutachten?
+            Bereit für Ihr{' '}
+            <RotatingText
+              texts={['Gutachten', 'Schadensbewertung', 'Wertgutachten', 'Beratung']}
+              mainClassName="px-2 sm:px-2 md:px-3 bg-white/20 text-white overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg backdrop-blur-sm"
+              staggerFrom={"last"}
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "-120%" }}
+              staggerDuration={0.025}
+              splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+              transition={{ type: "spring", damping: 30, stiffness: 400 }}
+              rotationInterval={2500}
+            />
+            ?
           </h2>
           
           {/* Subtitle */}

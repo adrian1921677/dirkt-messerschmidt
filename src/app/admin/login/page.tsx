@@ -146,14 +146,6 @@ export default function AdminLoginPage() {
             </Button>
           </form>
 
-          {/* Demo-Hinweis */}
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800">
-              <strong>Demo-Zugang:</strong><br />
-              E-Mail: admin@demo.de<br />
-              Passwort: demo123
-            </p>
-          </div>
         </Card>
 
         {/* Zurück zur Website */}
