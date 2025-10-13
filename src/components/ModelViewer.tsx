@@ -19,8 +19,6 @@ export interface ViewerProps {
   height?: number | string;
   modelXOffset?: number;
   modelYOffset?: number;
-  defaultRotationX?: number;
-  defaultRotationY?: number;
   defaultZoom?: number;
   minZoomDistance?: number;
   maxZoomDistance?: number;
@@ -439,8 +437,6 @@ const ModelViewer: FC<ViewerProps> = ({
   height = 400,
   modelXOffset = 0,
   modelYOffset = 0,
-  defaultRotationX = -50,
-  defaultRotationY = 20,
   defaultZoom = 0.5,
   minZoomDistance = 0.5,
   maxZoomDistance = 10,

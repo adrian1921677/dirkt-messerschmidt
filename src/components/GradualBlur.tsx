@@ -292,11 +292,21 @@ const GradualBlur: React.FC<PropsWithChildren<GradualBlurProps>> = props => {
   );
 };
 
+type GradualBlurWithStatics = React.MemoExoticComponent<React.FC<GradualBlurProps>> & {
+  PRESETS: typeof PRESETS;
+  CURVE_FUNCTIONS: typeof CURVE_FUNCTIONS;
+};
+
 const GradualBlurMemo = React.memo(GradualBlur);
-GradualBlurMemo.displayName = 'GradualBlur';
-(GradualBlurMemo as React.ComponentType<GradualBlurProps> & { PRESETS: typeof PRESETS; CURVE_FUNCTIONS: typeof CURVE_FUNCTIONS }).PRESETS = PRESETS;
-(GradualBlurMemo as React.ComponentType<GradualBlurProps> & { PRESETS: typeof PRESETS; CURVE_FUNCTIONS: typeof CURVE_FUNCTIONS }).CURVE_FUNCTIONS = CURVE_FUNCTIONS;
-export default GradualBlurMemo;
+
+const GradualBlurExport = Object.assign(GradualBlurMemo, {
+  PRESETS,
+  CURVE_FUNCTIONS,
+}) as GradualBlurWithStatics;
+
+(GradualBlurExport as React.NamedExoticComponent).displayName = "GradualBlur";
+
+export default GradualBlurExport;
 
 const injectStyles = () => {
   if (typeof document === 'undefined') return;
