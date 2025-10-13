@@ -8,7 +8,7 @@ interface StarBorderProps {
   color?: string;
   speed?: React.CSSProperties['animationDuration'];
   thickness?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const StarBorder: React.FC<StarBorderProps> = ({
