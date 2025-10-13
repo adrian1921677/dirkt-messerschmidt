@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Manrope, Work_Sans } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { AuthSessionProvider } from "@/components/providers/session-provider";
 import { QRCodeAnimation } from "@/components/qr-code-animation";
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["500", "600", "700"],
+  variable: "--font-manrope",
+});
+
+const workSans = Work_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-work-sans",
 });
 
 export const metadata: Metadata = {
@@ -30,8 +37,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de" className={inter.variable}>
-      <body className="font-sans antialiased min-h-screen flex flex-col">
+    <html lang="de" className={`${manrope.variable} ${workSans.variable}`}>
+      <body className="font-work-sans antialiased min-h-screen flex flex-col">
             <AuthSessionProvider>
               <Header />
               <main className="flex-1">

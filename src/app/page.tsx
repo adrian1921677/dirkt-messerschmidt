@@ -52,7 +52,7 @@ export default function Home() {
               <Award className="h-4 w-4 mr-2" />
               Zertifizierter Sachverständiger
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-6xl font-heading font-bold text-gray-900 mb-6">
               Professionelle Gutachten
               <span className="text-blue-600 block">
                 mit{' '}
@@ -72,23 +72,14 @@ export default function Home() {
                 </span>
               </span>
             </h1>
-                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                  Über 30 Jahre Erfahrung in der Erstellung von technischen Gutachten, 
-                  Schadensbewertungen und Qualitätsanalysen. Vertrauen Sie auf Expertise und Präzision.
-                </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <StarBorder
-                as="button"
-                className="custom-class"
-                color="cyan"
-                speed="5s"
-              >
-                <Link href="/termin-anfragen" className="flex items-center justify-center text-white hover:text-cyan-300 transition-colors duration-300">
+              <Button asChild size="lg" className="bg-black hover:bg-gray-800 text-white text-lg px-8 py-6 rounded-lg">
+                <Link href="/termin-anfragen" className="flex items-center justify-center">
                   <Calendar className="h-5 w-5 mr-2" />
                   Termin anfragen
                 </Link>
-              </StarBorder>
-              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
+              </Button>
+              <Button asChild variant="outline" size="lg" className="bg-white text-black hover:bg-gray-100 border-gray-300 text-lg px-8 py-6 rounded-lg">
                 <Link href="/kontakt">
                   Kontakt aufnehmen
                 </Link>
@@ -103,10 +94,10 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
               Meine Leistungen
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl font-text text-gray-600 max-w-2xl mx-auto">
               Umfassende sachverständige Beratung für Ihre individuellen Anforderungen
             </p>
           </div>
@@ -134,10 +125,10 @@ export default function Home() {
           <section className="py-20 bg-gray-50">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
                   Unser Standort
                 </h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                <p className="text-xl font-text text-gray-600 max-w-2xl mx-auto">
                   Besuchen Sie uns in Wuppertal für eine persönliche Beratung
                 </p>
               </div>
@@ -156,7 +147,7 @@ export default function Home() {
                     ></iframe>
                   </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    <h3 className="text-xl font-heading font-semibold text-gray-900 mb-2">
                       Dirk Messerschmidt
                     </h3>
                     <p className="text-gray-600 mb-4">
@@ -189,10 +180,10 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
               Vertrauen Sie auf Erfahrung
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl font-text text-gray-600 max-w-2xl mx-auto">
               Über 15 Jahre Expertise und mehr als 500 erfolgreich abgeschlossene Gutachten
             </p>
           </div>
@@ -260,7 +251,7 @@ export default function Home() {
           </div>
           
           {/* Headline */}
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6 drop-shadow-lg">
             Bereit für Ihr{' '}
             <span className="inline-block">
               <RotatingText
