@@ -459,7 +459,7 @@ const ModelViewer: FC<ViewerProps> = ({
   onModelLoaded
 }) => {
   const pivot = useRef(new THREE.Vector3()).current;
-  const contactRef = useRef<THREE.Mesh>(null);
+  const contactRef = useRef<THREE.Group>(null);
   const rendererRef = useRef<THREE.WebGLRenderer>(null);
   const sceneRef = useRef<THREE.Scene>(null);
   const cameraRef = useRef<THREE.Camera>(null);
