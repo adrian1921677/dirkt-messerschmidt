@@ -50,194 +50,180 @@ export default function Kontakt() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Info & WhatsApp */}
-          <div className="space-y-8">
-            {/* Contact Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <MessageCircle className="h-6 w-6 mr-2 text-blue-600" />
-                  Kontaktinformationen
-                </CardTitle>
-                <CardDescription>
-                  Verschiedene Wege, mich zu erreichen
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {contactInfo.map((info, index) => (
-                  <div key={index} className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
-                      {info.icon}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 mb-1">
-                        {info.title}
-                      </h3>
-                      <div className="space-y-1">
-                        {info.details.map((detail, detailIndex) => (
-                          <p key={detailIndex} className="text-sm text-gray-600">
-                            {detail}
-                          </p>
-                        ))}
-                      </div>
-                      {info.action && (
-                        <a
-                          href={info.action}
-                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                        >
-                          {info.action.startsWith('tel:') ? 'Anrufen' : 
-                           info.action.startsWith('mailto:') ? 'E-Mail senden' : 
-                           'Auf Karte anzeigen'}
-                        </a>
-                      )}
-                    </div>
+        {/* WhatsApp Chat - Hauptfokus */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <Card className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 border-green-200 group hover:shadow-2xl transition-all duration-500">
+            {/* Animated Background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 via-emerald-400/20 to-teal-400/20 animate-pulse"></div>
+            <div className="absolute top-0 right-0 w-48 h-48 bg-green-300/30 rounded-full -translate-y-24 translate-x-24 animate-bounce"></div>
+            <div className="absolute bottom-0 left-0 w-36 h-36 bg-emerald-300/30 rounded-full translate-y-18 -translate-x-18 animate-pulse delay-1000"></div>
+            
+            <CardHeader className="relative text-center pb-6">
+              <div className="flex justify-center mb-4">
+                <div className="relative">
+                  <div className="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <MessageCircle className="h-12 w-12 text-white" />
                   </div>
-                ))}
-              </CardContent>
-            </Card>
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full animate-ping"></div>
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full"></div>
+                </div>
+              </div>
+              <CardTitle className="text-green-700 text-3xl group-hover:text-green-800 transition-colors mb-2">
+                WhatsApp Chat
+              </CardTitle>
+              <CardDescription className="text-green-600 text-lg">
+                Direkt & schnell erreichbar - Starten Sie jetzt den Chat!
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="relative text-center space-y-8">
+              {/* Haupt-CTA Button */}
+              <div className="flex justify-center">
+                <a
+                  href="https://wa.me/491711415899?text=Hallo%20Herr%20Messerschmidt,%20ich%20habe%20eine%20Frage%20zum%20Gutachten."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/btn relative bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-6 px-12 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 overflow-hidden text-xl"
+                >
+                  <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
+                  <div className="relative flex items-center space-x-4">
+                    <Send className="h-6 w-6 group-hover/btn:animate-bounce" />
+                    <span>Chat jetzt starten</span>
+                    <Zap className="h-5 w-5 group-hover/btn:animate-pulse" />
+                  </div>
+                </a>
+              </div>
 
-            {/* Fancy WhatsApp Bereich */}
-            <Card className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 border-green-200 group hover:shadow-2xl transition-all duration-500">
-              {/* Animated Background */}
-              <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 via-emerald-400/20 to-teal-400/20 animate-pulse"></div>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-green-300/30 rounded-full -translate-y-16 translate-x-16 animate-bounce"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-300/30 rounded-full translate-y-12 -translate-x-12 animate-pulse delay-1000"></div>
-              
-              <CardHeader className="relative text-center pb-4">
-                <div className="flex justify-center mb-2">
-                  <div className="relative">
-                    <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <MessageCircle className="h-8 w-8 text-white" />
+              {/* Animated Status */}
+              <div className="flex items-center justify-center space-x-3 text-green-600">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-lg font-medium">Online & verfügbar</span>
+              </div>
+
+              {/* Quick Actions - Größer */}
+              <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto">
+                <a
+                  href="https://wa.me/491711415899?text=Termin%20vereinbaren"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                >
+                  <div className="text-4xl mb-3 group-hover/quick:animate-bounce">📅</div>
+                  <div className="text-sm font-semibold text-gray-700">Termin vereinbaren</div>
+                </a>
+                <a
+                  href="https://wa.me/491711415899?text=Gutachten%20anfragen"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                >
+                  <div className="text-4xl mb-3 group-hover/quick:animate-bounce">📋</div>
+                  <div className="text-sm font-semibold text-gray-700">Gutachten anfragen</div>
+                </a>
+                <a
+                  href="https://wa.me/491711415899?text=Beratung%20anfragen"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                >
+                  <div className="text-4xl mb-3 group-hover/quick:animate-bounce">💬</div>
+                  <div className="text-sm font-semibold text-gray-700">Beratung anfragen</div>
+                </a>
+              </div>
+
+              {/* Floating Elements */}
+              <div className="absolute top-6 right-6 text-green-400/30 group-hover:text-green-400/50 transition-colors">
+                <div className="text-6xl animate-bounce delay-500">💚</div>
+              </div>
+              <div className="absolute bottom-6 left-6 text-emerald-400/30 group-hover:text-emerald-400/50 transition-colors">
+                <div className="text-5xl animate-pulse delay-1000">✨</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Zusätzliche Informationen - Kompakter */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Contact Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <MessageCircle className="h-5 w-5 mr-2 text-blue-600" />
+                Kontaktinformationen
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {contactInfo.map((info, index) => (
+                <div key={index} className="flex items-start space-x-3">
+                  <div className="flex-shrink-0">
+                    {info.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                      {info.title}
+                    </h3>
+                    <div className="space-y-1">
+                      {info.details.map((detail, detailIndex) => (
+                        <p key={detailIndex} className="text-xs text-gray-600">
+                          {detail}
+                        </p>
+                      ))}
                     </div>
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full animate-ping"></div>
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full"></div>
+                    {info.action && (
+                      <a
+                        href={info.action}
+                        className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+                      >
+                        {info.action.startsWith('tel:') ? 'Anrufen' : 
+                         info.action.startsWith('mailto:') ? 'E-Mail senden' : 
+                         'Auf Karte anzeigen'}
+                      </a>
+                    )}
                   </div>
                 </div>
-                <CardTitle className="text-green-700 text-xl group-hover:text-green-800 transition-colors">
-                  WhatsApp Chat
-                </CardTitle>
-                <CardDescription className="text-green-600">
-                  Direkt & schnell erreichbar
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="relative text-center space-y-6">
-                {/* Floating Action Buttons */}
-                <div className="flex justify-center space-x-4">
-                  <a
-                    href="https://wa.me/491711415899?text=Hallo%20Herr%20Messerschmidt,%20ich%20habe%20eine%20Frage%20zum%20Gutachten."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group/btn relative bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
-                    <div className="relative flex items-center space-x-3">
-                      <Send className="h-5 w-5 group-hover/btn:animate-bounce" />
-                      <span>Chat starten</span>
-                      <Zap className="h-4 w-4 group-hover/btn:animate-pulse" />
-                    </div>
-                  </a>
-                </div>
+              ))}
+            </CardContent>
+          </Card>
 
-                {/* Animated Status */}
-                <div className="flex items-center justify-center space-x-2 text-green-600">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium">Online & verfügbar</span>
-                </div>
+          {/* Terminvereinbarung */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <Clock className="h-5 w-5 mr-2 text-blue-600" />
+                Terminvereinbarung
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 text-sm mb-3">
+                Flexible Termine nach Vereinbarung über WhatsApp oder Telefon.
+              </p>
+              <ul className="space-y-1 text-xs text-gray-600">
+                <li>• Flexible Termine</li>
+                <li>• Vor-Ort oder Remote</li>
+                <li>• Schnelle Terminvergabe</li>
+              </ul>
+            </CardContent>
+          </Card>
 
-                {/* Quick Actions */}
-                <div className="grid grid-cols-3 gap-3">
-                  <a
-                    href="https://wa.me/491711415899?text=Termin%20vereinbaren"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-lg p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-md"
-                  >
-                    <div className="text-2xl mb-1 group-hover/quick:animate-bounce">📅</div>
-                    <div className="text-xs font-medium text-gray-700">Termin</div>
-                  </a>
-                  <a
-                    href="https://wa.me/491711415899?text=Gutachten%20anfragen"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-lg p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-md"
-                  >
-                    <div className="text-2xl mb-1 group-hover/quick:animate-bounce">📋</div>
-                    <div className="text-xs font-medium text-gray-700">Gutachten</div>
-                  </a>
-                  <a
-                    href="https://wa.me/491711415899?text=Beratung%20anfragen"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-lg p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-md"
-                  >
-                    <div className="text-2xl mb-1 group-hover/quick:animate-bounce">💬</div>
-                    <div className="text-xs font-medium text-gray-700">Beratung</div>
-                  </a>
-                </div>
-
-                {/* Floating Elements */}
-                <div className="absolute top-4 right-4 text-green-400/30 group-hover:text-green-400/50 transition-colors">
-                  <div className="text-4xl animate-bounce delay-500">💚</div>
-                </div>
-                <div className="absolute bottom-4 left-4 text-emerald-400/30 group-hover:text-emerald-400/50 transition-colors">
-                  <div className="text-3xl animate-pulse delay-1000">✨</div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Additional Contact Information */}
-          <div className="space-y-8">
-            {/* Terminvereinbarung */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Clock className="h-6 w-6 mr-2 text-blue-600" />
-                  Terminvereinbarung
-                </CardTitle>
-                <CardDescription>
-                  Flexible Termine nach Vereinbarung
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">
-                  Für eine Terminvereinbarung können Sie mich telefonisch erreichen oder 
-                  über WhatsApp kontaktieren. Ich rufe Sie gerne zurück.
-                </p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>• Flexible Termine auch außerhalb der Bürozeiten</li>
-                  <li>• Vor-Ort-Termine oder Remote-Beratung möglich</li>
-                  <li>• Schnelle Terminvergabe innerhalb von 24-48 Stunden</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Notfall-Service */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Zap className="h-6 w-6 mr-2 text-red-600" />
-                  Notfall-Service
-                </CardTitle>
-                <CardDescription>
-                  Für dringende Fälle
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">
-                  Für dringende Fälle stehe ich auch außerhalb der regulären 
-                  Bürozeiten zur Verfügung.
-                </p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>• 24/7 Notfall-Hotline für Eilgutachten</li>
-                  <li>• Sofortige Vor-Ort-Termine möglich</li>
-                  <li>• Express-Bearbeitung in 24-48 Stunden</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Notfall-Service */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <Zap className="h-5 w-5 mr-2 text-red-600" />
+                Notfall-Service
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 text-sm mb-3">
+                Für dringende Fälle auch außerhalb der Bürozeiten.
+              </p>
+              <ul className="space-y-1 text-xs text-gray-600">
+                <li>• 24/7 Notfall-Hotline</li>
+                <li>• Sofortige Termine</li>
+                <li>• Express-Bearbeitung</li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Service Overview Section */}
