@@ -199,8 +199,6 @@ const ModelInner: FC<{
   xOff: number;
   yOff: number;
   pivot: THREE.Vector3;
-  initYaw: number;
-  initPitch: number;
   minZoom: number;
   maxZoom: number;
   enableMouseParallax: boolean;
@@ -214,8 +212,6 @@ const ModelInner: FC<{
   xOff,
   yOff,
   pivot,
-  initYaw,
-  initPitch,
   minZoom,
   maxZoom,
   enableMouseParallax,
@@ -471,8 +467,6 @@ const ModelViewer: FC<ViewerProps> = ({
   const sceneRef = useRef<THREE.Scene>(null);
   const cameraRef = useRef<THREE.Camera>(null);
 
-  const initYaw = deg2rad(defaultRotationX);
-  const initPitch = deg2rad(defaultRotationY);
   const camZ = Math.min(Math.max(defaultZoom, minZoomDistance), maxZoomDistance);
 
   const capture = () => {
@@ -558,8 +552,6 @@ const ModelViewer: FC<ViewerProps> = ({
             xOff={modelXOffset}
             yOff={modelYOffset}
             pivot={pivot}
-            initYaw={initYaw}
-            initPitch={initPitch}
             minZoom={minZoomDistance}
             maxZoom={maxZoomDistance}
             enableMouseParallax={enableMouseParallax}

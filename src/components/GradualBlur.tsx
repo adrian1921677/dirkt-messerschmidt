@@ -119,23 +119,29 @@ const debounce = <T extends (...args: unknown[]) => void>(fn: T, wait: number) =
   };
 };
 
+const toStrNum = (v: unknown): string | number | undefined =>
+  (typeof v === "string" || typeof v === "number") ? v : undefined;
+
 const useResponsiveDimension = (
   responsive: boolean | undefined,
   config: Partial<GradualBlurProps>,
   key: keyof GradualBlurProps
 ) => {
-  const [val, setVal] = useState<string | number | undefined>(config[key]);
+  const raw = config[key];
+  const initialValue = toStrNum(raw);
+  const [val, setVal] = useState<string | number | undefined>(initialValue);
+  
   useEffect(() => {
     if (!responsive) return;
     const calc = () => {
       const w = window.innerWidth;
-      let v: string | number | undefined = config[key];
+      let v: string | number | undefined = toStrNum(config[key]);
       const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
       const k = cap(key as string);
-      const configWithMobile = config as Record<string, string | number | undefined>;
-      if (w <= 480 && configWithMobile['mobile' + k]) v = configWithMobile['mobile' + k];
-      else if (w <= 768 && configWithMobile['tablet' + k]) v = configWithMobile['tablet' + k];
-      else if (w <= 1024 && configWithMobile['desktop' + k]) v = configWithMobile['desktop' + k];
+      const configWithMobile = config as Record<string, unknown>;
+      if (w <= 480 && configWithMobile['mobile' + k]) v = toStrNum(configWithMobile['mobile' + k]);
+      else if (w <= 768 && configWithMobile['tablet' + k]) v = toStrNum(configWithMobile['tablet' + k]);
+      else if (w <= 1024 && configWithMobile['desktop' + k]) v = toStrNum(configWithMobile['desktop' + k]);
       setVal(v);
     };
     const deb = debounce(calc, 100);
@@ -143,7 +149,7 @@ const useResponsiveDimension = (
     window.addEventListener('resize', deb);
     return () => window.removeEventListener('resize', deb);
   }, [responsive, config, key]);
-  return responsive ? val : config[key];
+  return responsive ? val : toStrNum(config[key]);
 };
 
 const useIntersectionObserver = (ref: React.RefObject<HTMLDivElement | null>, shouldObserve: boolean = false) => {
