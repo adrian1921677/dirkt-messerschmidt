@@ -2,27 +2,28 @@
 
 import { useRef, useEffect, useState } from 'react';
 import { Renderer, Program, Triangle, Mesh } from 'ogl';
+import { vec2, vec3, type Vec2, type Vec3 } from '@/utils/vec';
 import './LightRays.css';
 
-// Typen für WebGL Uniforms
-type UniformValue = number | [number, number] | [number, number, number] | [number, number, number, number];
+// Typen für WebGL Uniforms - korrekt mit GLSL-Deklarationen abgeglichen
+type UniformValue = number | Vec2 | Vec3;
 type Uniform = { value: UniformValue };
 type Uniforms = {
-  iTime: Uniform;
-  iResolution: Uniform;
-  rayPos: Uniform;
-  rayDir: Uniform;
-  raysColor: Uniform;
-  raysSpeed: Uniform;
-  lightSpread: Uniform;
-  rayLength: Uniform;
-  pulsating: Uniform;
-  fadeDistance: Uniform;
-  saturation: Uniform;
-  mousePos: Uniform;
-  mouseInfluence: Uniform;
-  noiseAmount: Uniform;
-  distortion: Uniform;
+  iTime: Uniform;                    // float
+  iResolution: Uniform;              // vec2
+  rayPos: Uniform;                   // vec2
+  rayDir: Uniform;                   // vec2
+  raysColor: Uniform;                // vec3
+  raysSpeed: Uniform;                // float
+  lightSpread: Uniform;              // float
+  rayLength: Uniform;                // float
+  pulsating: Uniform;                // float
+  fadeDistance: Uniform;             // float
+  saturation: Uniform;               // float
+  mousePos: Uniform;                 // vec2
+  mouseInfluence: Uniform;           // float
+  noiseAmount: Uniform;              // float
+  distortion: Uniform;               // float
 };
 
 export type RaysOrigin =
@@ -62,25 +63,25 @@ const getAnchorAndDir = (
   origin: RaysOrigin,
   w: number,
   h: number
-): { anchor: [number, number]; dir: [number, number] } => {
+): { anchor: Vec2; dir: Vec2 } => {
   const outside = 0.2;
   switch (origin) {
     case 'top-left':
-      return { anchor: [0, -outside * h], dir: [0, 1] };
+      return { anchor: vec2(0, -outside * h), dir: vec2(0, 1) };
     case 'top-right':
-      return { anchor: [w, -outside * h], dir: [0, 1] };
+      return { anchor: vec2(w, -outside * h), dir: vec2(0, 1) };
     case 'left':
-      return { anchor: [-outside * w, 0.5 * h], dir: [1, 0] };
+      return { anchor: vec2(-outside * w, 0.5 * h), dir: vec2(1, 0) };
     case 'right':
-      return { anchor: [(1 + outside) * w, 0.5 * h], dir: [-1, 0] };
+      return { anchor: vec2((1 + outside) * w, 0.5 * h), dir: vec2(-1, 0) };
     case 'bottom-left':
-      return { anchor: [0, (1 + outside) * h], dir: [0, -1] };
+      return { anchor: vec2(0, (1 + outside) * h), dir: vec2(0, -1) };
     case 'bottom-center':
-      return { anchor: [0.5 * w, (1 + outside) * h], dir: [0, -1] };
+      return { anchor: vec2(0.5 * w, (1 + outside) * h), dir: vec2(0, -1) };
     case 'bottom-right':
-      return { anchor: [w, (1 + outside) * h], dir: [0, -1] };
+      return { anchor: vec2(w, (1 + outside) * h), dir: vec2(0, -1) };
     default: // "top-center"
-      return { anchor: [0.5 * w, -outside * h], dir: [0, 1] };
+      return { anchor: vec2(0.5 * w, -outside * h), dir: vec2(0, 1) };
   }
 };
 
@@ -263,21 +264,21 @@ void main() {
   gl_FragColor  = color;
 }`;
 
-      const uniforms = {
+      const uniforms: Uniforms = {
         iTime: { value: 0 },
-        iResolution: { value: [1, 1] },
+        iResolution: { value: vec2(1, 1) },
 
-        rayPos: { value: [0, 0] },
-        rayDir: { value: [0, 1] },
+        rayPos: { value: vec2(0, 0) },
+        rayDir: { value: vec2(0, 1) },
 
-        raysColor: { value: hexToRgb(raysColor) },
+        raysColor: { value: vec3(...hexToRgb(raysColor)) },
         raysSpeed: { value: raysSpeed },
         lightSpread: { value: lightSpread },
         rayLength: { value: rayLength },
         pulsating: { value: pulsating ? 1.0 : 0.0 },
         fadeDistance: { value: fadeDistance },
         saturation: { value: saturation },
-        mousePos: { value: [0.5, 0.5] },
+        mousePos: { value: vec2(0.5, 0.5) },
         mouseInfluence: { value: mouseInfluence },
         noiseAmount: { value: noiseAmount },
         distortion: { value: distortion }
@@ -296,16 +297,24 @@ void main() {
       const updatePlacement = () => {
         if (!containerRef.current || !renderer) return;
 
-        renderer.dpr = Math.min(window.devicePixelRatio, 2);
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        renderer.dpr = dpr;
 
         const { clientWidth: wCSS, clientHeight: hCSS } = containerRef.current;
         renderer.setSize(wCSS, hCSS);
 
-        const dpr = renderer.dpr;
-        const w = wCSS * dpr;
-        const h = hCSS * dpr;
+        // Korrekte DPI-behandelte Auflösung
+        const w = Math.floor(wCSS * dpr);
+        const h = Math.floor(hCSS * dpr);
 
-        uniforms.iResolution.value = [w, h];
+        // Canvas-Größe explizit setzen für korrekte WebGL-Auflösung
+        const canvas = renderer.gl.canvas;
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+        }
+
+        uniforms.iResolution.value = vec2(renderer.gl.drawingBufferWidth, renderer.gl.drawingBufferHeight);
 
         const { anchor, dir } = getAnchorAndDir(raysOrigin, w, h);
         uniforms.rayPos.value = anchor;
@@ -325,7 +334,7 @@ void main() {
           smoothMouseRef.current.x = smoothMouseRef.current.x * smoothing + mouseRef.current.x * (1 - smoothing);
           smoothMouseRef.current.y = smoothMouseRef.current.y * smoothing + mouseRef.current.y * (1 - smoothing);
 
-          uniforms.mousePos.value = [smoothMouseRef.current.x, smoothMouseRef.current.y];
+          uniforms.mousePos.value = vec2(smoothMouseRef.current.x, smoothMouseRef.current.y);
         }
 
         try {
@@ -414,7 +423,9 @@ void main() {
 
     const { clientWidth: wCSS, clientHeight: hCSS } = containerRef.current;
     const dpr = renderer.dpr;
-    const { anchor, dir } = getAnchorAndDir(raysOrigin, wCSS * dpr, hCSS * dpr);
+    const w = Math.floor(wCSS * dpr);
+    const h = Math.floor(hCSS * dpr);
+    const { anchor, dir } = getAnchorAndDir(raysOrigin, w, h);
     u.rayPos.value = anchor;
     u.rayDir.value = dir;
   }, [
