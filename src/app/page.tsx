@@ -42,15 +42,15 @@ export default function Home() {
                 mit{' '}
                 <RotatingText
                   texts={['höchster Qualität', 'Zuverlässigkeit', 'Präzision', 'Objektivität', 'Erfahrung']}
-                  mainClassName="px-2 sm:px-2 md:px-3 bg-cyan-300 text-black overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg"
+                  mainClassName="px-1 sm:px-1.5 md:px-2 bg-white text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md"
                   staggerFrom={"last"}
                   initial={{ y: "100%" }}
                   animate={{ y: 0 }}
                   exit={{ y: "-120%" }}
                   staggerDuration={0.025}
-                  splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+                  splitLevelClassName="overflow-hidden pb-0.5 sm:pb-0.5 md:pb-0.5"
                   transition={{ type: "spring", damping: 30, stiffness: 400 }}
-                  rotationInterval={2000}
+                  rotationInterval={3500}
                 />
               </span>
             </h1>
@@ -252,15 +252,15 @@ export default function Home() {
             Bereit für Ihr{' '}
             <RotatingText
               texts={['Gutachten', 'Schadensbewertung', 'Wertgutachten', 'Beratung']}
-              mainClassName="px-2 sm:px-2 md:px-3 bg-white/20 text-white overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg backdrop-blur-sm"
+              mainClassName="px-1 sm:px-1.5 md:px-2 bg-white text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md"
               staggerFrom={"last"}
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "-120%" }}
               staggerDuration={0.025}
-              splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+              splitLevelClassName="overflow-hidden pb-0.5 sm:pb-0.5 md:pb-0.5"
               transition={{ type: "spring", damping: 30, stiffness: 400 }}
-              rotationInterval={2500}
+              rotationInterval={3500}
             />
             ?
           </h2>
