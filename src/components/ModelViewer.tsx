@@ -57,7 +57,7 @@ const Loader: FC<{ placeholderSrc?: string }> = ({ placeholderSrc }) => {
   return (
     <Html center>
       {placeholderSrc ? (
-        <img src={placeholderSrc} width={128} height={128} style={{ filter: 'blur(8px)', borderRadius: 8 }} />
+        <img src={placeholderSrc} width={128} height={128} style={{ filter: 'blur(8px)', borderRadius: 8 }} alt="3D-Modell Vorschau" />
       ) : (
         `${Math.round(progress)} %`
       )}
@@ -71,7 +71,7 @@ const DesktopControls: FC<{
   max: number;
   zoomEnabled: boolean;
 }> = ({ pivot, min, max, zoomEnabled }) => {
-  const ref = useRef<any>(null);
+  const ref = useRef<OrbitControls | null>(null);
   useFrame(() => ref.current?.target.copy(pivot));
   return (
     <OrbitControls
@@ -136,16 +136,23 @@ const ModelInner: FC<ModelInnerProps> = ({
   const cHov = useRef({ x: 0, y: 0 });
 
   const ext = useMemo(() => url.split('.').pop()!.toLowerCase(), [url]);
+  
+  // Load assets based on file extension
+  const gltfAsset = ext === 'glb' || ext === 'gltf' ? useGLTF(url) : null;
+  const fbxAsset = ext === 'fbx' ? useFBX(url) : null;
+  const objAsset = ext === 'obj' ? useLoader(OBJLoader, url) : null;
+  
   const content = useMemo<THREE.Object3D | null>(() => {
-    if (ext === 'glb' || ext === 'gltf') return useGLTF(url).scene.clone();
-    if (ext === 'fbx') return useFBX(url).clone();
-    if (ext === 'obj') return useLoader(OBJLoader, url).clone();
+    if (ext === 'glb' || ext === 'gltf' && gltfAsset) return gltfAsset.scene.clone();
+    if (ext === 'fbx' && fbxAsset) return fbxAsset.clone();
+    if (ext === 'obj' && objAsset) return objAsset.clone();
     console.error('Unsupported format:', ext);
     return null;
-  }, [url, ext]);
+  }, [url, ext, gltfAsset, fbxAsset, objAsset]);
 
   const pivotW = useRef(new THREE.Vector3());
-  useLayoutEffect(() => {
+  
+  const setupModel = useCallback(() => {
     if (!content) return;
     const g = inner.current;
     g.updateWorldMatrix(true, true);
@@ -205,7 +212,12 @@ const ModelInner: FC<ModelInnerProps> = ({
       }, 16);
       return () => clearInterval(id);
     } else onLoaded?.();
-  }, [content]);
+  }, [content, fadeIn, autoFrame, camera, pivot, initPitch, initYaw, onLoaded]);
+
+  useLayoutEffect(() => {
+    const cleanup = setupModel();
+    return cleanup;
+  }, [setupModel]);
 
   useEffect(() => {
     if (!enableManualRotation || isTouch) return;
@@ -241,7 +253,7 @@ const ModelInner: FC<ModelInnerProps> = ({
     };
   }, [gl, enableManualRotation]);
 
-  useEffect(() => {
+  const handleTouchEvents = useCallback(() => {
     if (!isTouch) return;
     const el = gl.domElement;
     const pts = new Map<number, { x: number; y: number }>();
@@ -327,7 +339,11 @@ const ModelInner: FC<ModelInnerProps> = ({
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', up);
     };
-  }, [gl, enableManualRotation, enableManualZoom, minZoom, maxZoom]);
+  }, [gl, enableManualRotation, enableManualZoom, minZoom, maxZoom, camera.position.z]);
+
+  useEffect(() => {
+    return handleTouchEvents();
+  }, [handleTouchEvents]);
 
   useEffect(() => {
     if (isTouch) return;
@@ -498,14 +514,14 @@ const ModelViewer: FC<ViewerProps> = ({
         camera={{ fov: 50, position: [0, 0, camZ], near: 0.01, far: 100 }}
         style={{ touchAction: 'pan-y pinch-zoom' }}
       >
-        {environmentPreset !== 'none' && <Environment preset={environmentPreset as any} background={false} />}
+        {environmentPreset !== 'none' && <Environment preset={environmentPreset} background={false} />}
 
         <ambientLight intensity={ambientIntensity} />
         <directionalLight position={[5, 5, 5]} intensity={keyLightIntensity} castShadow />
         <directionalLight position={[-5, 2, 5]} intensity={fillLightIntensity} />
         <directionalLight position={[0, 4, -5]} intensity={rimLightIntensity} />
 
-        <ContactShadows ref={contactRef as any} position={[0, -0.5, 0]} opacity={0.35} scale={10} blur={2} />
+        <ContactShadows ref={contactRef} position={[0, -0.5, 0]} opacity={0.35} scale={10} blur={2} />
 
         <Suspense fallback={<Loader placeholderSrc={placeholderSrc} />}>
           <ModelInner

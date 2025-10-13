@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Award, Clock, Users, FileText, Shield, Calendar, MessageCircle } from "lucide-react";
 import RotatingText from "@/components/RotatingText";
 import StarBorder from "@/components/StarBorder";
