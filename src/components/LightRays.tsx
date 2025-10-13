@@ -4,6 +4,27 @@ import { useRef, useEffect, useState } from 'react';
 import { Renderer, Program, Triangle, Mesh } from 'ogl';
 import './LightRays.css';
 
+// Typen für WebGL Uniforms
+type UniformValue = number | [number, number] | [number, number, number] | [number, number, number, number];
+type Uniform = { value: UniformValue };
+type Uniforms = {
+  iTime: Uniform;
+  iResolution: Uniform;
+  rayPos: Uniform;
+  rayDir: Uniform;
+  raysColor: Uniform;
+  raysSpeed: Uniform;
+  lightSpread: Uniform;
+  rayLength: Uniform;
+  pulsating: Uniform;
+  fadeDistance: Uniform;
+  saturation: Uniform;
+  mousePos: Uniform;
+  mouseInfluence: Uniform;
+  noiseAmount: Uniform;
+  distortion: Uniform;
+};
+
 export type RaysOrigin =
   | 'top-center'
   | 'top-left'
@@ -79,7 +100,7 @@ const LightRays: React.FC<LightRaysProps> = ({
   className = ''
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const uniformsRef = useRef<Record<string, { value: any }> | null>(null);
+  const uniformsRef = useRef<Uniforms | null>(null);
   const rendererRef = useRef<Renderer | null>(null);
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const smoothMouseRef = useRef({ x: 0.5, y: 0.5 });
