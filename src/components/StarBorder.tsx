@@ -1,34 +1,34 @@
-import React from 'react';
+import React, { CSSProperties, HTMLAttributes } from 'react';
 import './StarBorder.css';
 
-interface StarBorderProps {
+interface StarBorderProps extends HTMLAttributes<HTMLDivElement> {
   as?: React.ElementType;
-  className?: string;
-  children?: React.ReactNode;
   color?: string;
   speed?: React.CSSProperties['animationDuration'];
   thickness?: number;
-  [key: string]: unknown;
 }
 
 const StarBorder: React.FC<StarBorderProps> = ({
-  as: Component = 'button',
+  as: Component = 'div',
   className = '',
   color = 'white',
   speed = '6s',
   thickness = 1,
   children,
-  ...rest
+  style,              // <-- separat holen
+  ...divProps         // <-- Rest ohne style
 }) => {
+  const mergedStyle: CSSProperties = {
+    padding: `${thickness}px 0`,
+    ...(style ?? {}),   // <-- nur spreaden, wenn Objekt vorhanden
+  };
+
   return React.createElement(
     Component,
     {
+      ...divProps,
       className: `star-border-container ${className}`,
-      ...rest,
-      style: {
-        padding: `${thickness}px 0`,
-        ...rest.style
-      }
+      style: mergedStyle,
     },
     React.createElement('div', {
       className: 'border-gradient-bottom',
