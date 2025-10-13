@@ -121,30 +121,24 @@ export default function GutachtenPage() {
         </div>
       </section>
 
-      {/* Magic Bento Section */}
+      {/* Service Overview Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Interaktive Service-Übersicht
+              Unsere Service-Übersicht
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Entdecken Sie unsere Leistungen auf eine neue Art
+              Entdecken Sie unsere Leistungen im Detail
             </p>
           </div>
           <div className="flex justify-center">
-            <MagicBento 
-              textAutoHide={true}
-              enableStars={true}
-              enableSpotlight={true}
-              enableBorderGlow={true}
-              enableTilt={true}
-              enableMagnetism={true}
-              clickEffect={true}
-              spotlightRadius={300}
-              particleCount={12}
-              glowColor="132, 0, 255"
-            />
+            <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl">
+              <p className="text-gray-600 text-center">
+                Hier finden Sie eine detaillierte Übersicht aller unserer Gutachter-Services. 
+                Von der ersten Beratung bis zur finalen Gutachtenerstellung begleiten wir Sie professionell.
+              </p>
+            </div>
           </div>
         </div>
       </section>
