@@ -1,6 +1,6 @@
 import { FC, Suspense, useMemo, useCallback, useRef, useLayoutEffect, useEffect } from 'react';
-import { Canvas, useFrame, useThree, invalidate } from '@react-three/fiber';
-import { OrbitControls, useGLTF, useFBX, useLoader, useProgress, Html, Environment, ContactShadows } from '@react-three/drei';
+import { Canvas, useFrame, useThree, invalidate, useLoader } from '@react-three/fiber';
+import { OrbitControls, useGLTF, useFBX, useProgress, Html, Environment, ContactShadows } from '@react-three/drei';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import * as THREE from 'three';
 import Image from 'next/image';
