@@ -2,6 +2,7 @@ import { FC, Suspense, useMemo, useCallback, useRef, useLayoutEffect, useEffect 
 import { Canvas, useFrame, useThree, invalidate, useLoader } from '@react-three/fiber';
 import { OrbitControls, useGLTF, useFBX, useProgress, Html, Environment, ContactShadows } from '@react-three/drei';
 import { OBJLoader } from 'three-stdlib';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import Image from 'next/image';
 
@@ -176,7 +177,7 @@ const DesktopControls: FC<{
   max: number;
   zoomEnabled: boolean;
 }> = ({ pivot, min, max, zoomEnabled }) => {
-  const ref = useRef<OrbitControls | null>(null);
+  const ref = useRef<OrbitControlsImpl | null>(null);
   useFrame(() => ref.current?.target.copy(pivot));
   return (
     <OrbitControls
