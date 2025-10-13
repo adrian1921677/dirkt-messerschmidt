@@ -32,10 +32,6 @@ export default function Home() {
       <section className="bg-gradient-to-br from-blue-50 to-white py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge variant="secondary" className="mb-6">
-              <Award className="h-4 w-4 mr-2" />
-              Zertifizierter Sachverständiger
-            </Badge>
             <h1 className="text-4xl md:text-6xl font-heading font-bold text-gray-900 mb-6">
               Professionelle Gutachten
               <span className="text-blue-600 block">
@@ -45,25 +41,25 @@ export default function Home() {
                     texts={['höchster Qualität', 'Zuverlässigkeit', 'Präzision', 'Objektivität', 'Erfahrung']}
                     mainClassName="px-0.5 sm:px-1 md:px-1 bg-white/50 text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md"
                     staggerFrom={"last"}
-                    initial={{ y: "100%" }}
-                    animate={{ y: 0 }}
-                    exit={{ y: "-120%" }}
-                    staggerDuration={0.025}
+                    initial={{ y: "100%", opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: "-100%", opacity: 0 }}
+                    staggerDuration={0.015}
                     splitLevelClassName="overflow-hidden pb-0.5 sm:pb-0.5 md:pb-0.5"
-                    transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                    transition={{ type: "spring", damping: 25, stiffness: 300, duration: 0.6 }}
                     rotationInterval={3500}
                   />
                 </span>
               </span>
             </h1>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-black hover:bg-gray-800 text-white text-lg px-8 py-6 rounded-lg">
+              <Button asChild size="lg" className="bg-black hover:bg-gray-800 text-white text-lg px-8 py-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25">
                 <Link href="/termin-anfragen" className="flex items-center justify-center">
-                  <Calendar className="h-5 w-5 mr-2" />
+                  <Calendar className="h-5 w-5 mr-2 transition-transform duration-300 group-hover:rotate-12" />
                   Termin anfragen
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="bg-white text-black hover:bg-gray-100 border-gray-300 text-lg px-8 py-6 rounded-lg">
+              <Button asChild variant="outline" size="lg" className="bg-white text-black hover:bg-gray-100 border-gray-300 text-lg px-8 py-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
                 <Link href="/kontakt">
                   Kontakt aufnehmen
                 </Link>
@@ -227,12 +223,12 @@ export default function Home() {
                 texts={['Gutachten', 'Schadensbewertung', 'Wertgutachten', 'Beratung']}
                 mainClassName="px-0.5 sm:px-1 md:px-1 bg-white/50 text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md"
                 staggerFrom={"last"}
-                initial={{ y: "100%" }}
-                animate={{ y: 0 }}
-                exit={{ y: "-120%" }}
-                staggerDuration={0.025}
+                initial={{ y: "100%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: "-100%", opacity: 0 }}
+                staggerDuration={0.015}
                 splitLevelClassName="overflow-hidden pb-0.5 sm:pb-0.5 md:pb-0.5"
-                transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300, duration: 0.6 }}
                 rotationInterval={3500}
               />
             </span>
@@ -248,12 +244,12 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <StarBorder
               as="button"
-              className="custom-class"
+              className="custom-class transform transition-all duration-300 hover:scale-105"
               color="cyan"
               speed="5s"
             >
               <Link href="/termin-anfragen" className="flex items-center justify-center text-white hover:text-cyan-300 transition-colors duration-300">
-                <Calendar className="h-6 w-6 mr-3" />
+                <Calendar className="h-6 w-6 mr-3 transition-transform duration-300 group-hover:rotate-12" />
                 <span className="text-xl font-bold">Termin anfragen</span>
                 <div className="w-2 h-2 bg-cyan-400 rounded-full ml-3 animate-ping"></div>
               </Link>
@@ -262,7 +258,7 @@ export default function Home() {
             <Button asChild size="lg" className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/whatsapp text-xl">
               <Link href="/kontakt">
                 <div className="flex items-center space-x-3">
-                  <MessageCircle className="h-6 w-6" />
+                  <MessageCircle className="h-6 w-6 transition-transform duration-300 group-hover:rotate-12" />
                   <span>Kontakt aufnehmen</span>
                   <div className="w-2 h-2 bg-white rounded-full group-hover/whatsapp:animate-ping"></div>
                 </div>
