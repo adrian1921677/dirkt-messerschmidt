@@ -20,33 +20,33 @@ const StarBorder: React.FC<StarBorderProps> = ({
   children,
   ...rest
 }) => {
-  const ComponentElement = Component as React.ElementType;
-  
-  return (
-    <ComponentElement
-      className={`star-border-container ${className}`}
-      {...rest}
-      style={{
+  return React.createElement(
+    Component,
+    {
+      className: `star-border-container ${className}`,
+      ...rest,
+      style: {
         padding: `${thickness}px 0`,
         ...rest.style
-      }}
-    >
-      <div
-        className="border-gradient-bottom"
-        style={{
-          background: `radial-gradient(circle, ${color}, transparent 10%)`,
-          animationDuration: speed
-        }}
-      ></div>
-      <div
-        className="border-gradient-top"
-        style={{
-          background: `radial-gradient(circle, ${color}, transparent 10%)`,
-          animationDuration: speed
-        }}
-      ></div>
-      <div className="inner-content">{children}</div>
-    </ComponentElement>
+      }
+    },
+    React.createElement('div', {
+      className: 'border-gradient-bottom',
+      style: {
+        background: `radial-gradient(circle, ${color}, transparent 10%)`,
+        animationDuration: speed
+      }
+    }),
+    React.createElement('div', {
+      className: 'border-gradient-top',
+      style: {
+        background: `radial-gradient(circle, ${color}, transparent 10%)`,
+        animationDuration: speed
+      }
+    }),
+    React.createElement('div', {
+      className: 'inner-content'
+    }, children)
   );
 };
 
