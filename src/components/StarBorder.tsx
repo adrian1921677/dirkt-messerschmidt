@@ -20,8 +20,10 @@ const StarBorder: React.FC<StarBorderProps> = ({
   children,
   ...rest
 }) => {
+  const ComponentElement = Component as React.ElementType;
+  
   return (
-    <Component
+    <ComponentElement
       className={`star-border-container ${className}`}
       {...rest}
       style={{
@@ -44,7 +46,7 @@ const StarBorder: React.FC<StarBorderProps> = ({
         }}
       ></div>
       <div className="inner-content">{children}</div>
-    </Component>
+    </ComponentElement>
   );
 };
 
