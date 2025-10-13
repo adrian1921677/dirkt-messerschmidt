@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Shield, Award, Clock, CheckCircle, AlertTriangle, Euro, Gavel, Calendar, MessageCircle } from "lucide-react";
+import MagicBento from "@/components/MagicBento";
 
 export default function GutachtenPage() {
   const coreQuestions = [
@@ -117,6 +118,34 @@ export default function GutachtenPage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Magic Bento Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Interaktive Service-Übersicht
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Entdecken Sie unsere Leistungen auf eine neue Art
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <MagicBento 
+              textAutoHide={true}
+              enableStars={true}
+              enableSpotlight={true}
+              enableBorderGlow={true}
+              enableTilt={true}
+              enableMagnetism={true}
+              clickEffect={true}
+              spotlightRadius={300}
+              particleCount={12}
+              glowColor="132, 0, 255"
+            />
           </div>
         </div>
       </section>

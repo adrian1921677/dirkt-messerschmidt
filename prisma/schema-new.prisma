@@ -109,3 +109,4 @@ enum BookingStatus {
   DECLINED
   CANCELLED
 }
+

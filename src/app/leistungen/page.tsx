@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Shield, Clock, Euro, Car, Wrench, MessageCircle, Send, Zap } from "lucide-react";
+import MagicBento from "@/components/MagicBento";
 
 export default function Leistungen() {
   const services = [
@@ -86,6 +87,34 @@ export default function Leistungen() {
             </Card>
           ))}
         </div>
+
+        {/* Magic Bento Section */}
+        <section className="py-16 bg-gray-50 rounded-2xl mb-16">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Interaktive Service-Übersicht
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Entdecken Sie unsere Leistungen auf eine neue Art
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <MagicBento 
+                textAutoHide={true}
+                enableStars={true}
+                enableSpotlight={true}
+                enableBorderGlow={true}
+                enableTilt={true}
+                enableMagnetism={true}
+                clickEffect={true}
+                spotlightRadius={300}
+                particleCount={12}
+                glowColor="132, 0, 255"
+              />
+            </div>
+          </div>
+        </section>
 
         {/* Fancy WhatsApp Bereich */}
         <Card className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 border-green-200 group hover:shadow-2xl transition-all duration-500 mb-16">
