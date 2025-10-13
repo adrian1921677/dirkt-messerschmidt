@@ -18,9 +18,8 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000, isGlobal = false }: 
   const [hasAnimated, setHasAnimated] = useState(false);
   const [showPulse, setShowPulse] = useState(false);
   
-  // Verstecke QR-Code auf Admin-Seiten und auf mobilen Geräten
+  // Verstecke QR-Code nur auf Admin-Seiten
   const isAdminPage = pathname?.startsWith('/admin');
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   
   useEffect(() => {
     if (isGlobal && !hasAnimated) {
@@ -75,8 +74,8 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000, isGlobal = false }: 
     }
   }, [isGlobal, isVisible]);
 
-  // Verstecke QR-Code auf Admin-Seiten und auf mobilen Geräten
-  if (isAdminPage || isMobile) {
+  // Verstecke QR-Code nur auf Admin-Seiten
+  if (isAdminPage) {
     return null;
   }
 
