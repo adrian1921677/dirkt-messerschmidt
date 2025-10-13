@@ -9,6 +9,8 @@ const schema = z.object({
   phone: z.string().optional(),
 });
 
+type ContactData = z.infer<typeof schema>;
+
 export async function POST(req: NextRequest) {
   try {
     const json = await req.json();
@@ -33,16 +35,17 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : "Invalid request";
     return NextResponse.json(
-      { ok: false, error: err?.message ?? "Invalid request" },
+      { ok: false, error: errorMessage },
       { status: 400 }
     );
   }
 }
 
 /* ---------------- E-Mail (Resend) ---------------- */
-async function notifyEmail(msg: any) {
+async function notifyEmail(msg: ContactData) {
   if (!process.env.RESEND_API_KEY || !process.env.NOTIFY_EMAIL_TO) return;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -66,7 +69,7 @@ ${msg.body}
 }
 
 /* ---------------- Slack (Webhook) ---------------- */
-async function notifySlack(msg: any) {
+async function notifySlack(msg: ContactData) {
   const url = process.env.SLACK_WEBHOOK_URL;
   if (!url) return;
   const payload = {
@@ -90,7 +93,7 @@ async function notifySlack(msg: any) {
    - WHATSAPP_PHONE_NUMBER_ID (Meta Business)
    - WHATSAPP_TO (Empfänger, z.B. 4917xxxxxxx)
 */
-async function notifyWhatsAppCloud(msg: any) {
+async function notifyWhatsAppCloud(msg: ContactData) {
   const token = process.env.WHATSAPP_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
   const to = process.env.WHATSAPP_TO; // nur Ziffern mit Ländervorwahl, z.B. 4917...
@@ -117,24 +120,4 @@ ${msg.body}`;
     }),
   });
   if (!res.ok) throw new Error("WhatsApp Cloud API failed");
-}
-
-/* -------- WhatsApp (inoffiziell, CallMeBot – optional) --------
-   Schnell & kostenlos, aber inoffiziell/fragil.
-   Erfordert:
-   - CALLMEBOT_PHONE (ohne +, mit Ländervorwahl, z.B. 4917...)
-   - CALLMEBOT_APIKEY
-*/
-async function notifyWhatsAppCallMeBot(msg: any) {
-  const phone = process.env.CALLMEBOT_PHONE;
-  const apikey = process.env.CALLMEBOT_APIKEY;
-  if (!phone || !apikey) return;
-
-  const text =
-`Neue Nachricht von ${msg.name} (${msg.email})${msg.phone ? " • " + msg.phone : ""}
-${msg.subject ? "Betreff: " + msg.subject + "\n" : ""}${msg.body}`;
-  const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(text)}&apikey=${apikey}`;
-
-  const res = await fetch(url, { method: "GET" });
-  if (!res.ok) throw new Error("CallMeBot failed");
 }
