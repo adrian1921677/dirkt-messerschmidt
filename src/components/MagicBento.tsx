@@ -32,7 +32,7 @@ const DEFAULT_GLOW_COLOR = '132, 0, 255';
 const MOBILE_BREAKPOINT = 768;
 
 // Dynamischer GSAP Import
-let gsap: any = null;
+let gsap: typeof import('gsap').gsap | null = null;
 const loadGSAP = async () => {
   if (typeof window !== 'undefined' && !gsap) {
     try {
@@ -145,7 +145,7 @@ const ParticleCard: React.FC<{
   const isHoveredRef = useRef(false);
   const memoizedParticles = useRef<HTMLDivElement[]>([]);
   const particlesInitialized = useRef(false);
-  const magnetismAnimationRef = useRef<any>(null);
+  const magnetismAnimationRef = useRef<gsap.core.Tween | null>(null);
 
   const initializeParticles = useCallback(() => {
     if (particlesInitialized.current || !cardRef.current) return;
