@@ -58,7 +58,7 @@ export default function Home() {
                 mit{' '}
                 <RotatingText
                   texts={['höchster Qualität', 'Zuverlässigkeit', 'Präzision', 'Objektivität', 'Erfahrung']}
-                  mainClassName="px-1 sm:px-1.5 md:px-2 bg-white text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md"
+                  mainClassName="px-1 sm:px-1.5 md:px-2 bg-white/50 text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md inline-block"
                   staggerFrom={"last"}
                   initial={{ y: "100%" }}
                   animate={{ y: 0 }}
@@ -283,7 +283,7 @@ export default function Home() {
             Bereit für Ihr{' '}
             <RotatingText
               texts={['Gutachten', 'Schadensbewertung', 'Wertgutachten', 'Beratung']}
-              mainClassName="px-1 sm:px-1.5 md:px-2 bg-white text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md"
+              mainClassName="px-1 sm:px-1.5 md:px-2 bg-white/50 text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md inline-block"
               staggerFrom={"last"}
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
