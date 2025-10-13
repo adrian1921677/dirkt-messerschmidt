@@ -1,5 +1,4 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ContactForm } from "@/components/contact-form";
 import { MapPin, Phone, Clock, MessageCircle, Globe, Send, Zap } from "lucide-react";
 
 export default function Kontakt() {
@@ -51,12 +50,7 @@ export default function Kontakt() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Contact Form */}
-          <div className="lg:col-span-2">
-            <ContactForm />
-          </div>
-
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Info & WhatsApp */}
           <div className="space-y-8">
             {/* Contact Information */}
@@ -192,7 +186,57 @@ export default function Kontakt() {
                 </div>
               </CardContent>
             </Card>
+          </div>
 
+          {/* Additional Contact Information */}
+          <div className="space-y-8">
+            {/* Terminvereinbarung */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Clock className="h-6 w-6 mr-2 text-blue-600" />
+                  Terminvereinbarung
+                </CardTitle>
+                <CardDescription>
+                  Flexible Termine nach Vereinbarung
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  Für eine Terminvereinbarung können Sie mich telefonisch erreichen oder 
+                  über WhatsApp kontaktieren. Ich rufe Sie gerne zurück.
+                </p>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li>• Flexible Termine auch außerhalb der Bürozeiten</li>
+                  <li>• Vor-Ort-Termine oder Remote-Beratung möglich</li>
+                  <li>• Schnelle Terminvergabe innerhalb von 24-48 Stunden</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Notfall-Service */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Zap className="h-6 w-6 mr-2 text-red-600" />
+                  Notfall-Service
+                </CardTitle>
+                <CardDescription>
+                  Für dringende Fälle
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  Für dringende Fälle stehe ich auch außerhalb der regulären 
+                  Bürozeiten zur Verfügung.
+                </p>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li>• 24/7 Notfall-Hotline für Eilgutachten</li>
+                  <li>• Sofortige Vor-Ort-Termine möglich</li>
+                  <li>• Express-Bearbeitung in 24-48 Stunden</li>
+                </ul>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
@@ -257,44 +301,6 @@ export default function Kontakt() {
           </Card>
         </section>
 
-        {/* Additional Info */}
-        <section className="mt-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card>
-              <CardHeader>
-                <CardTitle>Terminvereinbarung</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">
-                  Für eine Terminvereinbarung können Sie mich telefonisch erreichen oder 
-                  das Kontaktformular nutzen. Ich rufe Sie gerne zurück.
-                </p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>• Flexible Termine auch außerhalb der Bürozeiten</li>
-                  <li>• Vor-Ort-Termine oder Remote-Beratung möglich</li>
-                  <li>• Schnelle Terminvergabe innerhalb von 24-48 Stunden</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Notfall-Service</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">
-                  Für dringende Fälle stehe ich auch außerhalb der regulären 
-                  Bürozeiten zur Verfügung.
-                </p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>• 24/7 Notfall-Hotline für Eilgutachten</li>
-                  <li>• Sofortige Vor-Ort-Termine möglich</li>
-                  <li>• Express-Bearbeitung in 24-48 Stunden</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
       </div>
     </div>
   );
