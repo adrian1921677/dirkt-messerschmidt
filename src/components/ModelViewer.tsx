@@ -1,8 +1,9 @@
-import { FC, Suspense, useRef, useLayoutEffect, useEffect, useMemo } from 'react';
-import { Canvas, useFrame, useLoader, useThree, invalidate } from '@react-three/fiber';
-import { OrbitControls, useGLTF, useFBX, useProgress, Html, Environment, ContactShadows } from '@react-three/drei';
+import { FC, Suspense, useMemo, useCallback, useRef, useLayoutEffect, useEffect } from 'react';
+import { Canvas, useFrame, useThree, invalidate } from '@react-three/fiber';
+import { OrbitControls, useGLTF, useFBX, useLoader, useProgress, Html, Environment, ContactShadows } from '@react-three/drei';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import * as THREE from 'three';
+import Image from 'next/image';
 
 const isMeshObject = (object: THREE.Object3D): object is THREE.Mesh => {
   return 'isMesh' in object && object.isMesh === true;
@@ -43,7 +44,7 @@ export interface ViewerProps {
 
 const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
 const deg2rad = (d: number) => (d * Math.PI) / 180;
-const DECIDE = 8; // px before we decide horizontal vs vertical
+const DECIDE = 8;
 const ROTATE_SPEED = 0.005;
 const INERTIA = 0.925;
 const PARALLAX_MAG = 0.05;
@@ -51,13 +52,14 @@ const PARALLAX_EASE = 0.12;
 const HOVER_MAG = deg2rad(6);
 const HOVER_EASE = 0.15;
 
+// Separate component for loading indicator
 const Loader: FC<{ placeholderSrc?: string }> = ({ placeholderSrc }) => {
   const { progress, active } = useProgress();
   if (!active && placeholderSrc) return null;
   return (
     <Html center>
       {placeholderSrc ? (
-        <img src={placeholderSrc} width={128} height={128} style={{ filter: 'blur(8px)', borderRadius: 8 }} alt="3D-Modell Vorschau" />
+        <Image src={placeholderSrc} width={128} height={128} alt="3D-Modell Vorschau" style={{ filter: 'blur(8px)', borderRadius: 8 }} />
       ) : (
         `${Math.round(progress)} %`
       )}
@@ -65,95 +67,37 @@ const Loader: FC<{ placeholderSrc?: string }> = ({ placeholderSrc }) => {
   );
 };
 
-const DesktopControls: FC<{
-  pivot: THREE.Vector3;
-  min: number;
-  max: number;
-  zoomEnabled: boolean;
-}> = ({ pivot, min, max, zoomEnabled }) => {
-  const ref = useRef<OrbitControls | null>(null);
-  useFrame(() => ref.current?.target.copy(pivot));
-  return (
-    <OrbitControls
-      ref={ref}
-      makeDefault
-      enablePan={false}
-      enableRotate={false}
-      enableZoom={zoomEnabled}
-      minDistance={min}
-      maxDistance={max}
-    />
-  );
+// Separate component for GLTF models
+const GLTFModel: FC<{ url: string }> = ({ url }) => {
+  const gltf = useGLTF(url);
+  return <primitive object={gltf.scene} />;
 };
 
-interface ModelInnerProps {
-  url: string;
-  xOff: number;
-  yOff: number;
-  pivot: THREE.Vector3;
-  initYaw: number;
-  initPitch: number;
-  minZoom: number;
-  maxZoom: number;
-  enableMouseParallax: boolean;
-  enableManualRotation: boolean;
-  enableHoverRotation: boolean;
-  enableManualZoom: boolean;
+// Separate component for FBX models
+const FBXModel: FC<{ url: string }> = ({ url }) => {
+  const fbx = useFBX(url);
+  return <primitive object={fbx} />;
+};
+
+// Separate component for OBJ models
+const OBJModel: FC<{ url: string }> = ({ url }) => {
+  const obj = useLoader(OBJLoader, url);
+  return <primitive object={obj} />;
+};
+
+// Camera setup component
+const CameraFit: FC<{
   autoFrame: boolean;
   fadeIn: boolean;
-  autoRotate: boolean;
-  autoRotateSpeed: number;
   onLoaded?: () => void;
-}
-
-const ModelInner: FC<ModelInnerProps> = ({
-  url,
-  xOff,
-  yOff,
-  pivot,
-  initYaw,
-  initPitch,
-  minZoom,
-  maxZoom,
-  enableMouseParallax,
-  enableManualRotation,
-  enableHoverRotation,
-  enableManualZoom,
-  autoFrame,
-  fadeIn,
-  autoRotate,
-  autoRotateSpeed,
-  onLoaded
-}) => {
+}> = ({ autoFrame, fadeIn, onLoaded }) => {
+  const { camera } = useThree();
   const outer = useRef<THREE.Group>(null!);
   const inner = useRef<THREE.Group>(null!);
-  const { camera, gl } = useThree();
-
-  const vel = useRef({ x: 0, y: 0 });
-  const tPar = useRef({ x: 0, y: 0 });
-  const cPar = useRef({ x: 0, y: 0 });
-  const tHov = useRef({ x: 0, y: 0 });
-  const cHov = useRef({ x: 0, y: 0 });
-
-  const ext = useMemo(() => url.split('.').pop()!.toLowerCase(), [url]);
-  
-  // Load assets based on file extension
-  const gltfAsset = ext === 'glb' || ext === 'gltf' ? useGLTF(url) : null;
-  const fbxAsset = ext === 'fbx' ? useFBX(url) : null;
-  const objAsset = ext === 'obj' ? useLoader(OBJLoader, url) : null;
-  
-  const content = useMemo<THREE.Object3D | null>(() => {
-    if (ext === 'glb' || ext === 'gltf' && gltfAsset) return gltfAsset.scene.clone();
-    if (ext === 'fbx' && fbxAsset) return fbxAsset.clone();
-    if (ext === 'obj' && objAsset) return objAsset.clone();
-    console.error('Unsupported format:', ext);
-    return null;
-  }, [url, ext, gltfAsset, fbxAsset, objAsset]);
-
   const pivotW = useRef(new THREE.Vector3());
-  
+
   const setupModel = useCallback(() => {
-    if (!content) return;
+    if (!inner.current) return;
     const g = inner.current;
     g.updateWorldMatrix(true, true);
 
@@ -177,8 +121,6 @@ const ModelInner: FC<ModelInnerProps> = ({
     });
 
     g.getWorldPosition(pivotW.current);
-    pivot.copy(pivotW.current);
-    outer.current.rotation.set(initPitch, initYaw, 0);
 
     if (autoFrame && (camera as THREE.PerspectiveCamera).isPerspectiveCamera) {
       const persp = camera as THREE.PerspectiveCamera;
@@ -190,7 +132,6 @@ const ModelInner: FC<ModelInnerProps> = ({
       persp.updateProjectionMatrix();
     }
 
-    /* optional fade-in */
     if (fadeIn) {
       let t = 0;
       const id = setInterval(() => {
@@ -211,20 +152,112 @@ const ModelInner: FC<ModelInnerProps> = ({
         }
       }, 16);
       return () => clearInterval(id);
-    } else onLoaded?.();
-  }, [content, fadeIn, autoFrame, camera, pivot, initPitch, initYaw, onLoaded]);
+    } else {
+      onLoaded?.();
+    }
+  }, [autoFrame, camera, fadeIn, onLoaded]);
 
   useLayoutEffect(() => {
     const cleanup = setupModel();
     return cleanup;
   }, [setupModel]);
 
+  return (
+    <group ref={outer}>
+      <group ref={inner}>
+        {/* Model will be rendered here by parent */}
+      </group>
+    </group>
+  );
+};
+
+// Desktop controls component
+const DesktopControls: FC<{
+  pivot: THREE.Vector3;
+  min: number;
+  max: number;
+  zoomEnabled: boolean;
+}> = ({ pivot, min, max, zoomEnabled }) => {
+  const ref = useRef<OrbitControls | null>(null);
+  useFrame(() => ref.current?.target.copy(pivot));
+  return (
+    <OrbitControls
+      ref={ref}
+      makeDefault
+      enablePan={false}
+      enableRotate={false}
+      enableZoom={zoomEnabled}
+      minDistance={min}
+      maxDistance={max}
+    />
+  );
+};
+
+// Main model component that handles interactions
+const ModelInner: FC<{
+  url: string;
+  xOff: number;
+  yOff: number;
+  pivot: THREE.Vector3;
+  initYaw: number;
+  initPitch: number;
+  minZoom: number;
+  maxZoom: number;
+  enableMouseParallax: boolean;
+  enableManualRotation: boolean;
+  enableHoverRotation: boolean;
+  enableManualZoom: boolean;
+  autoRotate: boolean;
+  autoRotateSpeed: number;
+}> = ({
+  url,
+  xOff,
+  yOff,
+  pivot,
+  initYaw,
+  initPitch,
+  minZoom,
+  maxZoom,
+  enableMouseParallax,
+  enableManualRotation,
+  enableHoverRotation,
+  enableManualZoom,
+  autoRotate,
+  autoRotateSpeed
+}) => {
+  const outer = useRef<THREE.Group>(null!);
+  const inner = useRef<THREE.Group>(null!);
+  const { camera, gl } = useThree();
+
+  const vel = useRef({ x: 0, y: 0 });
+  const tPar = useRef({ x: 0, y: 0 });
+  const cPar = useRef({ x: 0, y: 0 });
+  const tHov = useRef({ x: 0, y: 0 });
+  const cHov = useRef({ x: 0, y: 0 });
+
+  const ext = useMemo(() => url.split('.').pop()!.toLowerCase(), [url]);
+
+  // Render appropriate model based on extension
+  const renderModel = () => {
+    if (ext === 'glb' || ext === 'gltf') {
+      return <GLTFModel url={url} />;
+    }
+    if (ext === 'fbx') {
+      return <FBXModel url={url} />;
+    }
+    if (ext === 'obj') {
+      return <OBJModel url={url} />;
+    }
+    console.error('Unsupported format:', ext);
+    return null;
+  };
+
   useEffect(() => {
     if (!enableManualRotation || isTouch) return;
     const el = gl.domElement;
     let drag = false;
-    let lx = 0,
-      ly = 0;
+    let lx = 0, ly = 0;
+    
     const down = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
       drag = true;
@@ -232,6 +265,7 @@ const ModelInner: FC<ModelInnerProps> = ({
       ly = e.clientY;
       window.addEventListener('pointerup', up);
     };
+    
     const move = (e: PointerEvent) => {
       if (!drag) return;
       const dx = e.clientX - lx;
@@ -243,7 +277,9 @@ const ModelInner: FC<ModelInnerProps> = ({
       vel.current = { x: dx * ROTATE_SPEED, y: dy * ROTATE_SPEED };
       invalidate();
     };
+    
     const up = () => (drag = false);
+    
     el.addEventListener('pointerdown', down);
     el.addEventListener('pointermove', move);
     return () => {
@@ -259,12 +295,7 @@ const ModelInner: FC<ModelInnerProps> = ({
     const pts = new Map<number, { x: number; y: number }>();
     type Mode = 'idle' | 'decide' | 'rotate' | 'pinch';
     let mode: Mode = 'idle';
-    let sx = 0,
-      sy = 0,
-      lx = 0,
-      ly = 0,
-      startDist = 0,
-      startZ = 0;
+    let sx = 0, sy = 0, lx = 0, ly = 0, startDist = 0, startZ = 0;
 
     const down = (e: PointerEvent) => {
       if (e.pointerType !== 'touch') return;
@@ -339,7 +370,7 @@ const ModelInner: FC<ModelInnerProps> = ({
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', up);
     };
-  }, [gl, enableManualRotation, enableManualZoom, minZoom, maxZoom, camera.position.z]);
+  }, [gl, enableManualRotation, enableManualZoom, minZoom, maxZoom, camera]);
 
   useEffect(() => {
     return handleTouchEvents();
@@ -363,12 +394,11 @@ const ModelInner: FC<ModelInnerProps> = ({
     let need = false;
     cPar.current.x += (tPar.current.x - cPar.current.x) * PARALLAX_EASE;
     cPar.current.y += (tPar.current.y - cPar.current.y) * PARALLAX_EASE;
-    const phx = cHov.current.x,
-      phy = cHov.current.y;
+    const phx = cHov.current.x, phy = cHov.current.y;
     cHov.current.x += (tHov.current.x - cHov.current.x) * HOVER_EASE;
     cHov.current.y += (tHov.current.y - cHov.current.y) * HOVER_EASE;
 
-    const ndc = pivotW.current.clone().project(camera);
+    const ndc = pivot.clone().project(camera);
     ndc.x += xOff + cPar.current.x;
     ndc.y += yOff + cPar.current.y;
     outer.current.position.copy(ndc.unproject(camera));
@@ -398,11 +428,10 @@ const ModelInner: FC<ModelInnerProps> = ({
     if (need) invalidate();
   });
 
-  if (!content) return null;
   return (
     <group ref={outer}>
       <group ref={inner}>
-        <primitive object={content} />
+        {renderModel()}
       </group>
     </group>
   );
@@ -436,7 +465,6 @@ const ModelViewer: FC<ViewerProps> = ({
   autoRotateSpeed = 0.35,
   onModelLoaded
 }) => {
-  useEffect(() => void useGLTF.preload(url), [url]);
   const pivot = useRef(new THREE.Vector3()).current;
   const contactRef = useRef<THREE.Mesh>(null);
   const rendererRef = useRef<THREE.WebGLRenderer>(null);
@@ -448,9 +476,9 @@ const ModelViewer: FC<ViewerProps> = ({
   const camZ = Math.min(Math.max(defaultZoom, minZoomDistance), maxZoomDistance);
 
   const capture = () => {
-    const g = rendererRef.current,
-      s = sceneRef.current,
-      c = cameraRef.current;
+    const g = rendererRef.current;
+    const s = sceneRef.current;
+    const c = cameraRef.current;
     if (!g || !s || !c) return;
     g.shadowMap.enabled = false;
     const tmp: { l: THREE.Light; cast: boolean }[] = [];
@@ -524,6 +552,7 @@ const ModelViewer: FC<ViewerProps> = ({
         <ContactShadows ref={contactRef} position={[0, -0.5, 0]} opacity={0.35} scale={10} blur={2} />
 
         <Suspense fallback={<Loader placeholderSrc={placeholderSrc} />}>
+          <CameraFit autoFrame={autoFrame} fadeIn={fadeIn} onLoaded={onModelLoaded} />
           <ModelInner
             url={url}
             xOff={modelXOffset}
@@ -537,11 +566,8 @@ const ModelViewer: FC<ViewerProps> = ({
             enableManualRotation={enableManualRotation}
             enableHoverRotation={enableHoverRotation}
             enableManualZoom={enableManualZoom}
-            autoFrame={autoFrame}
-            fadeIn={fadeIn}
             autoRotate={autoRotate}
             autoRotateSpeed={autoRotateSpeed}
-            onLoaded={onModelLoaded}
           />
         </Suspense>
 
