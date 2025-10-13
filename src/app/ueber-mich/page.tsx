@@ -1,7 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, Clock, Users, FileText, Shield, CheckCircle, Star, MessageCircle } from "lucide-react";
-import MagicBento from "@/components/MagicBento";
 
 export default function UeberMich() {
   const achievements = [
@@ -134,33 +133,6 @@ export default function UeberMich() {
           </div>
         </div>
 
-        {/* Magic Bento Section */}
-        <section className="py-16 bg-gray-50 rounded-2xl mb-16">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Interaktive Service-Übersicht
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Entdecken Sie meine Leistungen auf eine neue Art
-              </p>
-            </div>
-            <div className="flex justify-center">
-              <MagicBento 
-                textAutoHide={true}
-                enableStars={true}
-                enableSpotlight={true}
-                enableBorderGlow={true}
-                enableTilt={true}
-                enableMagnetism={true}
-                clickEffect={true}
-                spotlightRadius={300}
-                particleCount={12}
-                glowColor="132, 0, 255"
-              />
-            </div>
-          </div>
-        </section>
 
         {/* Achievements Grid */}
         <section className="mb-16">

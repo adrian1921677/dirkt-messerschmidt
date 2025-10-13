@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Shield, Award, Clock, CheckCircle, AlertTriangle, Euro, Gavel, Calendar, MessageCircle } from "lucide-react";
-import MagicBento from "@/components/MagicBento";
 
 export default function GutachtenPage() {
   const coreQuestions = [

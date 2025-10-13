@@ -1,7 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ContactForm } from "@/components/contact-form";
 import { MapPin, Phone, Clock, MessageCircle, Globe, Send, Zap } from "lucide-react";
-import MagicBento from "@/components/MagicBento";
 
 export default function Kontakt() {
   const contactInfo = [

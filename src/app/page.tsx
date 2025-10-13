@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Award, Clock, Users, FileText, Shield, Calendar, MessageCircle } from "lucide-react";
-import MagicBento from "@/components/MagicBento";
 import RotatingText from "@/components/RotatingText";
 import LightRays from "@/components/LightRays";
+import StarBorder from "@/components/StarBorder";
 
 export default function Home() {
   const services = [
@@ -56,18 +56,20 @@ export default function Home() {
               Professionelle Gutachten
               <span className="text-blue-600 block">
                 mit{' '}
-                <RotatingText
-                  texts={['höchster Qualität', 'Zuverlässigkeit', 'Präzision', 'Objektivität', 'Erfahrung']}
-                  mainClassName="px-0.5 sm:px-1 md:px-1 bg-white/50 text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md inline-block"
-                  staggerFrom={"last"}
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  exit={{ y: "-120%" }}
-                  staggerDuration={0.025}
-                  splitLevelClassName="overflow-hidden pb-0.5 sm:pb-0.5 md:pb-0.5"
-                  transition={{ type: "spring", damping: 30, stiffness: 400 }}
-                  rotationInterval={3500}
-                />
+                <span className="inline-block">
+                  <RotatingText
+                    texts={['höchster Qualität', 'Zuverlässigkeit', 'Präzision', 'Objektivität', 'Erfahrung']}
+                    mainClassName="px-0.5 sm:px-1 md:px-1 bg-white/50 text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md"
+                    staggerFrom={"last"}
+                    initial={{ y: "100%" }}
+                    animate={{ y: 0 }}
+                    exit={{ y: "-120%" }}
+                    staggerDuration={0.025}
+                    splitLevelClassName="overflow-hidden pb-0.5 sm:pb-0.5 md:pb-0.5"
+                    transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                    rotationInterval={3500}
+                  />
+                </span>
               </span>
             </h1>
                 <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
@@ -75,11 +77,17 @@ export default function Home() {
                   Schadensbewertungen und Qualitätsanalysen. Vertrauen Sie auf Expertise und Präzision.
                 </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="text-lg px-8 py-6">
-                <Link href="/termin-anfragen">
+              <StarBorder
+                as="button"
+                className="custom-class"
+                color="cyan"
+                speed="5s"
+              >
+                <Link href="/termin-anfragen" className="flex items-center justify-center text-white hover:text-cyan-300 transition-colors duration-300">
+                  <Calendar className="h-5 w-5 mr-2" />
                   Termin anfragen
                 </Link>
-              </Button>
+              </StarBorder>
               <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
                 <Link href="/kontakt">
                   Kontakt aufnehmen
@@ -90,33 +98,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Magic Bento Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Entdecken Sie unsere Services
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Interaktive Übersicht unserer Leistungen und Services
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <MagicBento 
-              textAutoHide={true}
-              enableStars={true}
-              enableSpotlight={true}
-              enableBorderGlow={true}
-              enableTilt={true}
-              enableMagnetism={true}
-              clickEffect={true}
-              spotlightRadius={300}
-              particleCount={12}
-              glowColor="132, 0, 255"
-            />
-          </div>
-        </div>
-      </section>
 
       {/* Services Section */}
       <section className="py-20 bg-white">
@@ -281,18 +262,20 @@ export default function Home() {
           {/* Headline */}
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
             Bereit für Ihr{' '}
-            <RotatingText
-              texts={['Gutachten', 'Schadensbewertung', 'Wertgutachten', 'Beratung']}
-              mainClassName="px-0.5 sm:px-1 md:px-1 bg-white/50 text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md inline-block"
-              staggerFrom={"last"}
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "-120%" }}
-              staggerDuration={0.025}
-              splitLevelClassName="overflow-hidden pb-0.5 sm:pb-0.5 md:pb-0.5"
-              transition={{ type: "spring", damping: 30, stiffness: 400 }}
-              rotationInterval={3500}
-            />
+            <span className="inline-block">
+              <RotatingText
+                texts={['Gutachten', 'Schadensbewertung', 'Wertgutachten', 'Beratung']}
+                mainClassName="px-0.5 sm:px-1 md:px-1 bg-white/50 text-black overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-md"
+                staggerFrom={"last"}
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "-120%" }}
+                staggerDuration={0.025}
+                splitLevelClassName="overflow-hidden pb-0.5 sm:pb-0.5 md:pb-0.5"
+                transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                rotationInterval={3500}
+              />
+            </span>
             ?
           </h2>
           
@@ -303,15 +286,18 @@ export default function Home() {
           
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/btn text-xl">
-              <Link href="/termin-anfragen">
-                <div className="flex items-center space-x-3">
-                  <Calendar className="h-6 w-6" />
-                  <span>Termin anfragen</span>
-                  <div className="w-2 h-2 bg-blue-500 rounded-full group-hover/btn:animate-ping"></div>
-                </div>
+            <StarBorder
+              as="button"
+              className="custom-class"
+              color="cyan"
+              speed="5s"
+            >
+              <Link href="/termin-anfragen" className="flex items-center justify-center text-white hover:text-cyan-300 transition-colors duration-300">
+                <Calendar className="h-6 w-6 mr-3" />
+                <span className="text-xl font-bold">Termin anfragen</span>
+                <div className="w-2 h-2 bg-cyan-400 rounded-full ml-3 animate-ping"></div>
               </Link>
-            </Button>
+            </StarBorder>
             
             <Button asChild size="lg" className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-6 px-10 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 group/whatsapp text-xl">
               <Link href="/kontakt">

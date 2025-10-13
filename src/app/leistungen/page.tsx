@@ -1,7 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Shield, Clock, Euro, Car, Wrench, MessageCircle, Send, Zap } from "lucide-react";
-import MagicBento from "@/components/MagicBento";
 
 export default function Leistungen() {
   const services = [
