@@ -89,7 +89,6 @@ export default function Kontakt() {
                   <div className="relative flex items-center space-x-4">
                     <Send className="h-6 w-6 group-hover/btn:animate-bounce" />
                     <span>Chat jetzt starten</span>
-                    <Zap className="h-5 w-5 group-hover/btn:animate-pulse" />
                   </div>
                 </a>
               </div>
@@ -109,7 +108,7 @@ export default function Kontakt() {
                   className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   <div className="text-4xl mb-3 group-hover/quick:animate-bounce">📅</div>
-                  <div className="text-sm font-semibold text-gray-700">Termin vereinbaren</div>
+                  <div className="text-sm font-semibold text-gray-700 text-center">Termin vereinbaren</div>
                 </a>
                 <a
                   href="https://wa.me/491711415899?text=Gutachten%20anfragen"
@@ -118,7 +117,7 @@ export default function Kontakt() {
                   className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   <div className="text-4xl mb-3 group-hover/quick:animate-bounce">📋</div>
-                  <div className="text-sm font-semibold text-gray-700">Gutachten anfragen</div>
+                  <div className="text-sm font-semibold text-gray-700 text-center">Gutachten anfragen</div>
                 </a>
                 <a
                   href="https://wa.me/491711415899?text=Beratung%20anfragen"
@@ -127,7 +126,7 @@ export default function Kontakt() {
                   className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   <div className="text-4xl mb-3 group-hover/quick:animate-bounce">💬</div>
-                  <div className="text-sm font-semibold text-gray-700">Beratung anfragen</div>
+                  <div className="text-sm font-semibold text-gray-700 text-center">Beratung anfragen</div>
                 </a>
               </div>
 

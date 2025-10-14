@@ -60,3 +60,4 @@ curl -X POST http://localhost:3000/api/contact \
 - ✅ WhatsApp CallMeBot (optional)
 - ✅ Fehlerbehandlung
 - ✅ Parallel Benachrichtigungen
+

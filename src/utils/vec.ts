@@ -7,3 +7,4 @@ export const vec4 = (x: number, y: number, z: number, w: number): [number, numbe
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
 export type Vec4 = [number, number, number, number];
+
