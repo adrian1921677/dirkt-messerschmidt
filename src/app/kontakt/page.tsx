@@ -100,41 +100,41 @@ export default function Kontakt() {
               </div>
 
               {/* Quick Actions - Größer */}
-              <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto">
+              <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
                 <a
                   href="https://wa.me/491711415899?text=Termin%20vereinbaren"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   <div className="text-4xl mb-3 group-hover/quick:animate-bounce">📅</div>
-                  <div className="text-sm font-semibold text-gray-700 text-center">Termin vereinbaren</div>
+                  <div className="text-xs font-semibold text-gray-700 text-center leading-tight">Termin vereinbaren</div>
                 </a>
                 <a
                   href="https://wa.me/491711415899?text=Gutachten%20anfragen"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   <div className="text-4xl mb-3 group-hover/quick:animate-bounce">📋</div>
-                  <div className="text-sm font-semibold text-gray-700 text-center">Gutachten anfragen</div>
+                  <div className="text-xs font-semibold text-gray-700 text-center leading-tight">Gutachten anfragen</div>
                 </a>
                 <a
                   href="https://wa.me/491711415899?text=Beratung%20anfragen"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  className="group/quick bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   <div className="text-4xl mb-3 group-hover/quick:animate-bounce">💬</div>
-                  <div className="text-sm font-semibold text-gray-700 text-center">Beratung anfragen</div>
+                  <div className="text-xs font-semibold text-gray-700 text-center leading-tight">Beratung anfragen</div>
                 </a>
               </div>
 
-              {/* Floating Elements */}
-              <div className="absolute top-6 right-6 text-green-400/30 group-hover:text-green-400/50 transition-colors">
+              {/* Floating Elements - nur auf Desktop */}
+              <div className="absolute top-6 right-6 text-green-400/30 group-hover:text-green-400/50 transition-colors hidden md:block">
                 <div className="text-5xl animate-pulse delay-500">✨</div>
               </div>
-              <div className="absolute bottom-6 left-6 text-emerald-400/30 group-hover:text-emerald-400/50 transition-colors">
+              <div className="absolute bottom-6 left-6 text-emerald-400/30 group-hover:text-emerald-400/50 transition-colors hidden md:block">
                 <div className="text-5xl animate-pulse delay-1000">✨</div>
               </div>
             </CardContent>
