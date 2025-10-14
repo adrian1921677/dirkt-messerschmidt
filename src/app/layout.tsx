@@ -46,7 +46,7 @@ export default function RootLayout({
               </main>
               <Footer />
               {/* Globaler QR-Code - sichtbar auf allen Seiten außer Admin */}
-              <QRCodeAnimation qrCodePath="/qr-code.png?v=2" isGlobal={true} delay={3000} />
+              <QRCodeAnimation qrCodePath="/qr-code.png?v=3" isGlobal={true} delay={3000} />
             </AuthSessionProvider>
       </body>
     </html>
