@@ -80,7 +80,7 @@ export function QRCodeAnimation({ qrCodePath, delay = 2000, isGlobal = false }: 
   }
 
   const containerClasses = isGlobal 
-    ? "fixed bottom-4 left-4 z-50 pointer-events-none"
+    ? "fixed bottom-4 left-4 z-50 pointer-events-none hidden md:block"
     : "relative w-full h-auto aspect-square"; // For static display within content flow
 
   return (

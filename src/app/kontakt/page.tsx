@@ -132,7 +132,7 @@ export default function Kontakt() {
 
               {/* Floating Elements */}
               <div className="absolute top-6 right-6 text-green-400/30 group-hover:text-green-400/50 transition-colors">
-                <div className="text-6xl animate-bounce delay-500">💚</div>
+                <div className="text-5xl animate-pulse delay-500">✨</div>
               </div>
               <div className="absolute bottom-6 left-6 text-emerald-400/30 group-hover:text-emerald-400/50 transition-colors">
                 <div className="text-5xl animate-pulse delay-1000">✨</div>
